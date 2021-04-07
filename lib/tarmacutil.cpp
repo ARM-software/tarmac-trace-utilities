@@ -1,0 +1,164 @@
+/*
+ * Copyright 2016-2021 Arm Limited. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of Tarmac Trace Utilities
+ */
+
+#include "libtarmac/tarmacutil.hh"
+#include "libtarmac/index.hh"
+#include "libtarmac/misc.hh"
+
+#include <iostream>
+#include <stdlib.h>
+
+using std::clog;
+using std::endl;
+using std::string;
+
+TarmacUtilityBase::TarmacUtilityBase(Argparse &ap, bool can_use_image)
+    : verbose(is_interactive()), show_progress_meter(verbose)
+{
+    if (can_use_image)
+        ap.optval({"--image"}, "IMAGEFILE", "image file name",
+                  [this](const string &s) { image_filename = s; });
+    ap.optnoval({"--only-index"}, "generate index and do nothing else",
+                [this]() {
+                    indexing = Troolean::Yes;
+                    onlyIndex = true;
+                });
+    ap.optnoval({"--force-index"}, "regenerate index unconditionally",
+                [this]() { indexing = Troolean::Yes; });
+    ap.optnoval({"--no-index"}, "do not regenerate index",
+                [this]() { indexing = Troolean::No; });
+    ap.optnoval({"--li"}, "assume trace is from a little-endian platform",
+                [this]() {
+                    bigend = false;
+                    bigend_explicit = true;
+                });
+    ap.optnoval({"--bi"}, "assume trace is from a big-endian platform",
+                [this]() {
+                    bigend = true;
+                    bigend_explicit = true;
+                });
+    ap.optnoval({"-v", "--verbose"}, "make tool more verbose",
+                [this]() { verbose = true; });
+    ap.optnoval({"-q", "--quiet"}, "make tool quiet",
+                [this]() { verbose = show_progress_meter = false; });
+    ap.optnoval({"--show-progress-meter"},
+                "force display of the progress meter",
+                [this]() { show_progress_meter = true; });
+}
+
+TarmacUtility::TarmacUtility(Argparse &ap, bool can_use_image,
+                             bool trace_required)
+    : TarmacUtilityBase(ap, can_use_image)
+{
+    ap.optval({"--index"}, "INDEXFILE", "index file name",
+              [this](const string &s) { trace.index_filename = s; });
+    ap.positional("TRACEFILE", "Tarmac trace file to read",
+                  [this](const string &s) { trace.tarmac_filename = s; },
+                  trace_required);
+}
+
+static string defaultIndexFilename(string tarmac_filename)
+{
+    return tarmac_filename + ".index";
+}
+
+void TarmacUtility::postProcessOptions()
+{
+    if (trace.index_filename.empty())
+        trace.index_filename = defaultIndexFilename(trace.tarmac_filename);
+
+    std::shared_ptr<Image> image =
+        image_filename.empty() ? nullptr
+                               : std::make_shared<Image>(image_filename);
+
+    if (image) {
+        bool is_big_endian = image->is_big_endian();
+        if (bigend_explicit) {
+            if (bigend != is_big_endian) {
+                warnx("Endianness mismatch between image and "
+                      "provided endianness");
+            }
+        } else {
+            bigend = is_big_endian;
+        }
+    }
+}
+
+TarmacUtilityMT::TarmacUtilityMT(Argparse &ap, bool can_use_image)
+    : TarmacUtilityBase(ap, can_use_image)
+{
+    ap.positional_multiple("TRACEFILE", "Tarmac trace files to read",
+                           [this](const string &s) {
+                               traces.emplace_back(s, defaultIndexFilename(s));
+                           });
+}
+
+void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace,
+                                            Troolean doIndexing, bool bigend,
+                                            bool verbose,
+                                            bool show_progress_meter)
+{
+    uint64_t trace_timestamp;
+    if (!get_file_timestamp(trace.tarmac_filename, &trace_timestamp))
+        err(1, "%s: stat", trace.tarmac_filename.c_str());
+
+    if (doIndexing == Troolean::Auto) {
+        uint64_t index_timestamp;
+        if (!get_file_timestamp(trace.index_filename, &index_timestamp)) {
+            if (verbose)
+                clog << "index file " << trace.index_filename
+                     << " does not exist; building it" << endl;
+            doIndexing = Troolean::Yes;
+        } else if (index_timestamp < trace_timestamp) {
+            if (verbose)
+                clog << "index file " << trace.index_filename
+                     << " is older than trace file " << trace.tarmac_filename
+                     << "; rebuilding it" << endl;
+            doIndexing = Troolean::Yes;
+        } else if (!magic_number_ok(trace.index_filename)) {
+            if (verbose)
+                clog << "index file " << trace.index_filename
+                     << " was not generated by this version of the tool"
+                     << "; rebuilding it" << endl;
+            doIndexing = Troolean::Yes;
+        } else {
+            if (verbose)
+                clog << "index file " << trace.index_filename
+                     << " looks ok; not rebuilding it" << endl;
+            doIndexing = Troolean::No;
+        }
+    }
+
+    if (doIndexing == Troolean::Yes)
+        run_indexer(trace, bigend, show_progress_meter);
+}
+
+void TarmacUtilityBase::setup_noexit()
+{
+    postProcessOptions();
+    if (indexing != Troolean::No)
+        setupIndex();
+}
+
+void TarmacUtilityBase::setup()
+{
+    setup_noexit();
+
+    if (onlyIndex)
+        exit(0);
+}

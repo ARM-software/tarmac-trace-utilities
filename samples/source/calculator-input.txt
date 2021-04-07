@@ -1,0 +1,12 @@
+2 + 3 * 4       # * takes priority, so should be 2+12 = 14 = 0xE
+2 * 3 + 4       # * still takes priority, so should be 6+4 = 10 = 0xA
+(2 + 3) * 4     # 5*4 = 20 = 0x14
+2 * (3 + 4)     # 2*7 = 14 = 0x0E
+100-10-1        # left-associative, so should be 100-11 = 89 = 0x59
+3^3^2           # right-associative, so should be 3^9 = 19683 = 0x4CE3
+(2 2)           # error
+(2 +)           # error
+2 2             # error
+2 +             # error
+!               # error
+0x12345         # should be back to parsing correctly after error recovery

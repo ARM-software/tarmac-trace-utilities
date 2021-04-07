@@ -1,0 +1,5 @@
+Address     Count       Time        Function name
+0x8000      1           2044        
+0x8038      13          4401        quicksort
+0x8054      14          1954        quicksort
+0x80ec      1           4           sys_write0

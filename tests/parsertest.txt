@@ -1,0 +1,166 @@
+# Copyright 2016-2021 Arm Limited. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# This file is part of Tarmac Trace Utilities
+
+# Each (non-comment, non-blank) line of this file is a line of Tarmac
+# trace: most of them were seen in the wild from some trace-generating
+# tool, but a few are handwritten.
+#
+# They're all collected here as a regression test suite for this
+# system's Tarmac parsing module. But each line is independent: the
+# parser test program doesn't retain any state between lines.
+
+# ----------------------------------------------------------------------
+# Trace lines seen in the output of Fast Models's Tarmac plugin
+
+0 clk IT (0) 00008000 fa000000 A svc_s : BLX      {pc}+8 ; 0x8008
+1 clk IT (1) 00008008 a00a T svc_s : ADR      r0,{pc}+0x2c ; 0x8034
+12 clk IS (12) 0000802c 1afb T svc_s : SUBNE    r3,r7,r3
+2696 clk IT (2696) 000096ea e8bd87f0 T svc_s : POP      {r4-r10,pc}
+0 clk IT (0) 00008000 940011de O EL3h_s : BL       {pc}+0x4778 ; 0xc778
+483 clk IS (483) 0000c7ec 54ffffa1 O EL3h_s : B.NE     {pc}-0xc ; 0xc7e0
+
+9 clk R r0 0000ab34
+2 clk R r10 000029b4
+0 clk R r14_svc 00008004
+0 clk R cpsr 000001f3
+0 clk R X30 0000000000008004
+502 clk R SP_EL3 0000000010000000
+1150 clk R d8 0000000000000000
+1103 clk R s0 3f800000
+513 clk R FPCR 01230123:23452345
+
+2 clk MR4 00008034 000029b4
+415 clk MR1 000090c0 72
+1191 clk MR2 0000ab94 2202
+763 clk MW1 0fffffb8 00
+21 clk MW4 0000ab34 00000000
+1 clk MR8 0000c7c8:00000000c7c8 00000000_0000ca68
+1137 clk MR4 0000cc20:00000000cc20 00000000
+1151 clk MR1 0000a2c8:00000000a2c8 72
+494 clk MW8 0000cbf0:00000000cbf0 00000000_0000cbd0
+20 clk MW4 0000cc00:00000000cc00 00000000
+1709 clk MW1 0000ce00:00000000ce00 68
+
+4541 clk CADI E simulation_stopped
+
+28491 clk MR4 dfdfdfcf (ABORTED)
+
+3 clk IT (3) 0000800a:00000000800a,00000000800c e8900c00 T svc_s : LDM      r0,{r10,r11}
+
+23 clk IT (23) 0000815c:00000000815c_NS,00000000815e_NS f7ffef76 T hyp_n : BLX      {pc}-0x110 ; 0x804c
+23 clk IT (23) 0000815c:00000000815c_S,00000000815e_S f7ffef76 T hyp_n : BLX      {pc}-0x110 ; 0x804c
+
+40 clk R DC CISW 00000000:00000000
+1678 clk R IC IALLU 00000000:0000000
+35977 clk R TLBI ALLE3 00000000:00000000
+39319 clk R AT S12E1W 00000000:00000004
+
+0 clk cpu0 E DebugEvent_HaltingDebugState 00000000
+0 clk cpu0 R r0 00000000
+0 clk cpu0 R r1 00000000
+0 clk cpu1 E DebugEvent_HaltingDebugState 00000000
+0 clk cpu1 R r0 00000000
+0 clk cpu1 R r1 00000000
+0 clk cpu0 E 10001848 00000001 CoreEvent_RESET
+0 clk cpu0 R r13_main_s 30040000
+0 clk cpu0 R MSP_S 30040000
+1 clk cpu0 IT (1) 10001848 f64f6000 T thread_s : MOV      r0,#0xfe00
+1 clk cpu0 R r0 0000fe00
+2 clk cpu0 IT (2) 1000184c f2c30003 T thread_s : MOVT     r0,#0x3003
+2 clk cpu0 R r0 3003fe00
+
+# ----------------------------------------------------------------------
+# Trace lines seen in three different samples of broadly Cycle Models
+# flavoured Tarmac
+
+Tarmac Text Rev 3t
+      17000 ns  ES  EXC [0x00] Reset
+                    BR (00000000) A
+      41000 ns  ES  (00000000:e59ff018) A svc:            LDR      pc,{pc}+0x20 ; 0x20
+                    LD 00000020  ........ ........ ........ 00000080     0000000020    NM ISH INC
+                    BR (00000080) A
+     178000 ns  ES  (00000164:e59f1198) A svc:            LDR      r1,{pc}+0x1a0 ; 0x304
+                    LD 00000300  ........ ........ 00000800 ........     0000000300    NM ISH INC
+                    R R1 (USR) 00000800
+     181000 ns  ES  (0000016c:e1800001) A svc:            ORR      r0,r0,r1
+                    R R0 (USR) 00c50878
+     183000 ns  ES  (00000170:ee010f10) A svc:            MCR      p15,#0x0,r0,c1,c0,#0
+                    R SCTLR (AARCH32) 00c50878
+     800000 ns  ES  (000001a4:03a06a01) A svc:     CCFAIL MOVEQ    r6,#0x1000
+   23225000 ns  ES  (00000358:e4d12001) A svc:            LDRB     r2,[r1],#1
+                    LD 00000370  ........ ......48 ........ ........     0000000370    NM ISH IWBRWA
+                    R R1 (USR) 00000379
+                    R R2 (USR) 00000048
+   22857000 ns  ES  (000001fc:e5810000) A svc:            STR      r0,[r1,#0]
+                    ST b0080100  ........ ........ ........ 00000001     00b0080100    DV ISH INC
+   22858000 ns  ES  (00000208:e5810004) A svc:            STR      r0,[r1,#4]
+                    ST b0080100  ........ ........ ffffffff ........     00b0080100    DV ISH INC
+   23226000 ns  ES  (00000364:e5c02000) A svc:            STRB     r2,[r0,#0]
+                    ST b0000000  ........ ........ ........ ......##     00b0000000    SO ISH INC
+   23233000 ns  ES  (00000364:e5c02000) A svc:            STRB     r2,[r0,#0]
+                    ST b0000000  ........ ........ ........ ......65     00b0000000    SO ISH INC
+
+# ----------------------------------------------------------------------
+
+Tarmac Text Rev 3t
+     499294 ns  ES  EXC Reset
+                    R CPSR 000003cd
+                    R SPSR_EL3 00000000000001cd
+                    BR (0000000000000000) O
+     541481 ns  ES  (0000000000000000:d53800a1) O el3h_s:         MRS      x1,MPIDR_EL1
+                    R X1 0000000081000000
+     541483 ns  ES  (0000000000000004:d3483c20) O el3h_s:         UBFX     x0,x1,#8,#8
+                    R X0 0000000000000000
+     541533 ns  ES  (00000000000001b0:a9be7bfd) O el3h_s:         STP      x29,x30,[sp,#-0x20]!
+                    ST 0000000004001b60 02000000 00000000 00000000 00000020    S:0004001b60    nGnRnE OSH
+                    R SP_EL3 0000000004001b60
+     564127 ns  ES  (000000009ffa4a74:397f8002) O el3h_s:         LDRB     w2,[x0,#0xfe0]
+                    LD 000000007ff80fe0 ........ ........ ........ ......11    S:007ff80fe0    nGnRnE OSH
+                    R X2 0000000000000011
+     577915 ns  ES  (000000009ffb3ad0:39045fbf) O el3h_s:         STRB     wzr,[x29,#0x117]
+                    ST 000000009ffdb810 ........ ........ 00...... ........    S:009ffdb810    NM NSH IWTNA OWTNA
+
+# ----------------------------------------------------------------------
+
+    6000000 cs IT (00000000004d6eb8) 54fffea1 O  ---_- :        b.ne	0x4d6e8c
+    6000001 cs R08 0000007f99d14af4 4305000042ea0000
+    6000022 cs W08 0000007f99d09ef0 41fc6886421faa65
+    6000021 cs R Q17 42211549420dd96e41fed91542211526
+    6000017 cs R cpsr 20000000 __C_
+    6000019 cs R E15 0000007f99d14b94
+    6379085 cs W04 X ffffffbdc3c15c30 010c010b
+
+# ----------------------------------------------------------------------
+# Manually written tests
+
+# Test LD and ST records (showing a 16-byte region of memory with
+# non-accessed bytes as ".." and accessed ones as their hex contents),
+# in which the bytes written/read are not all contiguous. The parser
+# should generate multiple memory access events for each one.
+
+    1234567 cs E dummy header line to reset timestamp for next two lines
+                    LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH
+                    ST 000000009ffdb810 ....0000 ........ 88888888 88888888    S:009ffdb810    NM NSH IWTNA OWTNA
+
+# Assorted ways to address a vector register. The one with V0 and an
+# underscore can be produced by an EBM. The one with q0 and no
+# underscore is compatible with Fast Models. The other two are
+# handwritten hybrids. All should be parsed the same.
+
+608 clk R q0 93c467e37db0c7a4d1be3f810152cb56
+608 clk R q0 93c467e37db0c7a4_d1be3f810152cb56
+608 clk R V0 93c467e37db0c7a4d1be3f810152cb56
+608 clk R V0 93c467e37db0c7a4_d1be3f810152cb56
