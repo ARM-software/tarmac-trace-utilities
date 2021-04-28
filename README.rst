@@ -15,6 +15,25 @@
 
   This file is part of Tarmac Trace Utilities
 
+
+|CIUbuntu2004gcc| |CIUbuntu2004clang| |CIUbuntu1804gcc| |CIUbuntu1804clang|
+
+.. |CIUbuntu2004gcc| image:: https://github.com/Arnaud-de-Grandmaison-ARM/tarmac-trace-utilities/actions/workflows/ubuntu-2004-gcc.yml/badge.svg
+   :alt: Last build status on Ubuntu 20.04 with gcc
+   :target: https://github.com/Arnaud-de-Grandmaison-ARM/tarmac-trace-utilities/actions/workflows/ubuntu-2004-gcc.yml
+
+.. |CIUbuntu2004clang| image:: https://github.com/Arnaud-de-Grandmaison-ARM/tarmac-trace-utilities/actions/workflows/ubuntu-2004-clang.yml/badge.svg
+   :alt: Last build status on Ubuntu 20.04 with clang
+   :target: https://github.com/Arnaud-de-Grandmaison-ARM/tarmac-trace-utilities/actions/workflows/ubuntu-2004-clang.yml
+
+.. |CIUbuntu1804gcc| image:: https://github.com/Arnaud-de-Grandmaison-ARM/tarmac-trace-utilities/actions/workflows/ubuntu-1804-gcc.yml/badge.svg
+   :alt: Last build status on Ubuntu 18.04 with gcc
+   :target: https://github.com/Arnaud-de-Grandmaison-ARM/tarmac-trace-utilities/actions/workflows/ubuntu-1804-gcc.yml
+
+.. |CIUbuntu1804clang| image:: https://github.com/Arnaud-de-Grandmaison-ARM/tarmac-trace-utilities/actions/workflows/ubuntu-1804-clang.yml/badge.svg
+   :alt: Last build status on Ubuntu 18.04 with clang
+   :target: https://github.com/Arnaud-de-Grandmaison-ARM/tarmac-trace-utilities/actions/workflows/ubuntu-1804-clang.yml
+
 Tarmac Trace Utilities
 ~~~~~~~~~~~~~~~~~~~~~~
 
