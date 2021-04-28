@@ -187,24 +187,20 @@ Common functionality
 All the tools in this suite have some command-line syntax in common.
 
 Generally, the command lines of these tools have the form
-
   *toolname* [ *options* ] *trace-file-name* [ *tool-arguments* ]
 
 in which:
 
 *toolname*
-
   The name of one of the tools. For example, ``tarmac-callinfo``, or
   ``tarmac-browser``.
 
 *options*
-
   Command-line options. Some of these are common to all the tools (see
   below), and individual tools can add further options specific to
   that tool.
 
 *trace-file-name*
-
   The name of a Tarmac trace file to read, index and process.
 
   ..
@@ -216,7 +212,6 @@ in which:
     to mention that detail here yet.
 
 *tool-arguments*
-
   Additional command-line arguments specific to the particular tool,
   if it expects any.
 
@@ -239,17 +234,14 @@ one), the tool will re-generate the index automatically.
 You can override this behavior by using one of the following options:
 
 ``--force-index``
-
   Forces the tool to re-generate the index file, even if it would
   normally not consider it necessary to do so.
 
 ``--no-index``
-
   Forces the tool *not* to re-generate the index file, even if it
   would normally consider that it *was* necessary to do so.
 
 ``--only-index``
-
   Tells the tool to generate the index file and then stop without
   doing anything else.
 
@@ -263,7 +255,6 @@ If that default is not suitable for you, you can control the name and
 location of the index file using the following option
 
 ``--index=``\ *pathname*
-
   Tells the tool to store its index file at the specified pathname.
   This does not change any of the other default indexing behavior: if
   the file in that location does not exist or is older than the trace
@@ -274,7 +265,6 @@ Options to control interpretation of the trace
 ----------------------------------------------
 
 ``--li``, ``--bi``
-
   Tells the tool to interpret the trace as if the CPU is operating in
   little-endian or big-endian mode (for ``--li`` or ``--bi``
   respectively). The default is ``--li``.
@@ -288,7 +278,6 @@ Options to control interpretation of the trace
 .. _`--image`:
 
 ``--image=``\ *pathname*
-
   Tells the tool the location of an ELF image file that corresponds to
   the program being traced. The tool will then know what addresses in
   memory correspond to symbol names defined in the image, and can use
@@ -298,20 +287,17 @@ Options to control verbosity
 ----------------------------
 
 ``-v`` or ``--verbose``
-
   Tells the tool to be more verbose about what decisions it is making
   and why. In particular, the tool will explain how it decided whether
   or not to re-generate its index file.
 
 ``-q`` or ``--quiet``
-
   Tells the tool to be quieter about what it is doing. In particular,
   this suppresses the progress meter that is displayed by default
   during indexing (if the program is running interactively in a
   terminal or console).
 
 ``--show-progress-meter``
-
   Tells the tool to display a progress meter during indexing, even if
   it thinks it is *not* running interactively in a terminal or console.
 
@@ -328,7 +314,6 @@ tarmac-callinfo
 ``tarmac-callinfo`` reports on calls to a specific function or address.
 
 Its command-line syntax looks like this:
-
   ``tarmac-callinfo`` [ *options* ] *trace-file-name* *address*\ ...
 
 All the options in `Common functionality`_ are supported. No
@@ -337,7 +322,6 @@ additional options are recognized by this tool.
 The additional argument(s) are as follows:
 
 *address* (optionally more than once)
-
   The address of a function in the memory of the traced program. If
   you have provided the `--image`_ option, you can replace this with
   the name of a function defined as a symbol in that image.
@@ -364,7 +348,6 @@ tarmac-calltree
 identified in the trace.
 
 Its command-line syntax looks like this:
-
   ``tarmac-calltree`` [ *options* ] *trace-file-name*
 
 All the options in `Common functionality`_ are supported. No
@@ -422,7 +405,6 @@ tarmac-profile
 trace file, showing the amount of time spent in every function.
 
 Its command-line syntax looks like this:
-
   ``tarmac-profile`` [ *options* ] *trace-file-name*
 
 All the options in `Common functionality`_ are supported. No
@@ -480,14 +462,12 @@ stack, so that you see not only which *function* in the program is
 taking the most time, but *which* path of calls to it takes the time.
 
 The command-line syntax of ``tarmac-flamegraph`` looks like this:
-
   ``tarmac-flamegraph`` [ *options* ] *trace-file-name*
 
 All the options in `Common functionality`_ are supported. This tool
 also recognizes the following additional option:
 
 ``-o`` *filename* or ``--output=``\ *filename*
-
   Tells the tool to write its output to the specified file, instead of
   to standard output.
 
@@ -527,19 +507,16 @@ open-source example of such a tool is `GTKWave
 of a VCD file.
 
 The command-line syntax of ``tarmac-vcd`` looks like this:
-
   ``tarmac-vcd`` [ *options* ] *trace-file-name*
 
 All the options in `Common functionality`_ are supported. This tool
 also recognizes the following additional options:
 
 ``-o`` *filename* or ``--output=``\ *filename*
-
   Tells the tool to write its output to the specified file, instead of
   to standard output.
 
 ``--no-date``
-
   Don't write a creation date record into the VCD file. This makes the
   output file depend only on the input file, so that running the tool
   in the same way twice will produce identical output. (This option is
@@ -626,7 +603,6 @@ tarmac-browser
 files.
 
 Its command-line syntax looks like this:
-
   ``tarmac-browser`` [ *options* ] *trace-file-name*
 
 All the options in `Common functionality`_ are supported. No
@@ -767,18 +743,15 @@ This section describes the top-level controls of ``tarmac-browser``,
 common to multiple types of display pane.
 
 Tab
-
   Switch input focus to a different pane. Pressing Tab repeatedly
   cycles around the visible panes.
 
 F1 or F10
-
   Display a help screen for the currently active pane. In this mode,
   pressing Up, Down, PgUp or PgDn will scroll around the help, and any
   other key will close the help and return to the previous display.
 
 ``q``
-
   Quit ``tarmac-browser``.
 
 Various keyboard commands in individual panes cause a prompt to appear
@@ -786,16 +759,13 @@ in the bottom line of the screen. In those prompts, the following
 editing keystrokes are recognized:
 
 Ctrl-W
-
   Delete one word left of the cursor.
 
 Ctrl-U
-
   Delete all the text entered so far, and start again from an empty
   input buffer.
 
 Escape or Ctrl-G
-
   Abandon the prompt and cancel the command that triggered it.
 
 Trace pane commands
@@ -805,68 +775,55 @@ This section gives a full list of the keyboard commands available in
 the pane showing the contents of the Tarmac trace file.
 
 Up and Down
-
   Move the current position up or down the file. The unit of movement
   is one *instruction* rather than one line: the current position
   marker will automatically step past all the register and memory
   updates that go with each instruction.
 
 PgUp, PgDn
-
   Move up or down by a whole screenful.
 
 Home, End
-
   Go to the top or bottom of the trace file.
 
 Ctrl-L
-
   Scroll the trace pane so that the current position cycles between
   the middle, top and bottom of the display. The current position
   continues to point at the same instruction.
 
 ``-`` (or ``_``)
-
   Fold up the function call containing the current position.
 
 ``+`` (or ``=``)
-
   Unfold a folded-up function call at the current position, if there
   is one. To use this command, the current position should be
   immediately after the call instruction.
 
 ``[``
-
   Fold up all the subroutine calls from *inside* the function
   containing the current position, but leave that function itself
   unfolded.
 
 ``]``
-
   Unfold everything within the current function, to any depth of
   nesting.
 
 ``{``
-
   Unfold the entire trace file, so that no instructions at all are
   hidden from view.
 
 ``}``
-
   Fold up the entire trace file to the maximum extent possible.
 
 ``l``
-
   Prompt on the bottom line of the screen for a line number, and then
   jump to that line number of the trace file.
 
 ``t``
-
   Prompt on the bottom line of the screen for a time value, and then
   jump to the location in the trace where that timestamp is shown.
 
 ``p`` and ``P``
-
   Prompt on the bottom line of the screen for an address, and the jump
   to the next or previous location in the trace where an instruction
   at that PC was executed. The ``p`` command searches forwards for the
@@ -874,43 +831,35 @@ Ctrl-L
   previous one.
 
 ``n`` and ``N``
-
   Repeat the previous search for a PC value, without prompting again
   for the address to search for. ``n`` searches forwards, and ``N``
   searches backwards.
 
 ``m``
-
   Prompt on the bottom line of the screen for an address, and open an
   additional memory view pane showing the known memory contents at
   that address.
 
 ``r``
-
   Toggle display of the pane showing the general-purpose integer
   registers. If it is currently visible, it is closed; if it is
   currently not visible, it is opened.
 
 ``S``
-
   Toggle display of a pane showing the single-precision floating-point
   registers, with their raw contents in hex and a decimal translation.
 
 ``D``
-
   Toggle display of a pane showing the double-precision floating-point
   registers, with their raw contents in hex and a decimal translation.
 
 ``V``
-
   Toggle display of a pane showing the NEON vector registers.
 
 ``M``
-
   Toggle display of a pane showing the MVE vector registers.
 
 ``a``
-
   Highlight one of the trace lines relating to the instruction just
   before the current position. Pressing ``a`` repeatedly will cycle
   the highlight through all the available lines, and then turn it off
@@ -918,7 +867,6 @@ Ctrl-L
   next.
 
 Return
-
   If the highlight line controlled by the ``a`` key is visible and
   points at a register or memory update, then pressing this key will
   jump to the previous location where that register or piece of memory
@@ -934,11 +882,9 @@ Return
   there, and pressing the right number key.)
 
 F6
-
   Toggle syntax highlighting of the trace file.
 
 F7
-
   If an ELF image was provided via the `--image`_ option, then branch
   instructions shown in the trace have their target addresses replaced
   with symbolic names derived from the ELF file. Pressing F7 toggles
@@ -951,18 +897,15 @@ This section lists commands that are common to all the types of pane
 displaying the contents of registers and memory.
 
 Up, Down, Left, Right
-
   Move the cursor around the window to select a particular register or
   particular memory location. In memory views, the window can scroll
   if necessary.
 
 Return
-
   Jump to the previous trace location that wrote to the currently
   selected register, or byte of memory.
 
 ``<`` and ``>``
-
   Change the height of the currently selected pane by one line. ``<``
   makes the pane shorter, and ``>`` makes it taller.
 
@@ -971,7 +914,6 @@ Return
   command, and the main trace pane takes up whatever space remains.
 
 ``l`` and ``t``
-
   By default, register and memory panes automatically update their
   contents as you move your current position around the trace file.
   But you can manually lock them to a specific position in the trace
@@ -983,7 +925,6 @@ Return
   window will be locked to the specified position.
 
 Ctrl-L
-
   If the pane is currently locked to a specific time, this keystroke
   unlocks it, so that it goes back to following the current trace file
   position.
@@ -999,7 +940,6 @@ the following additional keyboard command is available in register
 view panes.
 
 ``a``
-
   Toggle display, in the pane's status line, of a symbolic
   interpretation of the contents of the currently selected register as
   an address.
@@ -1017,7 +957,6 @@ the following additional keyboard commands are available in memory
 view panes.
 
 ``[`` and ``]``
-
   Search forward or backward in memory for the previous or next
   address that is currently highlighted as modified. ``[`` searches
   backwards, and ``]`` searches forwards.
@@ -1034,7 +973,6 @@ view panes.
   by the function call you just stepped over.
 
 ``d``
-
   Enter a specific line number of the trace file to compare against.
 
   This command lets you manually control the same highlighting of
@@ -1045,7 +983,6 @@ view panes.
   in blue and can be found using ``[`` and ``]``.
 
 ``1``, ``2``, ``4``, ``8``
-
   Jump to the previous trace location that wrote to any part of the
   1-, 2-, 4- or 8-byte aligned memory region under the cursor.
 
@@ -1071,7 +1008,6 @@ without arguments (e.g. from a GUI menu) and then load the trace file
 using a GUI file browser.
 
 The command-line syntax looks like this:
-
   ``tarmac-gui-browser`` [ *options* ] *trace-file-name*
 
 All the options in `Common functionality`_ are supported. No
@@ -1145,19 +1081,16 @@ multi-character 'words' made up of alphanumeric characters and
 except that it separates words.
 
 The overall structure of a Tarmac trace line is as follows:
-
   [ *timestamp* [ *unit* ] ] *type* [ *line-specific-fields* ]
 
 where the fields are as follows:
 
 *timestamp*
-
   If present, this is a word consisting of decimal digits, interpreted
   as an integer. It indicates the time at which the event took place
   that this trace line describes.
 
 *unit*
-
   If present, this is one of the following keywords, stating the units
   in which *timestamp* is measured, which can be either an absolute
   unit of time or a CPU-relative one such as a clock cycle:
@@ -1172,7 +1105,6 @@ where the fields are as follows:
   semantic significance to the choice of unit.
 
 *type*
-
   This is a mandatory word that indicates what type of event is
   described by this trace line. The types recognized by Tarmac Trace
   Utilities are:
@@ -1219,7 +1151,6 @@ where the fields are as follows:
   memory contents and control flow.
 
 *line-specific-fields*
-
   Additional text whose meaning depends on the type keyword. For the
   type keywords understood by Tarmac Trace Utilities, see the
   following sections.
@@ -1230,21 +1161,20 @@ Instruction lines
 The ``IT``, ``IS`` and ``ES`` event types indicate an instruction that
 the CPU reached during execution, and at least *considered* executing.
 
-The ``IT`` and ``IS`` event types have the same format as each other.
-Two different formats for these lines are recognized, as follows:
+The ``IT`` and ``IS`` event types have the same format as each other,
+whereas the ``ES`` event type uses a different format.
 
+An ``IT`` and ``IS`` event can take either of the following formats:
   [ *timestamp* [ *unit* ] ] *type* ``(`` *index* ``)`` *address* *encoding* *state* *mode* ``:`` *disassembly*
 
   [ *timestamp* [ *unit* ] ] *type* ``(`` *address* ``)`` *encoding* *state* *mode* ``:`` *disassembly*
 
-The ``ES`` event type indicates a different format again, like this:
-
+An ``ES`` event type looks like this:
   [ *timestamp* [ *unit* ] ] ``ES`` ``(`` *address* ``:`` *encoding* ``)`` *state* *mode* ``:`` [ ``CCFAIL`` ] *disassembly*
 
 The fields are as follows:
 
 *timestamp*, *unit*, *type*
-
   As described in `Basic structure`_.
 
   Type ``IT`` indicates that the instruction was actually executed.
@@ -1254,13 +1184,11 @@ The fields are as follows:
   Type ``ES`` can indicate either of those possibilities.
 
 *index*
-
   This field only appears in some versions of this instruction format.
   It is a decimal integer that increments by 1 for each instruction
   logged in the trace file. Tarmac Trace Utilities ignores it.
 
 *address*
-
   A hex integer giving the address in memory where the instruction
   starts.
 
@@ -1269,7 +1197,6 @@ The fields are as follows:
   instruction, is not used here.)
 
 *encoding*
-
   A hex integer giving the binary encoding of the instruction.
 
   In Arm or AArch64 instruction set states, where instructions are 32
@@ -1289,12 +1216,10 @@ The fields are as follows:
   represented as ``f2401001``.
 
 *state*
-
   The instruction set state. ``A`` represents 32-bit Arm; ``T``
   represents Thumb; ``O`` represents AArch64.
 
 *mode*
-
   The CPU mode, in the sense of privilege / exception levels. The
   representation of this field depends on the variant of the Arm
   architecture. Examples might be ``EL3h_s`` (in Arm v8-A AArch64),
@@ -1302,13 +1227,11 @@ The fields are as follows:
   Utilities ignores this field.
 
 ``CCFAIL``
-
   An optional flag that can appear in an ``ES``-format line,
   indicating that the instruction failed its condition. Not all
   producers of ``ES`` lines emit this flag.
 
 *disassembly*
-
   A textual disassembly of the instruction, occupying all of the text
   to the end of the line after all the previous fields. The details
   and exact syntax of this can vary a lot depending on the Tarmac
@@ -1318,17 +1241,14 @@ Register lines
 ..............
 
 A register update line looks like this:
-
   [ *timestamp* [ *unit* ] ] ``R`` *register-name* [ ``(`` *extra-info* ``)`` ] *contents* [ *interpretation* ]
 
 The fields are as follows:
 
 *timestamp*, *unit*
-
   As described in `Basic structure`_.
 
 *register-name*
-
   The name of the register being updated. This can be a
   general-purpose integer register, a floating-point register, a
   vector register, or a system register.
@@ -1396,7 +1316,6 @@ The fields are as follows:
   Register names are case-insensitive.
 
 *extra-info*
-
   Sometimes the register name is followed by a parenthesized word
   giving additional information. In some variants of Tarmac, this is a
   different way to indicate which of a set of banked registers is
@@ -1406,7 +1325,6 @@ The fields are as follows:
   Tarmac Trace Utilities does not use this information.
 
 *contents*
-
   The data written to the register. This is a hex number, written in
   logical order, representing the raw contents of the register (even
   if it's a floating-point register).
@@ -1416,7 +1334,6 @@ The fields are as follows:
   significance.
 
 *interpretation*
-
   Some variants of Tarmac follow the raw register value with a more
   human-readable interpretation of its contents. For example, an
   update to the PSR might be followed by a description of which status
@@ -1434,11 +1351,9 @@ the two formats, consisting of an address and just the transferred
 data.
 
 A memory access line of this type looks like this:
-
   [ *timestamp* [ *unit* ] ] *type* [ ``X`` ] *virtual-address* [ ``:`` *physical-address* ] *contents*
 
 *timestamp*, *unit*, *type*
-
   As described in `Basic structure`_.
 
   In this format of line, the *type* field encodes the direction and
@@ -1459,21 +1374,17 @@ A memory access line of this type looks like this:
   ``MW4X`` means a write of 4 bytes with exclusive access.
 
 ``X``
-
   Indicates that the access is exclusive, if that was not encoded in
   the type word.
 
 *virtual-address*
-
   The virtual address of the memory being read or written, in hex.
 
 *physical-address*
-
   Optionally, the physical address corresponding to that virtual
   address.
 
 *contents*
-
   The data read or written to the memory location. This is a hex
   number, written in logical order, irrespective of storage
   endianness. So if the trace is of a CPU running in little-endian
@@ -1493,11 +1404,9 @@ memory accesses in Tarmac, involving a diagram of 16 bytes of memory
 indicating which ones are accessed.
 
 A memory access line of this type looks like this:
-
   [ *timestamp* [ *unit* ] ] *type* *virtual-address* *memory-diagram* *extra-info*
 
 *timestamp*, *unit*, *type*
-
   As described in `Basic structure`_.
 
   In this format of line, the *type* field encodes the direction and
@@ -1508,12 +1417,10 @@ A memory access line of this type looks like this:
   to indicate a write (store).
 
 *virtual-address*
-
   The virtual address at which the *memory-diagram* is based. This is
   not necessarily one of the bytes actually read or written.
 
 *memory-diagram*
-
   A representation of 16 contiguous bytes of memory, with 2 characters
   per byte.
 
@@ -1541,7 +1448,6 @@ A memory access line of this type looks like this:
     accessed, but the data transferred is unavailable for some reason.
 
 *extra-info*
-
   The memory diagram in this trace line is usually followed by
   additional fields, e.g. indicating the physical address or
   shareability domain information. Tarmac Trace Utilities ignores
@@ -1583,7 +1489,6 @@ analysis, and one that is right *most* of the time, would say:
 However, there are several reasons why that's not quite right.
 
 **Not all BL instructions are function calls**
-
   In versions of Thumb without the Thumb-2 wide instructions (e.g. Arm
   v6-M), ``BL`` is sometimes used as a long-distance branch *within* a
   function, simply because it has longer range than ``B``. The value
@@ -1593,7 +1498,6 @@ However, there are several reasons why that's not quite right.
   that register across such a branch.
 
 **Not all BX lr instructions are function returns**
-
   ``BX`` is sometimes used within a function, for purposes such as
   table branches (typically in versions of the architecture before the
   dedicated table branch instructions). The operand can be any
@@ -1601,7 +1505,6 @@ However, there are several reasons why that's not quite right.
   ``lr``!
 
 **Function calls can be multiple-instruction sequences**
-
   In versions of Thumb before the ``BLX`` instruction was introduced,
   indirect function calls were sometimes performed by manually loading
   the correct return address into ``lr``, and then issuing a
@@ -1610,7 +1513,6 @@ However, there are several reasons why that's not quite right.
   the *same* instruction.
 
 **Old-style non-interworking adds more alternatives**
-
   In early versions of the Arm architecture (Arm v3), the Thumb
   instruction set state did not exist at all, and neither did the
   ``BX`` instruction for branching between Arm and Thumb. In the
@@ -1625,7 +1527,6 @@ However, there are several reasons why that's not quite right.
   by ``MOV pc,rN``, having preloaded ``lr`` in advance.
 
 **Stunt function calls can manually load a different return address**
-
   In handwritten assembly, it's sometimes convenient to call a
   function in a way that deliberately gives it a return address
   pointing at something other than the very next instruction.
@@ -1644,7 +1545,6 @@ However, there are several reasons why that's not quite right.
   *especially* want to skip over them during interactive browsing!
 
 **Tail calls**
-
   In both handwritten assembly and compiler output, a function
   sometimes transfers control to another using a simple jump
   instruction, so that the second function will return directly to the
@@ -1802,26 +1702,22 @@ as potentially generating undeclared writes (that is, not described in
 the trace output) to a region of memory:
 
 ``0x06`` (``SYS_READ``)
-
   The parameter block contains three words ``(file, buffer, length)``.
   The region of ``length`` bytes starting at ``buffer`` is marked as
   unknown.
 
 ``0x0D`` (``SYS_TMPNAM``) and ``0x15`` (``SYS_GET_CMDLINE``)
-
   For both of these calls, the parameter block contains two words
   ``(buffer, length)``. The region of ``length`` bytes starting at
   ``buffer`` is marked as unknown.
 
 ``0x16`` (``SYS_HEAPINFO``)
-
   The parameter block contains just one word ``buffer``, which is the
   address of the output buffer. The region of 4 words starting at
   ``buffer`` is marked as unknown. (That is, 16 bytes in AArch32, or
   32 bytes in AArch64.)
 
 ``0x30`` (``SYS_ELAPSED``)
-
   In this operation, the parameter block *itself* is overwritten with
   two output words. So in AArch32, the region of 8 bytes starting at
   the address in ``r1`` is marked as unknown. In AArch64, it's the
