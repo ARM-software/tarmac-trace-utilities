@@ -292,13 +292,7 @@ void Index::got_event(RegisterEvent &ev)
         // For registers bigger than 64 bits, we must update the
         // memtree using the byte-array representation ev.bytes.
         unsigned char *p = make_memtree_update('r', offset, size);
-
-        // The 'r' address space is always little-endian, but ev.bytes
-        // has come directly from parsing the Tarmac file which gave
-        // the hex digits of the register value in normal human-
-        // readable base notation, i.e. big-endian.
-        for (unsigned i = 0; i < size; i++)
-            p[size - 1 - i] = ev.bytes[i];
+        memcpy(p, ev.bytes.data(), size);
     }
 }
 

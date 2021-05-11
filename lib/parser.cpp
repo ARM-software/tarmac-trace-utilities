@@ -581,6 +581,12 @@ struct TarmacLineParserImpl {
                 return;
             }
 
+            // Reverse the order of 'bytes'. Our internal
+            // representation of registers is little-endian, but the
+            // trace file will have specified the register value in
+            // normal human reading order, i.e. big-endian.
+            std::reverse(bytes.begin(), bytes.end());
+
             RegisterEvent ev(time, reg, bytes);
             if (bits <= 64)
                 ev.set_value(contentstok.hexvalue());
