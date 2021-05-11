@@ -282,18 +282,18 @@ void Index::got_event(RegisterEvent &ev)
     }
     auto offset = reg_offset(reg, curr_iflags);
     auto size = reg_size(reg);
-    if (ev.got_value) {
-        update_memtree('r', offset, size, ev.value);
-        if (reg_update_overwrites_reg(offset, size, REG_sp(), curr_iflags))
-            update_sp(ev.value);
-        if (reg_update_overwrites_reg(offset, size, REG_lr(), curr_iflags))
-            insns_since_lr_update = 0;
-    } else {
-        // For registers bigger than 64 bits, we must update the
-        // memtree using the byte-array representation ev.bytes.
-        unsigned char *p = make_memtree_update('r', offset, size);
-        memcpy(p, ev.bytes.data(), size);
+    unsigned char *p = make_memtree_update('r', offset, size);
+    memcpy(p, ev.bytes.data(), size);
+
+    if (reg_update_overwrites_reg(offset, size, REG_sp(), curr_iflags)) {
+        unsigned long long new_sp_value;
+        if (read_memtree_value('r', reg_offset(REG_sp(), curr_iflags),
+                               reg_size(REG_sp()), &new_sp_value))
+            update_sp(new_sp_value);
     }
+
+    if (reg_update_overwrites_reg(offset, size, REG_lr(), curr_iflags))
+        insns_since_lr_update = 0;
 }
 
 void Index::got_event(MemoryEvent &ev)

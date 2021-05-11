@@ -70,17 +70,10 @@ struct InstructionEvent : TarmacEvent {
 
 struct RegisterEvent : TarmacEvent {
     RegisterId reg;
-    bool got_value;
-    unsigned long long value;
     std::vector<uint8_t> bytes;
     RegisterEvent(Time time, RegisterId reg, const std::vector<uint8_t> &bytes)
-        : TarmacEvent(time), reg(reg), got_value(false), bytes(bytes)
+        : TarmacEvent(time), reg(reg), bytes(bytes)
     {
-    }
-    void set_value(unsigned long long value_)
-    {
-        got_value = true;
-        value = value_;
     }
 };
 

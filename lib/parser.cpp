@@ -588,8 +588,6 @@ struct TarmacLineParserImpl {
             std::reverse(bytes.begin(), bytes.end());
 
             RegisterEvent ev(time, reg, bytes);
-            if (bits <= 64)
-                ev.set_value(contentstok.hexvalue());
             receiver->got_event(ev);
         } else if (tok == "MR1" || tok == "MR2" || tok == "MR4" ||
                    tok == "MR8" || tok == "MW1" || tok == "MW2" ||

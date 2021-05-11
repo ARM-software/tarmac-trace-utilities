@@ -11,23 +11,23 @@
 --- Tarmac line: 483 clk IS (483) 0000c7ec 54ffffa1 O EL3h_s : B.NE     {pc}-0xc ; 0xc7e0
 * InstructionEvent time=483 executed=false pc=c7ec iset=A64 width=32 instruction=54ffffa1 disassembly="B.NE     {pc}-0xc ; 0xc7e0"
 --- Tarmac line: 9 clk R r0 0000ab34
-* RegisterEvent time=9 reg=r0 value=ab34
+* RegisterEvent time=9 reg=r0 bytes=00:00:ab:34
 --- Tarmac line: 2 clk R r10 000029b4
-* RegisterEvent time=2 reg=r10 value=29b4
+* RegisterEvent time=2 reg=r10 bytes=00:00:29:b4
 --- Tarmac line: 0 clk R r14_svc 00008004
-* RegisterEvent time=0 reg=r14 value=8004
+* RegisterEvent time=0 reg=r14 bytes=00:00:80:04
 --- Tarmac line: 0 clk R cpsr 000001f3
-* RegisterEvent time=0 reg=psr value=1f3
+* RegisterEvent time=0 reg=psr bytes=00:00:01:f3
 --- Tarmac line: 0 clk R X30 0000000000008004
-* RegisterEvent time=0 reg=x30 value=8004
+* RegisterEvent time=0 reg=x30 bytes=00:00:00:00:00:00:80:04
 --- Tarmac line: 502 clk R SP_EL3 0000000010000000
-* RegisterEvent time=502 reg=xsp value=10000000
+* RegisterEvent time=502 reg=xsp bytes=00:00:00:00:10:00:00:00
 --- Tarmac line: 1150 clk R d8 0000000000000000
-* RegisterEvent time=1150 reg=d8 value=0
+* RegisterEvent time=1150 reg=d8 bytes=00:00:00:00:00:00:00:00
 --- Tarmac line: 1103 clk R s0 3f800000
-* RegisterEvent time=1103 reg=s0 value=3f800000
+* RegisterEvent time=1103 reg=s0 bytes=3f:80:00:00
 --- Tarmac line: 513 clk R FPCR 01230123:23452345
-* RegisterEvent time=513 reg=fpcr value=123012323452345
+* RegisterEvent time=513 reg=fpcr bytes=01:23:01:23:23:45:23:45
 --- Tarmac line: 2 clk MR4 00008034 000029b4
 * MemoryEvent time=2 read=true known=true addr=8034 size=4 contents=29b4
 --- Tarmac line: 415 clk MR1 000090c0 72
@@ -71,29 +71,29 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line: 0 clk cpu0 E DebugEvent_HaltingDebugState 00000000
 * TextOnlyEvent time=0 type="E" text="DebugEvent_HaltingDebugState 00000000"
 --- Tarmac line: 0 clk cpu0 R r0 00000000
-* RegisterEvent time=0 reg=r0 value=0
+* RegisterEvent time=0 reg=r0 bytes=00:00:00:00
 --- Tarmac line: 0 clk cpu0 R r1 00000000
-* RegisterEvent time=0 reg=r1 value=0
+* RegisterEvent time=0 reg=r1 bytes=00:00:00:00
 --- Tarmac line: 0 clk cpu1 E DebugEvent_HaltingDebugState 00000000
 * TextOnlyEvent time=0 type="E" text="DebugEvent_HaltingDebugState 00000000"
 --- Tarmac line: 0 clk cpu1 R r0 00000000
-* RegisterEvent time=0 reg=r0 value=0
+* RegisterEvent time=0 reg=r0 bytes=00:00:00:00
 --- Tarmac line: 0 clk cpu1 R r1 00000000
-* RegisterEvent time=0 reg=r1 value=0
+* RegisterEvent time=0 reg=r1 bytes=00:00:00:00
 --- Tarmac line: 0 clk cpu0 E 10001848 00000001 CoreEvent_RESET
 * TextOnlyEvent time=0 type="E" text="10001848 00000001 CoreEvent_RESET"
 --- Tarmac line: 0 clk cpu0 R r13_main_s 30040000
-* RegisterEvent time=0 reg=r13 value=30040000
+* RegisterEvent time=0 reg=r13 bytes=30:04:00:00
 --- Tarmac line: 0 clk cpu0 R MSP_S 30040000
-* RegisterEvent time=0 reg=r13 value=30040000
+* RegisterEvent time=0 reg=r13 bytes=30:04:00:00
 --- Tarmac line: 1 clk cpu0 IT (1) 10001848 f64f6000 T thread_s : MOV      r0,#0xfe00
 * InstructionEvent time=1 executed=true pc=10001848 iset=Thumb width=32 instruction=f64f6000 disassembly="MOV      r0,#0xfe00"
 --- Tarmac line: 1 clk cpu0 R r0 0000fe00
-* RegisterEvent time=1 reg=r0 value=fe00
+* RegisterEvent time=1 reg=r0 bytes=00:00:fe:00
 --- Tarmac line: 2 clk cpu0 IT (2) 1000184c f2c30003 T thread_s : MOVT     r0,#0x3003
 * InstructionEvent time=2 executed=true pc=1000184c iset=Thumb width=32 instruction=f2c30003 disassembly="MOVT     r0,#0x3003"
 --- Tarmac line: 2 clk cpu0 R r0 3003fe00
-* RegisterEvent time=2 reg=r0 value=3003fe00
+* RegisterEvent time=2 reg=r0 bytes=30:03:fe:00
 --- Tarmac line: Tarmac Text Rev 3t
 --- Tarmac line:       17000 ns  ES  EXC [0x00] Reset
 * TextOnlyEvent time=17000 type="EXC" text="[0x00] Reset"
@@ -110,11 +110,11 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line:                     LD 00000300  ........ ........ 00000800 ........     0000000300    NM ISH INC
 * MemoryEvent time=178000 read=true known=true addr=304 size=4 contents=800
 --- Tarmac line:                     R R1 (USR) 00000800
-* RegisterEvent time=178000 reg=r1 value=800
+* RegisterEvent time=178000 reg=r1 bytes=00:00:08:00
 --- Tarmac line:      181000 ns  ES  (0000016c:e1800001) A svc:            ORR      r0,r0,r1
 * InstructionEvent time=181000 executed=true pc=16c iset=ARM width=32 instruction=e1800001 disassembly="ORR      r0,r0,r1"
 --- Tarmac line:                     R R0 (USR) 00c50878
-* RegisterEvent time=181000 reg=r0 value=c50878
+* RegisterEvent time=181000 reg=r0 bytes=00:c5:08:78
 --- Tarmac line:      183000 ns  ES  (00000170:ee010f10) A svc:            MCR      p15,#0x0,r0,c1,c0,#0
 * InstructionEvent time=183000 executed=true pc=170 iset=ARM width=32 instruction=ee010f10 disassembly="MCR      p15,#0x0,r0,c1,c0,#0"
 --- Tarmac line:                     R SCTLR (AARCH32) 00c50878
@@ -125,9 +125,9 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line:                     LD 00000370  ........ ......48 ........ ........     0000000370    NM ISH IWBRWA
 * MemoryEvent time=23225000 read=true known=true addr=378 size=1 contents=48
 --- Tarmac line:                     R R1 (USR) 00000379
-* RegisterEvent time=23225000 reg=r1 value=379
+* RegisterEvent time=23225000 reg=r1 bytes=00:00:03:79
 --- Tarmac line:                     R R2 (USR) 00000048
-* RegisterEvent time=23225000 reg=r2 value=48
+* RegisterEvent time=23225000 reg=r2 bytes=00:00:00:48
 --- Tarmac line:    22857000 ns  ES  (000001fc:e5810000) A svc:            STR      r0,[r1,#0]
 * InstructionEvent time=22857000 executed=true pc=1fc iset=ARM width=32 instruction=e5810000 disassembly="STR      r0,[r1,#0]"
 --- Tarmac line:                     ST b0080100  ........ ........ ........ 00000001     00b0080100    DV ISH INC
@@ -148,31 +148,31 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line:      499294 ns  ES  EXC Reset
 * TextOnlyEvent time=499294 type="EXC" text="Reset"
 --- Tarmac line:                     R CPSR 000003cd
-* RegisterEvent time=499294 reg=psr value=3cd
+* RegisterEvent time=499294 reg=psr bytes=00:00:03:cd
 --- Tarmac line:                     R SPSR_EL3 00000000000001cd
 --- Tarmac line:                     BR (0000000000000000) O
 * TextOnlyEvent time=499294 type="BR" text="(0000000000000000) O"
 --- Tarmac line:      541481 ns  ES  (0000000000000000:d53800a1) O el3h_s:         MRS      x1,MPIDR_EL1
 * InstructionEvent time=541481 executed=true pc=0 iset=A64 width=32 instruction=d53800a1 disassembly="MRS      x1,MPIDR_EL1"
 --- Tarmac line:                     R X1 0000000081000000
-* RegisterEvent time=541481 reg=x1 value=81000000
+* RegisterEvent time=541481 reg=x1 bytes=00:00:00:00:81:00:00:00
 --- Tarmac line:      541483 ns  ES  (0000000000000004:d3483c20) O el3h_s:         UBFX     x0,x1,#8,#8
 * InstructionEvent time=541483 executed=true pc=4 iset=A64 width=32 instruction=d3483c20 disassembly="UBFX     x0,x1,#8,#8"
 --- Tarmac line:                     R X0 0000000000000000
-* RegisterEvent time=541483 reg=x0 value=0
+* RegisterEvent time=541483 reg=x0 bytes=00:00:00:00:00:00:00:00
 --- Tarmac line:      541533 ns  ES  (00000000000001b0:a9be7bfd) O el3h_s:         STP      x29,x30,[sp,#-0x20]!
 * InstructionEvent time=541533 executed=true pc=1b0 iset=A64 width=32 instruction=a9be7bfd disassembly="STP      x29,x30,[sp,#-0x20]!"
 --- Tarmac line:                     ST 0000000004001b60 02000000 00000000 00000000 00000020    S:0004001b60    nGnRnE OSH
 * MemoryEvent time=541533 read=false known=true addr=4001b68 size=8 contents=200000000000000
 * MemoryEvent time=541533 read=false known=true addr=4001b60 size=8 contents=20
 --- Tarmac line:                     R SP_EL3 0000000004001b60
-* RegisterEvent time=541533 reg=xsp value=4001b60
+* RegisterEvent time=541533 reg=xsp bytes=00:00:00:00:04:00:1b:60
 --- Tarmac line:      564127 ns  ES  (000000009ffa4a74:397f8002) O el3h_s:         LDRB     w2,[x0,#0xfe0]
 * InstructionEvent time=564127 executed=true pc=9ffa4a74 iset=A64 width=32 instruction=397f8002 disassembly="LDRB     w2,[x0,#0xfe0]"
 --- Tarmac line:                     LD 000000007ff80fe0 ........ ........ ........ ......11    S:007ff80fe0    nGnRnE OSH
 * MemoryEvent time=564127 read=true known=true addr=7ff80fe0 size=1 contents=11
 --- Tarmac line:                     R X2 0000000000000011
-* RegisterEvent time=564127 reg=x2 value=11
+* RegisterEvent time=564127 reg=x2 bytes=00:00:00:00:00:00:00:11
 --- Tarmac line:      577915 ns  ES  (000000009ffb3ad0:39045fbf) O el3h_s:         STRB     wzr,[x29,#0x117]
 * InstructionEvent time=577915 executed=true pc=9ffb3ad0 iset=A64 width=32 instruction=39045fbf disassembly="STRB     wzr,[x29,#0x117]"
 --- Tarmac line:                     ST 000000009ffdb810 ........ ........ 00...... ........    S:009ffdb810    NM NSH IWTNA OWTNA
@@ -186,9 +186,9 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line:     6000021 cs R Q17 42211549420dd96e41fed91542211526
 * RegisterEvent time=6000021 reg=q17 bytes=42:21:15:49:42:0d:d9:6e:41:fe:d9:15:42:21:15:26
 --- Tarmac line:     6000017 cs R cpsr 20000000 __C_
-* RegisterEvent time=6000017 reg=psr value=20000000
+* RegisterEvent time=6000017 reg=psr bytes=20:00:00:00
 --- Tarmac line:     6000019 cs R E15 0000007f99d14b94
-* RegisterEvent time=6000019 reg=x15 value=7f99d14b94
+* RegisterEvent time=6000019 reg=x15 bytes=00:00:00:7f:99:d1:4b:94
 --- Tarmac line:     6379085 cs W04 X ffffffbdc3c15c30 010c010b
 * MemoryEvent time=6379085 read=false known=true addr=ffffffbdc3c15c30 size=4 contents=10c010b
 --- Tarmac line:      12345 ns  ES  Reset
