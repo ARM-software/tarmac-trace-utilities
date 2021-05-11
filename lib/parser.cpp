@@ -647,7 +647,7 @@ struct TarmacLineParserImpl {
             if (is_fpcr)
                 bytes.resize(reg_size(reg));
 
-            RegisterEvent ev(time, reg, bytes);
+            RegisterEvent ev(time, reg, 0, bytes);
             receiver->got_event(ev);
         } else if (tok == "MR1" || tok == "MR2" || tok == "MR4" ||
                    tok == "MR8" || tok == "MW1" || tok == "MW2" ||

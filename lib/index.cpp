@@ -280,8 +280,8 @@ void Index::got_event(RegisterEvent &ev)
          */
         reg.prefix = RegPrefix::d;
     }
-    auto offset = reg_offset(reg, curr_iflags);
-    auto size = reg_size(reg);
+    auto offset = reg_offset(reg, curr_iflags) + ev.offset;
+    auto size = ev.bytes.size();
     unsigned char *p = make_memtree_update('r', offset, size);
     memcpy(p, ev.bytes.data(), size);
 

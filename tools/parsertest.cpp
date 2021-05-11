@@ -53,8 +53,8 @@ class TestReceiver : public ParseReceiver {
     void got_event(RegisterEvent &ev)
     {
         os << "* RegisterEvent"
-           << " time=" << ev.time << " reg=" << ev.reg << hex;
-        os << " bytes=";
+           << " time=" << ev.time << " reg=" << ev.reg << hex
+           << " offset=" << ev.offset << " bytes=";
         char buf[3];
         const char *sep = "";
         // Print the bytes big-endian for legibility

@@ -70,9 +70,11 @@ struct InstructionEvent : TarmacEvent {
 
 struct RegisterEvent : TarmacEvent {
     RegisterId reg;
+    size_t offset;                     // from base 'address' of register
     std::vector<uint8_t> bytes;
-    RegisterEvent(Time time, RegisterId reg, const std::vector<uint8_t> &bytes)
-        : TarmacEvent(time), reg(reg), bytes(bytes)
+    RegisterEvent(Time time, RegisterId reg, size_t offset,
+                  const std::vector<uint8_t> &bytes)
+        : TarmacEvent(time), reg(reg), offset(offset), bytes(bytes)
     {
     }
 };
