@@ -313,7 +313,7 @@ struct TarmacLineParserImpl {
             bool is_ES = (tok == "ES");
 
             tok = lex();
-            if (tok == "EXC") {
+            if (tok == "EXC" || tok == "Reset") {
                 // Sometimes used to report an exception event relating to the
                 // instruction, e.g. because it was illegal. We abandon parsing
                 // this as an instruction event, and decide it's text-only.
@@ -787,7 +787,8 @@ struct TarmacLineParserImpl {
             string type(tok.s);
             if (type == "CADI" || type == "E" || type == "P" ||
                 type == "CACHE" || type == "TTW" || type == "BR" ||
-                type == "INFO_EXCEPTION_REASON" || type == "SIGNAL") {
+                type == "INFO_EXCEPTION_REASON" || type == "SIGNAL" ||
+                type == "EXC") {
                 // no warning
             } else {
                 if (!unrecognised_tarmac_events_reported.count(type)) {

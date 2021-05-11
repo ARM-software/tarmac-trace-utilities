@@ -144,6 +144,14 @@ Tarmac Text Rev 3t
     6379085 cs W04 X ffffffbdc3c15c30 010c010b
 
 # ----------------------------------------------------------------------
+
+# Trace lines seen in the output of a Cortex-A53 RTL simulator
+
+# Pair of lines that substitute for for 'ES EXC [...] Reset'
+     12345 ns  ES  Reset
+               EXC [0x00] Reset
+
+# ----------------------------------------------------------------------
 # Manually written tests
 
 # Test LD and ST records (showing a 16-byte region of memory with
