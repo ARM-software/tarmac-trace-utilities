@@ -27,7 +27,7 @@
 --- Tarmac line: 1103 clk R s0 3f800000
 * RegisterEvent time=1103 reg=s0 bytes=3f:80:00:00
 --- Tarmac line: 513 clk R FPCR 01230123:23452345
-* RegisterEvent time=513 reg=fpcr bytes=01:23:01:23:23:45:23:45
+* RegisterEvent time=513 reg=fpcr bytes=23:45:23:45
 --- Tarmac line: 2 clk MR4 00008034 000029b4
 * MemoryEvent time=2 read=true known=true addr=8034 size=4 contents=29b4
 --- Tarmac line: 415 clk MR1 000090c0 72
@@ -204,6 +204,14 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line:                     ST 000000009ffdb810 ....0000 ........ 88888888 88888888    S:009ffdb810    NM NSH IWTNA OWTNA
 * MemoryEvent time=1234567 read=false known=true addr=9ffdb81c size=2 contents=0
 * MemoryEvent time=1234567 read=false known=true addr=9ffdb810 size=8 contents=8888888888888888
+--- Tarmac line: R FPCR fedcba9876543210
+* RegisterEvent time=1234567 reg=fpcr bytes=76:54:32:10
+--- Tarmac line: R FPCR 76543210
+* RegisterEvent time=1234567 reg=fpcr bytes=76:54:32:10
+--- Tarmac line: R SP 01234567
+* RegisterEvent time=1234567 reg=r13 bytes=01:23:45:67
+--- Tarmac line: R SP 0123456789abcdef
+* RegisterEvent time=1234567 reg=xsp bytes=01:23:45:67:89:ab:cd:ef
 --- Tarmac line: 608 clk R q0 93c467e37db0c7a4d1be3f810152cb56
 * RegisterEvent time=608 reg=q0 bytes=93:c4:67:e3:7d:b0:c7:a4:d1:be:3f:81:01:52:cb:56
 --- Tarmac line: 608 clk R q0 93c467e37db0c7a4_d1be3f810152cb56
@@ -212,3 +220,5 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=608 reg=v0 bytes=93:c4:67:e3:7d:b0:c7:a4:d1:be:3f:81:01:52:cb:56
 --- Tarmac line: 608 clk R V0 93c467e37db0c7a4_d1be3f810152cb56
 * RegisterEvent time=608 reg=v0 bytes=93:c4:67:e3:7d:b0:c7:a4:d1:be:3f:81:01:52:cb:56
+--- Tarmac line: 608 clk R Q0 93c467e3 7db0c7a4 d1be3f81 0152cb56
+* RegisterEvent time=608 reg=q0 bytes=93:c4:67:e3:7d:b0:c7:a4:d1:be:3f:81:01:52:cb:56

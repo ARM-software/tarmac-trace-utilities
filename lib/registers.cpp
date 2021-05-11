@@ -72,7 +72,7 @@ static inline bool compare(const char *a, size_t alen, const char *b,
 
 #define STRINGWITHLEN(s) s, sizeof(s) - 1
 #include <iostream>
-bool lookup_reg_name(RegisterId &out, const string &name, unsigned bits)
+bool lookup_reg_name(RegisterId &out, const string &name)
 {
     const char *prefix = name.c_str();
     const char *suffix = prefix + strcspn(prefix, "0123456789_");
@@ -82,8 +82,7 @@ bool lookup_reg_name(RegisterId &out, const string &name, unsigned bits)
             continue; // this isn't a real register name
 
         const RegPrefixInfo &pfx = reg_prefixes[i];
-        if (bits == 8 * pfx.size &&
-            compare(prefix, suffix - prefix, pfx.name, pfx.namelen)) {
+        if (compare(prefix, suffix - prefix, pfx.name, pfx.namelen)) {
             unsigned long index = 0;
             if (!*suffix) {
                 /*
@@ -116,32 +115,12 @@ bool lookup_reg_name(RegisterId &out, const string &name, unsigned bits)
     /*
      * Some aliases.
      */
-    if (bits == 32 && compare(prefix, suffix - prefix, STRINGWITHLEN("sp"))) {
+    if (compare(prefix, suffix - prefix, STRINGWITHLEN("msp"))) {
         out.prefix = RegPrefix::r;
         out.index = 13;
         return true;
     }
-    if (bits == 32 && compare(prefix, suffix - prefix, STRINGWITHLEN("msp"))) {
-        out.prefix = RegPrefix::r;
-        out.index = 13;
-        return true;
-    }
-    if (bits == 64 && compare(prefix, suffix - prefix, STRINGWITHLEN("sp"))) {
-        out.prefix = RegPrefix::xsp;
-        out.index = 0;
-        return true;
-    }
-    if (bits == 64 && compare(prefix, suffix - prefix, STRINGWITHLEN("fpcr"))) {
-        /*
-         * Fast Models Tarmac tends to show updates to FPCR as 64-bit,
-         * even though FPCR is actually a 32-bit register according to
-         * the ARMARM. Match it at the other length too.
-         */
-        out.prefix = RegPrefix::fpcr;
-        out.index = 0;
-        return true;
-    }
-    if (bits == 64 && compare(prefix, suffix - prefix, STRINGWITHLEN("e"))) {
+    if (compare(prefix, suffix - prefix, STRINGWITHLEN("e"))) {
         /*
          * One flavour of Tarmac I've seen appears to render the
          * AArch64 x-registers as e0,e1,... instead of x0,x1,...

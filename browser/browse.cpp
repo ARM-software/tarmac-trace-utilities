@@ -532,15 +532,6 @@ bool Browser::TraceView::goto_buffer_limit(bool end)
 
 bool Browser::TraceView::lookup_register(const string &name, uint64_t &out)
 {
-    /*
-     * Construct a bit-mask of all the register _sizes_ known to
-     * this system.
-     */
-#define REG_SIZE_BITMASK(id, size, disp, n) | (1 << (size))
-    constexpr unsigned sizemask =
-        0 REGPREFIXLIST(REG_SIZE_BITMASK, REG_SIZE_BITMASK);
-#undef REG_SIZE_BITMASK
-
     RegisterId r;
 
     /*
@@ -572,17 +563,9 @@ bool Browser::TraceView::lookup_register(const string &name, uint64_t &out)
         goto found;
     }
 
-    /*
-     * Iterate over those sizes calling lookup_reg_name. That way,
-     * we find out the size of the register as well as whether it
-     * exists.
-     */
-    for (int bytesize = 1; sizemask >> bytesize; bytesize++) {
-        if (!((sizemask >> bytesize) & 1))
-            continue;
-        if (lookup_reg_name(r, name, bytesize * 8))
-            goto found;
-    }
+    if (lookup_reg_name(r, name))
+        goto found;
+
     return false; // not found
 found:
 

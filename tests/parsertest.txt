@@ -163,12 +163,21 @@ Tarmac Text Rev 3t
                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH
                     ST 000000009ffdb810 ....0000 ........ 88888888 88888888    S:009ffdb810    NM NSH IWTNA OWTNA
 
+# Different-length forms of SP and FPCR updates.
+R FPCR fedcba9876543210
+R FPCR 76543210
+R SP 01234567
+R SP 0123456789abcdef
+
 # Assorted ways to address a vector register. The one with V0 and an
 # underscore can be produced by an EBM. The one with q0 and no
-# underscore is compatible with Fast Models. The other two are
-# handwritten hybrids. All should be parsed the same.
+# underscore is compatible with Fast Models. The other two with
+# combinations of those features are handwritten hybrids, and the one
+# with spaces is as it would be produced by Cortex-A53 RTL. All should
+# be parsed the same.
 
 608 clk R q0 93c467e37db0c7a4d1be3f810152cb56
 608 clk R q0 93c467e37db0c7a4_d1be3f810152cb56
 608 clk R V0 93c467e37db0c7a4d1be3f810152cb56
 608 clk R V0 93c467e37db0c7a4_d1be3f810152cb56
+608 clk R Q0 93c467e3 7db0c7a4 d1be3f81 0152cb56

@@ -519,26 +519,81 @@ struct TarmacLineParserImpl {
                 tok = lex();
             }
 
-            if (!tok.ishex_us())
-                parse_error(tok, "expected register contents");
-            Token contentstok;
-            copy_if(begin(tok.s), end(tok.s), back_inserter(contentstok.s),
-                    [](char c) { return c != '_'; });
-            tok = lex();
+            string contents;
+            auto consume_register_contents = [&contents](Token &tok) {
+                copy_if(begin(tok.s), end(tok.s), back_inserter(contents),
+                        [](char c) { return c != '_'; });
+            };
 
-            if (tok == ':') {
-                // Fast Models will sometimes break up a 64-bit
-                // register value with a colon. (Not consistently,
-                // though; updates to A64 core regs are just 16
-                // unseparated hex digits, but updates to FPCR get a
-                // colon. *shrug*)
+            // In most cases, lookup_reg_name will tell us how wide we
+            // expect the register to be. However, there are a couple
+            // of special cases.
+            //
+            // Register updates for 'sp' can mean either the AArch32
+            // or AArch64 stack pointer, which have different ids in
+            // the registers.hh system. So we defer figuring out which
+            // register we're looking at until we see whether we've
+            // been given 32 or 64 bits of data.
+            //
+            // And 'fpcr' is sometimes seen in traces with 64 bits of
+            // data, even though it's 32-bit; so in that case we have
+            // to read all 64, and keep the least-significant part.
+            RegisterId reg;
+            bool got_reg_id = lookup_reg_name(reg, regname);
+            bool is_fpcr = (got_reg_id && reg.prefix == RegPrefix::fpcr);
+            bool is_sp = (!strcasecmp(regname.c_str(), "sp") ||
+                          !strncasecmp(regname.c_str(), "sp_", 3));
+            bool special = is_fpcr || is_sp;
+
+            if (got_reg_id && !special) {
+                // Consume tokens of register contents until we've
+                // seen as much data as we expect. We tolerate the
+                // contents being separated into multiple tokens by
+                // spaces or colons, or having underscores in them
+                // (which our lexer will include in a single token).
+                size_t hex_digits_expected = 2 * reg_size(reg);
+                while (contents.size() < hex_digits_expected) {
+                    if (!tok.ishex_us())
+                        parse_error(tok, "expected register contents");
+                    consume_register_contents(tok);
+                    tok = lex();
+
+                    if (tok == ':')
+                        tok = lex();
+                }
+            } else if (special) {
+                // Special cases described above (SP and FPCR), where we have
+                // to wait to see how much data we can get out of the input
+                // line.
+                //
+                // In all cases of this so far encountered, it's enough to read
+                // a single contiguous token of register contents, plus a
+                // second one if a ':' follows it.
+                if (!tok.ishex_us())
+                    parse_error(tok, "expected register contents");
+                consume_register_contents(tok);
                 tok = lex();
-                if (!tok.ishex())
-                    parse_error(tok, "expected additional register "
-                                     "contents after ':'");
-                contentstok.s += tok.s;
-                contentstok.endpos = tok.endpos;
-                tok = lex();
+
+                if (tok == ':') {
+                    tok = lex();
+                    if (!tok.ishex_us())
+                        parse_error(tok, "expected additional register "
+                                    "contents after ':'");
+                    consume_register_contents(tok);
+                }
+
+                if (is_sp) {
+                    // If the special register was SP, use the size of the data
+                    // we've just collected to disambiguate between r13 and
+                    // xsp.
+                    if (contents.size() == 8) {
+                        reg = { RegPrefix::r, 13 };
+                        got_reg_id = true;
+                    } else if (contents.size() == 16) {
+                        reg = { RegPrefix::xsp, 0 };
+                        got_reg_id = true;
+                    }
+                }
             }
 
             // Fast Models puts nothing further on a register line. Other
@@ -546,17 +601,16 @@ struct TarmacLineParserImpl {
             // interpreting the hex CPSR value to show the individual NZCV
             // flags.
 
-            unsigned bits = contentstok.length() * 4;
+            unsigned bits = contents.size() * 4;
 
             vector<uint8_t> bytes;
             if (bits % 8 != 0)
                 parse_error(tok, "expected register contents to be an integer"
                                  " number of bytes");
             for (unsigned pos = 0; pos < bits / 4; pos += 2)
-                bytes.push_back(stoul(contentstok.s.substr(pos, 2), NULL, 16));
+                bytes.push_back(stoul(contents.substr(pos, 2), NULL, 16));
 
-            RegisterId reg;
-            if (!lookup_reg_name(reg, regname, bits)) {
+            if (!got_reg_id) {
                 if (!unrecognised_registers_already_reported.count(regname)) {
                     unrecognised_registers_already_reported.insert(regname);
 #if 0
@@ -586,6 +640,12 @@ struct TarmacLineParserImpl {
             // trace file will have specified the register value in
             // normal human reading order, i.e. big-endian.
             std::reverse(bytes.begin(), bytes.end());
+
+            // Truncate 'bytes' to 32 bits in the case of a 64-bit FPCR update.
+            // (We do this after the reversal, so that we keep the LSW of the
+            // 64-bit value, not the MSW.)
+            if (is_fpcr)
+                bytes.resize(reg_size(reg));
 
             RegisterEvent ev(time, reg, bytes);
             receiver->got_event(ev);

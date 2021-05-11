@@ -83,7 +83,7 @@ struct RegisterId {
 
 std::ostream &operator<<(std::ostream &os, const RegisterId &id);
 
-bool lookup_reg_name(RegisterId &out, const std::string &name, unsigned bits);
+bool lookup_reg_name(RegisterId &out, const std::string &name);
 
 std::string reg_name(const RegisterId &reg);
 size_t reg_size(const RegisterId &reg);
