@@ -89,8 +89,6 @@ bool lookup_reg_name(RegisterId &out, const string &name)
                  * Accept a register name without a numeric suffix
                  * only if the register class is a singleton.
                  */
-                std::cerr << "empty suffix " << pfx.name << " has " << pfx.n
-                          << "\n";
                 if (pfx.n != 1)
                     continue;
                 index = 0;
