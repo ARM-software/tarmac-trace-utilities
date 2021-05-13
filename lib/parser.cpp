@@ -67,7 +67,7 @@ static bool contains_only(const std::string &str, const char *permitted_chars)
 struct Token {
     static constexpr const char *decimal_digits = "0123456789";
     static constexpr const char *hex_digits = "0123456789ABCDEFabcdef";
-    static constexpr const char *hex_digits_us = "0123456789ABCDEFabcdef_";
+    static constexpr const char *regvalue_chars = "0123456789ABCDEFabcdef_-";
 
     size_t startpos, endpos;
     char c;   // '\0' if this is a word/EOL, otherwise a single punct character
@@ -97,7 +97,7 @@ struct Token {
         return stoull(s, NULL, 10);
     }
     inline bool ishex() const { return isword(hex_digits); }
-    inline bool ishex_us() const { return isword(hex_digits_us); }
+    inline bool isregvalue() const { return isword(regvalue_chars); }
     inline bool ishexwithoptionalnamespace() const
     {
         // Match a hex value, optionally followed by a namespace specifier,
@@ -256,6 +256,10 @@ struct TarmacLineParserImpl {
 
     void parse(const string &line_)
     {
+        // Constants used in 'byte' arrays for register and memory updates, to
+        // represent special values that aren't ordinary bytes.
+        constexpr uint16_t UNUSED = 0x100, UNKNOWN = 0x101;
+
         // Set up the lexer.
         line = line_;
         pos = 0;
@@ -553,7 +557,7 @@ struct TarmacLineParserImpl {
                 // (which our lexer will include in a single token).
                 size_t hex_digits_expected = 2 * reg_size(reg);
                 while (contents.size() < hex_digits_expected) {
-                    if (!tok.ishex_us())
+                    if (!tok.isregvalue())
                         parse_error(tok, "expected register contents");
                     consume_register_contents(tok);
                     tok = lex();
@@ -569,14 +573,14 @@ struct TarmacLineParserImpl {
                 // In all cases of this so far encountered, it's enough to read
                 // a single contiguous token of register contents, plus a
                 // second one if a ':' follows it.
-                if (!tok.ishex_us())
+                if (!tok.isregvalue())
                     parse_error(tok, "expected register contents");
                 consume_register_contents(tok);
                 tok = lex();
 
                 if (tok == ':') {
                     tok = lex();
-                    if (!tok.ishex_us())
+                    if (!tok.isregvalue())
                         parse_error(tok, "expected additional register "
                                     "contents after ':'");
                     consume_register_contents(tok);
@@ -603,12 +607,20 @@ struct TarmacLineParserImpl {
 
             unsigned bits = contents.size() * 4;
 
-            vector<uint8_t> bytes;
+            vector<uint16_t> bytes;
             if (bits % 8 != 0)
                 parse_error(tok, "expected register contents to be an integer"
                                  " number of bytes");
-            for (unsigned pos = 0; pos < bits / 4; pos += 2)
-                bytes.push_back(stoul(contents.substr(pos, 2), NULL, 16));
+            for (unsigned pos = 0; pos < bits / 4; pos += 2) {
+                string hex = contents.substr(pos, 2);
+                if (hex == "--") {
+                    // Special value indicating an unknown byte, in flavours of
+                    // Tarmac that include partial register updates.
+                    bytes.push_back(UNKNOWN);
+                } else {
+                    bytes.push_back(stoul(hex, NULL, 16));
+                }
+            }
 
             if (!got_reg_id) {
                 if (!unrecognised_registers_already_reported.count(regname)) {
@@ -647,8 +659,20 @@ struct TarmacLineParserImpl {
             if (is_fpcr)
                 bytes.resize(reg_size(reg));
 
-            RegisterEvent ev(time, reg, 0, bytes);
-            receiver->got_event(ev);
+            // Now go through 'bytes' and find maximal contiguous subsequences
+            // of non-UNKNOWN values, and emit each one as a RegisterEvent.
+            for (size_t offset = 0; offset < bytes.size() ;) {
+                if (bytes[offset] == UNKNOWN) {
+                    offset++;
+                } else {
+                    size_t start = offset;
+                    vector<uint8_t> realbytes;
+                    while (offset < bytes.size() && bytes[offset] != UNKNOWN)
+                        realbytes.push_back(bytes[offset++]);
+                    RegisterEvent ev(time, reg, start, realbytes);
+                    receiver->got_event(ev);
+                }
+            }
         } else if (tok == "MR1" || tok == "MR2" || tok == "MR4" ||
                    tok == "MR8" || tok == "MW1" || tok == "MW2" ||
                    tok == "MW4" || tok == "MW8" || tok == "MR1X" ||
@@ -748,7 +772,6 @@ struct TarmacLineParserImpl {
             // memory starting at the given base address. These words
             // may contain hex digits, dots and sometimes '#' to
             // indicate an actually unknown value.
-            constexpr uint16_t UNUSED = 0x100, UNKNOWN = 0x101;
             uint16_t bytes[16];
             int bytepos = 0;
 

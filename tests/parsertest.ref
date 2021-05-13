@@ -195,6 +195,10 @@ Parse warning: unsupported system operation 'AT'
 * TextOnlyEvent time=12345 type="EXC" text=""
 --- Tarmac line:                EXC [0x00] Reset
 * TextOnlyEvent time=12345 type="EXC" text="[0x00] Reset"
+--- Tarmac line: 123 ns R Q0 -------- -------- 3ff6a09e 667f3bcd
+* RegisterEvent time=123 reg=q0 offset=0 bytes=3f:f6:a0:9e:66:7f:3b:cd
+--- Tarmac line: 124 ns R Q0 3ff428a2 f98d728b -------- --------
+* RegisterEvent time=124 reg=q0 offset=8 bytes=3f:f4:28:a2:f9:8d:72:8b
 --- Tarmac line:     1234567 cs E dummy header line to reset timestamp for next two lines
 * TextOnlyEvent time=1234567 type="E" text="dummy header line to reset timestamp for next two lines"
 --- Tarmac line:                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH

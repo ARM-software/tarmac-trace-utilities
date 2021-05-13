@@ -1334,6 +1334,14 @@ The fields are as follows:
   These are purely visual separators and have no semantic
   significance.
 
+  Sometimes a register update only specifies part of the new contents
+  of the register. This is indicated by specifying some bytes as
+  ``--`` instead of a pair of hex digits. The semantics are that those
+  bytes of the register are unaffected by the update. For example,
+  some RTL simulators will log an update to a floating-point register
+  such as ``d0`` or ``d1`` by representing it as a partial update of
+  the overlapping vector register such as ``q0``.
+
 *interpretation*
   Some variants of Tarmac follow the raw register value with a more
   human-readable interpretation of its contents. For example, an

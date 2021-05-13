@@ -151,6 +151,11 @@ Tarmac Text Rev 3t
      12345 ns  ES  Reset
                EXC [0x00] Reset
 
+# Floating-point register updates represented as partial updates to
+# the containing q-register
+123 ns R Q0 -------- -------- 3ff6a09e 667f3bcd
+124 ns R Q0 3ff428a2 f98d728b -------- --------
+
 # ----------------------------------------------------------------------
 # Manually written tests
 
