@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
+    - name: apt update
+      run: sudo apt-get update
     - name: Install GTK
       run: sudo apt-get install libgtk-3-dev
     - name: Configure
