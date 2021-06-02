@@ -281,7 +281,7 @@ struct TarmacLineParserImpl {
             tok = lex();
 
             if (tok == "clk" || tok == "ns" || tok == "cs" || tok == "cyc" ||
-                tok == "tic") {
+                tok == "tic" || tok == "ps") {
                 // Any of these is something we recognise as a unit of
                 // time, so skip over it.
                 tok = lex();

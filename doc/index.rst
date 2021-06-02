@@ -1097,6 +1097,7 @@ where the fields are as follows:
 
   * ``clk``
   * ``ns``
+  * ``ps``
   * ``cs``
   * ``cyc``
   * ``tic``

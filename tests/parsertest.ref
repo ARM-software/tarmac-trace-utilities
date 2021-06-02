@@ -226,3 +226,10 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=608 reg=v0 offset=0 bytes=93:c4:67:e3:7d:b0:c7:a4:d1:be:3f:81:01:52:cb:56
 --- Tarmac line: 608 clk R Q0 93c467e3 7db0c7a4 d1be3f81 0152cb56
 * RegisterEvent time=608 reg=q0 offset=0 bytes=93:c4:67:e3:7d:b0:c7:a4:d1:be:3f:81:01:52:cb:56
+--- Tarmac line:       15000 ps  ES  EXC [1] Reset
+* TextOnlyEvent time=15000 type="EXC" text="[1] Reset"
+--- Tarmac line:                     R MSP_S 00000000
+* RegisterEvent time=15000 reg=r13 offset=0 bytes=00:00:00:00
+--- Tarmac line:                     R XPSR f9000000
+--- Tarmac line:                     BR (00000000) A
+* TextOnlyEvent time=15000 type="BR" text="(00000000) A"

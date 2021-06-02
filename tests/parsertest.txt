@@ -186,3 +186,11 @@ R SP 0123456789abcdef
 608 clk R V0 93c467e37db0c7a4d1be3f810152cb56
 608 clk R V0 93c467e37db0c7a4_d1be3f810152cb56
 608 clk R Q0 93c467e3 7db0c7a4 d1be3f81 0152cb56
+
+# M33 cycle model from the IPSS (IP Selection Sandbox)
+# uses ps for clock unit
+      15000 ps  ES  EXC [1] Reset
+                    R MSP_S 00000000
+                    R XPSR f9000000
+                    BR (00000000) A
+
