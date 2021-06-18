@@ -596,8 +596,9 @@ bool Browser::TraceView::goto_pc(unsigned long long pc, int dir)
     pc &= ~(unsigned long long)1;
     ByPCPayload pcfinder, pcfound;
     pcfinder.pc = pc;
-    pcfinder.trace_file_firstline =
-        (curr_logical_node.trace_file_firstline + (dir > 0 ? +1 : -1));
+    pcfinder.trace_file_firstline = curr_logical_node.trace_file_firstline +
+                                    curr_logical_node.trace_file_lines +
+                                    (dir > 0 ? +1 : -1);
     bool ret = (dir > 0 ? index.bypctree.succ(index.bypcroot, pcfinder,
                                               &pcfound, nullptr)
                         : index.bypctree.pred(index.bypcroot, pcfinder,
@@ -608,8 +609,8 @@ bool Browser::TraceView::goto_pc(unsigned long long pc, int dir)
     /*
      * When we aim at a particular pc value, the above search will
      * find us a trace-event node which executes an instruction
-     * _fetched from_ that location. But if we use its time stamp
-     * for the goto_time call, that will leave the position just
+     * _fetched from_ that location. But if we use its line number
+     * for the goto_line call, that will leave the position just
      * _after_ that instruction, which isn't really what we want -
      * if I asked for the pc to be left at the entry point to a
      * function (for example), then I wanted to examine the
