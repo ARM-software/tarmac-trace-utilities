@@ -581,10 +581,7 @@ void curses_hl_display(const HighlightedLine &line, bool highlight,
             index = ATTR_TRACESKIP;
             break;
         case HL_DISASSEMBLY:
-            if (line.iev && !line.iev->executed)
-                index = ATTR_TRACESKIP;
-            else
-                index = ATTR_TRACEDISASS;
+            index = ATTR_TRACEDISASS;
             break;
         case HL_PUNCT:
             index = ATTR_TRACEPUNCT;

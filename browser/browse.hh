@@ -233,6 +233,7 @@ class HighlightedLine : public ParseReceiver {
     size_t disassembly_start;
     std::vector<HighlightClass> highlights;
     std::unique_ptr<InstructionEvent> iev;
+    bool non_executed_instruction;
 
     HighlightedLine(const std::string &text, size_t display_len);
     explicit HighlightedLine(const std::string &text);
@@ -242,7 +243,10 @@ class HighlightedLine : public ParseReceiver {
     {
         if (!enable_highlighting || i >= highlights.size())
             return HL_NONE;
-        return highlights[i];
+        HighlightClass hc = highlights[i];
+        if (hc == HL_DISASSEMBLY && non_executed_instruction)
+            hc = HL_CCFAIL;
+        return hc;
     }
 
   private:

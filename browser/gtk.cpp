@@ -2220,9 +2220,6 @@ static PangoAttrList *pango_attrs_for_hl(const HighlightedLine &line,
             i++;
         size_t end = i;
 
-        if (hc == HL_DISASSEMBLY && line.iev && !line.iev->executed)
-            hc = HL_CCFAIL;
-
         add_pango_fg(list, start, end, config.colours[hc]);
     }
 

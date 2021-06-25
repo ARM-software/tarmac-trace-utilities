@@ -173,7 +173,8 @@ void DecodedTraceLine::got_event(InstructionEvent &ev)
 
 HighlightedLine::HighlightedLine(const string &text, size_t display_len)
     : text(text), display_len(display_len), disassembly_start(display_len),
-      highlights(display_len, HL_NONE), iev(nullptr)
+      highlights(display_len, HL_NONE), iev(nullptr),
+      non_executed_instruction(false)
 {
     // We don't need to bother getting endianness right for this
     // application
@@ -202,6 +203,8 @@ void HighlightedLine::highlight(size_t start, size_t end, HighlightClass hc)
 void HighlightedLine::got_event(InstructionEvent &ev)
 {
     iev = make_unique<InstructionEvent>(ev);
+    if (!ev.executed)
+        non_executed_instruction = true;
 }
 
 void HighlightedLine::replace_instruction(Browser &br)
