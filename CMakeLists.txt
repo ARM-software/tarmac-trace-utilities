@@ -33,23 +33,27 @@ endif()
 include_directories(PRIVATE include)
 add_subdirectory(lib)
 
-# Build the executable programs.
-
-set(installed_tools) # subdirectories will update this
-add_subdirectory(tools)
-add_subdirectory(browser)
-
-# Set the end-user tools to be installed by 'make install' or similar.
+# Macro to mark a binary as to be installed by 'make install' or
+# similar. Implementation has to vary depending on cmake version.
 
 if(CMAKE_VERSION VERSION_LESS "3.14")
   # For cmake pre-3.14, we have to specify a destination directory.
-  install(TARGETS ${installed_tools} RUNTIME DESTINATION bin)
+  macro(install_programs)
+    install(TARGETS ${ARGN} RUNTIME DESTINATION bin)
+  endmacro()
 else()
   # For 3.14 and better, we can let the destination be specified
   # automatically, which makes it reconfigurable independently of the
   # install prefix, by setting CMAKE_INSTALL_BINDIR.
-  install(TARGETS ${installed_tools})
+  macro(install_programs)
+    install(TARGETS ${ARGN})
+  endmacro()
 endif()
+
+# Build the executable programs.
+
+add_subdirectory(tools)
+add_subdirectory(browser)
 
 # Check if we have Python3, which is needed for the test suite.
 

@@ -34,10 +34,9 @@ target_link_libraries(tarmac-profile tarmac)
 add_executable(tarmac-vcd vcdwriter.cpp vcd.cpp calltree.cpp)
 target_link_libraries(tarmac-vcd tarmac)
 
-set(installed_tools ${installed_tools}
+install_programs(
   tarmac-callinfo tarmac-calltree tarmac-flamegraph tarmac-profile
-  tarmac-vcd
-  PARENT_SCOPE)
+  tarmac-vcd)
 
 # Test and diagnostic utilities, not installed.
 
