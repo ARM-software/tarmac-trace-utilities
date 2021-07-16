@@ -39,4 +39,16 @@ else()
   message(WARNING "Not building tarmac-gui-browser (failed to locate GTK 3)")
 endif()
 
+if (${wxWidgets_FOUND})
+  include(${wxWidgets_USE_FILE})
+  add_executable(tarmac-wx-browser browse.cpp wx.cpp)
+  target_link_libraries(tarmac-wx-browser tarmac ${wxWidgets_LIBRARIES})
+  if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set_target_properties(tarmac-wx-browser PROPERTIES
+      LINK_FLAGS /subsystem:windows)
+  endif()
+else()
+  message(WARNING "Not building tarmac-wx-browser (failed to locate wxWidgets)")
+endif()
+
 set(installed_tools ${installed_tools} PARENT_SCOPE)

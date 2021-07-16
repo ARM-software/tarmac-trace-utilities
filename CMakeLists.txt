@@ -27,6 +27,8 @@ else()
   include(cmake/unix.cmake)
 endif()
 
+find_package(wxWidgets COMPONENTS core base)
+
 # Set up the header file directory, and build the library of common
 # code.
 
