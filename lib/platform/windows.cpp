@@ -20,9 +20,11 @@
 #include "libtarmac/misc.hh"
 
 #include <windows.h>
+#include <shlobj.h>
 
 #include <sstream>
 
+using std::ostringstream;
 using std::string;
 
 bool get_file_timestamp(const string &filename, uint64_t *out_timestamp)
@@ -175,4 +177,38 @@ off_t MMapFile::alloc(size_t size)
     off_t ret = next_offset;
     next_offset += size;
     return ret;
+}
+
+bool get_conf_path(const string &filename, string &out)
+{
+    ostringstream oss;
+
+    char path[MAX_PATH];
+    DWORD len = GetEnvironmentVariable("TARMAC_TRACE_UTILITIES_CONFIG",
+                                       path, sizeof(path));
+    if (len > 0 && len < sizeof(path) && path[0]) {
+        oss << path;
+        goto found_dir;
+    }
+
+    PWSTR appdata;
+    if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_AppDataProgramData,
+                                       0, nullptr, &appdata))) {
+        BOOL used_default_char = false;
+        int status = WideCharToMultiByte(CP_ACP, 0, appdata, -1,
+                                         path, sizeof(path),
+                                         nullptr, &used_default_char);
+        CoTaskMemFree(appdata);
+        if (status > 0 && !used_default_char) {
+            oss << path << "\\tarmac-trace-utilities";
+            goto found_dir;
+        }
+    }
+
+    return false;
+
+  found_dir:
+    oss << "\\" << filename;
+    out = oss.str();
+    return true;
 }

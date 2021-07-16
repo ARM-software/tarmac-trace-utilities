@@ -84,6 +84,8 @@ bool get_file_timestamp(const std::string &filename, uint64_t *out_timestamp);
 bool is_interactive();
 std::string get_error_message();
 
+bool get_conf_path(const std::string &filename, std::string &out);
+
 #ifdef _WIN32
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp

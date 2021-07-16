@@ -22,12 +22,15 @@
 #include <errno.h>
 #include <string.h>
 
+#include <sstream>
+
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+using std::ostringstream;
 using std::string;
 
 bool get_file_timestamp(const string &filename, uint64_t *out_timestamp)
@@ -114,4 +117,44 @@ off_t MMapFile::alloc(size_t size)
     off_t ret = next_offset;
     next_offset += size;
     return ret;
+}
+
+static bool try_make_conf_path(const char *env_var, const char *suffix,
+                               const string &filename, string &out)
+{
+    const char *env_val = getenv(env_var);
+    if (!env_val) {
+        // Starting environment variable is not defined
+        return false;
+    }
+    if (!env_val[0]) {
+        // It is defined, but to the empty string, which is often an
+        // ad-hoc way to 'undefine' something in practice
+        return false;
+    }
+
+    ostringstream oss;
+    oss << env_val;
+    if (suffix)
+        oss << "/" << suffix;
+    oss << "/" << filename;
+    out = oss.str();
+    return true;
+}
+
+bool get_conf_path(const string &filename, string &out)
+{
+    if (try_make_conf_path("TARMAC_TRACE_UTILITIES_CONFIG", nullptr,
+                           filename, out))
+        return true;
+
+    if (try_make_conf_path("XDG_CONFIG_HOME", "tarmac-trace-utilities",
+                           filename, out))
+        return true;
+
+    if (try_make_conf_path("HOME", ".config/tarmac-trace-utilities",
+                           filename, out))
+        return true;
+
+    return false;
 }

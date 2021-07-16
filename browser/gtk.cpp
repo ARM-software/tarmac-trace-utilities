@@ -372,13 +372,7 @@ struct Config {
     {
         const char *env;
 
-        if (stringok(env = getenv("TARMAC_BROWSER_CONFIG")))
-            filename = string(env);
-        else if (stringok(env = getenv("XDG_CONFIG_HOME")))
-            filename = string(env) + "/tarmac-browser/config";
-        else if (stringok(env = getenv("HOME")))
-            filename = string(env) + "/.config/tarmac-browser/config";
-        else
+        if (!get_conf_path("gui-browser.conf", filename))
             return;
 
         ifstream ifs(filename);
