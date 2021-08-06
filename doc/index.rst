@@ -1259,7 +1259,7 @@ The fields are as follows:
 
   .. list-table::
      :widths: auto
-     :header-rows: 1
+     :header-rows: 0
 
      * - ``r0``,...,\ ``r15``
        - The AArch32 core registers.
