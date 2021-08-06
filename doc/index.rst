@@ -1124,6 +1124,10 @@ where the fields are as follows:
        - `Instruction lines`_
        - A conditional instruction that tested its condition and did
          not execute because the condition failed.
+     * - ``IF``
+       - `Instruction lines`_
+       - An instruction that was executed, and folded into the same
+         CPU cycle as an adjacent instruction.
      * - ``ES``
        - `Instruction lines`_
        - An instruction that was reached, whether it was executed or
@@ -1131,14 +1135,12 @@ where the fields are as follows:
      * - ``R``
        - `Register lines`_
        - An update to a register.
-     * - ``MR1``, ``MR2``, ``MR4``, ``MR8``,
-         ``MR1X``, ``MR2X``, ``MR4X``, ``MR8X``,
-         ``R01``, ``R02``, ``R04``, ``R08``
+     * - Things beginning with ``M`` and containing an ``R`` and a
+         decimal size; also ``R01``, ``R02``, ``R04``, ``R08``
        - `Contiguous memory access lines`_
        - A read from memory, represented in contiguous style.
-     * - ``MW1``, ``MW2``, ``MW4``, ``MW8``,
-         ``MW1X``, ``MW2X``, ``MW4X``, ``MW8X``,
-         ``W01``, ``W02``, ``W04``, ``W08``
+     * - Things beginning with ``M`` and containing a ``W`` and a
+         decimal size; also ``W01``, ``W02``, ``W04``, ``W08``
        - `Contiguous memory access lines`_
        - A write to memory, represented in contiguous style.
      * - ``LD``, ``ST``
@@ -1159,16 +1161,19 @@ where the fields are as follows:
 Instruction lines
 .................
 
-The ``IT``, ``IS`` and ``ES`` event types indicate an instruction that
-the CPU reached during execution, and at least *considered* executing.
+The ``IT``, ``IS``, ``IF`` and ``ES`` event types indicate an
+instruction that the CPU reached during execution, and at least
+*considered* executing.
 
-The ``IT`` and ``IS`` event types have the same format as each other,
-whereas the ``ES`` event type uses a different format.
+The ``IT``, ``IS`` and ``IF`` event types have the same format as each
+other, whereas the ``ES`` event type uses a different format.
 
-An ``IT`` and ``IS`` event can take either of the following formats:
+An ``IT``/``IS``/``IF`` event can take the following formats:
   [ *timestamp* [ *unit* ] ] *type* ``(`` *index* ``)`` *address* *encoding* *state* *mode* ``:`` *disassembly*
 
   [ *timestamp* [ *unit* ] ] *type* ``(`` *address* ``)`` *encoding* *state* *mode* ``:`` *disassembly*
+
+  [ *timestamp* [ *unit* ] ] *type* ``(`` *address* : *index* ``)`` *encoding* *state* *disassembly*
 
 An ``ES`` event type looks like this:
   [ *timestamp* [ *unit* ] ] ``ES`` ``(`` *address* ``:`` *encoding* ``)`` *state* *mode* ``:`` [ ``CCFAIL`` ] *disassembly*
@@ -1182,7 +1187,11 @@ The fields are as follows:
   ``IS`` indicates that it was not executed, because it was a
   conditional instruction whose condition was not met.
 
-  Type ``ES`` can indicate either of those possibilities.
+  Type ``ES`` can indicate either of those possibilities: the
+  instruction might have been executed *or* failed its condition.
+
+  The ``IF`` event type indicates a performance detail on some CPUs;
+  Tarmac Trace Utilities treats it identically to ``IT``.
 
 *index*
   This field only appears in some versions of this instruction format.
@@ -1218,7 +1227,8 @@ The fields are as follows:
 
 *state*
   The instruction set state. ``A`` represents 32-bit Arm; ``T``
-  represents Thumb; ``O`` represents AArch64.
+  represents Thumb; ``O`` represents AArch64. Some producers report
+  ``T16`` or ``T32`` to indicate a 16- or 32-bit Thumb instruction.
 
 *mode*
   The CPU mode, in the sense of privilege / exception levels. The
@@ -1376,9 +1386,11 @@ A memory access line of this type looks like this:
   data transferred, which can be 1, 2, 4 or 8 bytes. (Sometimes this
   has a leading zero.)
 
-  In some variants of Tarmac, the type word can also be suffixed with
-  an ``X``, indicating that the memory access is exclusive. However,
-  sometimes this is a separate field following the type.
+  In some variants of Tarmac, other flag letters are included in this
+  word. Examples include ``X`` to indicate that the memory access is
+  exclusive (but in other variants this is a separate field following
+  the type); ``N`` and ``S`` to indicate synchronousness; ``I`` and
+  ``D`` to indicate instruction and data fetches.
 
   For example, ``MR2`` or ``R02`` means a read of 2 bytes, and
   ``MW4X`` means a write of 4 bytes with exclusive access.
@@ -1396,7 +1408,7 @@ A memory access line of this type looks like this:
 
 *contents*
   The data read or written to the memory location. This is a hex
-  number, written in logical order, irrespective of storage
+  number, usually written in logical order, irrespective of storage
   endianness. So if the trace is of a CPU running in little-endian
   mode, then the rightmost two hex digits of this word represent the
   byte stored first in memory, whereas in big-endian mode, they
@@ -1405,6 +1417,14 @@ A memory access line of this type looks like this:
   In some variants of Tarmac, an especially long value has a ``_``
   separator in the middle. This is purely a visual separator and has
   no semantic significance.
+
+  One currently known exception to the logical-order rule is that data
+  transfers in the Tarmac generated by Cortex-M4 RTL are written in
+  memory order, so that in a little-endian program the bytes will be
+  reversed compared to the Fast Models style of Tarmac. This is
+  currently detected by a heuristic: if the type code is exactly 8
+  characters long and ends in a ``D``, we assume the record is of this
+  type, and interpret the data in memory order.
 
 Diagrammatic memory access lines
 ................................

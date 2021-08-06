@@ -242,7 +242,7 @@ struct TarmacLineParserImpl {
         ISet iset;
         if (tok == "A")
             iset = ARM;
-        else if (tok == "T")
+        else if (tok == "T" || tok == "T16" || tok == "T32")
             iset = THUMB;
         else if (tok == "O")
             iset = A64;
@@ -304,7 +304,7 @@ struct TarmacLineParserImpl {
         // Now we definitely expect an event type, and we diverge
         // based on what it is.
         highlight(tok, HL_EVENT);
-        if (tok == "IT" || tok == "IS" || tok == "ES") {
+        if (tok == "IT" || tok == "IS" || tok == "IF" || tok == "ES") {
             // An instruction-execution (or non-execution) event.
 
             // The "IS" event is Fast-Models-speak for 'instruction
@@ -312,6 +312,9 @@ struct TarmacLineParserImpl {
             // just before the disassembly, which is an "ES" line's way
             // of signalling the same thing. So we set ccfail now, but
             // may also override it to true later on.
+            //
+            // "IF" can appear in some RTL-generated Tarmac. We treat
+            // it just like IT.
             bool executed = (tok != "IS");
 
             bool is_ES = (tok == "ES");
@@ -331,6 +334,9 @@ struct TarmacLineParserImpl {
             unsigned long long address;
             unsigned long bitpattern;
             int width;
+            bool expect_cpu_mode = true;
+            bool seen_colon_in_brackets = false;
+            bool t16_t32_state = false;
 
             // Diverge based on the event type.
             if (is_ES) {
@@ -371,15 +377,23 @@ struct TarmacLineParserImpl {
                 //   IT (xxxx) yyyy zzzz S M : disassembly
                 //
                 // but not every producer of this flavour agrees on exactly
-                // what the fields are. In FM, the bracketed value xxxx is a
-                // decimal counter that increments with each traced
-                // instruction; yyyy is the instruction address, and zzzz is
-                // its encoding. But in at least one other producer, xxxx is
-                // the instruction address (so it's in hex, in particular!),
-                // and yyyy is omitted! So we have to wait until we see the
-                // _next_ token S (which is the instruction set state, e.g.
-                // "A", "T", "O") to find out which of those we're looking
-                // at.
+                // what the fields are.
+                //
+                // In FM, the bracketed value xxxx is a decimal counter that
+                // increments with each traced instruction; yyyy is the
+                // instruction address, and zzzz is its encoding. But in at
+                // least one other producer, xxxx is the instruction address
+                // (so it's in hex, in particular!), and yyyy is omitted!
+                //
+                // So we have to wait until we see the _next_ token S (which is
+                // the instruction set state, e.g. "A", "T", "O") to find out
+                // which of those we're looking at.
+                //
+                // Also, in some RTL-simulator output, there is a spare copy of
+                // the address preceding the index, i.e. we have
+                //
+                //   IT (address:index) address encoding S [...]
+
                 Token bracketed;
                 if (tok == '(') {
                     // Bracketed value
@@ -389,6 +403,18 @@ struct TarmacLineParserImpl {
                     bracketed = tok;
 
                     tok = lex();
+                    if (tok == ':') {
+                        // This appears to be a flavour in which there's a
+                        // copy of the address before the index.
+                        address = bracketed.hexvalue();
+                        tok = lex();
+                        if (!tok.isdecimal() && !tok.ishex())
+                            parse_error(tok,
+                                        "expected a hex or decimal number");
+                        bracketed = tok;
+                        tok = lex();
+                        seen_colon_in_brackets = true;
+                    }
                     if (tok != ')')
                         parse_error(tok, "expected ')' after bracketed value");
                     tok = lex();
@@ -456,19 +482,37 @@ struct TarmacLineParserImpl {
             if (!parse_iset_state(tok, &iset))
                 parse_error(tok, "expected instruction-set state");
             highlight(tok, HL_ISET);
+            if (tok == "T16" || tok == "T32")
+                t16_t32_state = true;
             tok = lex();
 
-            if (!tok.isword())
-                parse_error(tok, "expected CPU mode");
-            // We currently ignore the CPU mode. If we ever needed to
-            // support register bank switching, we would need to track
-            // it carefully.
-            highlight(tok, HL_CPUMODE);
-            tok = lex();
+            // Heuristically guess whether we expect to see a CPU mode token,
+            // and its following colon, in this record.
+            //
+            // Currently, I've only encountered one Tarmac producer (Cortex-M4
+            // RTL) that will omit it. That producer uses IT rather than ES
+            // style instruction lines, and also has two other features unique
+            // in my experience so far: it has a pair of colon-separated
+            // numbers in the bracketed section, and it uses "T16" and "T32"
+            // instead of plain "T" to show the instruction set state. So, for
+            // the moment, my heuristic is that if we see both of those
+            // features, we expect the CPU mode to be omitted.
+            if (!is_ES && seen_colon_in_brackets && t16_t32_state)
+                expect_cpu_mode = false;
 
-            if (tok != ':')
-                parse_error(tok, "expected ':' before instruction");
-            tok = lex();
+            if (expect_cpu_mode) {
+                if (!tok.isword())
+                    parse_error(tok, "expected CPU mode");
+                // We currently ignore the CPU mode. If we ever needed to
+                // support register bank switching, we would need to track
+                // it carefully.
+                highlight(tok, HL_CPUMODE);
+                tok = lex();
+
+                if (tok != ':')
+                    parse_error(tok, "expected ':' before instruction");
+                tok = lex();
+            }
 
             if (is_ES && tok == "CCFAIL") {
                 executed = false;
@@ -673,23 +717,51 @@ struct TarmacLineParserImpl {
                     receiver->got_event(ev);
                 }
             }
-        } else if (tok == "MR1" || tok == "MR2" || tok == "MR4" ||
-                   tok == "MR8" || tok == "MW1" || tok == "MW2" ||
-                   tok == "MW4" || tok == "MW8" || tok == "MR1X" ||
-                   tok == "MR2X" || tok == "MR4X" || tok == "MR8X" ||
-                   tok == "MW1X" || tok == "MW2X" || tok == "MW4X" ||
-                   tok == "MW8X" || tok == "R01" || tok == "R02" ||
-                   tok == "R04" || tok == "R08" || tok == "W01" ||
-                   tok == "W02" || tok == "W04" || tok == "W08") {
+        } else if ((tok.isword() && tok.s.substr(0, 1) == "M") ||
+                   tok == "R01" || tok == "R02" || tok == "R04" ||
+                   tok == "R08" || tok == "W01" || tok == "W02" ||
+                   tok == "W04" || tok == "W08") {
             // Contiguous memory access event.
 
             const Token firsttok = tok;
-            size_t pos = 0;
-            if (tok.s[pos] == 'M')
-                pos++; // FM uses an 'M' prefix, but not everyone agrees
-            bool read = (tok.s[pos] == 'R');
-            pos++;
-            size_t size = stoull(tok.s.substr(pos));
+
+            bool seen_rw = false, read = false;
+            bool seen_size = false;
+            bool expect_memory_order = false;
+            size_t size = 0;
+
+            for (size_t pos = 0, end = tok.s.size(); pos < end ;) {
+                size_t prevpos = pos;
+                char c = tok.s[pos++];
+
+                if (!seen_rw && (c == 'R' || c == 'W')) {
+                    seen_rw = true;
+                    read = (c == 'R');
+                } else if (!seen_size && isdigit((unsigned char)c)) {
+                    while (pos < end && isdigit((unsigned char)tok.s[pos]))
+                        pos++;
+                    seen_size = true;
+                    size = stoull(tok.s.substr(prevpos, pos));
+                } else if (pos == 8 && end == 8 && (c == 'I' || c == 'A')) {
+                    // Memory access events in Cortex-M4 RTL end in a flag
+                    // indicating whether the access is data (D), instruction
+                    // (I) or a peripheral bus (A). We ignore all but D, by
+                    // treating them as text-only events, because I observe
+                    // that they have confusing endianness.
+                    highlight(firsttok.startpos, line.size(), HL_TEXT_EVENT);
+                    TextOnlyEvent ev(time, tok.s,
+                                     line.substr(firsttok.startpos));
+                    receiver->got_event(ev);
+                    return;
+                } else if (pos == 8 && end == 8 && (c == 'D')) {
+                    // This is a data-bus access in the Cortex-M4 RTL style.
+                    // These also differ from the more usual style of
+                    // contiguous memory access event in that the bytes are
+                    // written in memory order, instead of logical order for
+                    // the word being transferred.
+                    expect_memory_order = true;
+                }
+            }
             tok = lex();
 
             if (tok == "X") {
@@ -753,6 +825,20 @@ struct TarmacLineParserImpl {
             if (!tok.ishex())
                 parse_error(tok, "expected memory contents in hex");
             uint64_t contents = tok.hexvalue();
+
+            if (expect_memory_order && !bigend) {
+                // If we're looking at a memory access we believe to be in
+                // memory order (i.e. byte at lowest address is written first),
+                // and we believe it's a trace of a little-endian system, then
+                // we have to byte-reverse our data so that it ends up in
+                // logical order.
+                uint64_t new_contents = 0;
+                for (unsigned i = 0; i < size; i++) {
+                    uint64_t byte = 0xFF & (contents >> (i*8));
+                    new_contents |= byte << ((size-i-1) * 8);
+                }
+                contents = new_contents;
+            }
 
             MemoryEvent ev(time, read, size, addr, true, contents);
             receiver->got_event(ev);

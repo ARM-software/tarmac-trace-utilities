@@ -199,6 +199,12 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=123 reg=q0 offset=0 bytes=3f:f6:a0:9e:66:7f:3b:cd
 --- Tarmac line: 124 ns R Q0 3ff428a2 f98d728b -------- --------
 * RegisterEvent time=124 reg=q0 offset=8 bytes=3f:f4:28:a2:f9:8d:72:8b
+--- Tarmac line:       3041 cyc IT (00022a7c:00000006) 00022a7c     48f6 T16 LDR      r0,[pc,#984]  ; [0x22e58]
+* InstructionEvent time=3041 executed=true pc=22a7c iset=Thumb width=16 instruction=48f6 disassembly="LDR      r0,[pc,#984]  ; [0x22e58]"
+--- Tarmac line:       3039 cyc MNW4___D 2002fa00 efbeefbe
+* MemoryEvent time=3039 read=false known=true addr=2002fa00 size=4 contents=beefbeef
+--- Tarmac line:       3037 cyc MNR4O__I 00022ae4 f7ffffcb
+* TextOnlyEvent time=3037 type="MNR4O__I" text="MNR4O__I 00022ae4 f7ffffcb"
 --- Tarmac line:     1234567 cs E dummy header line to reset timestamp for next two lines
 * TextOnlyEvent time=1234567 type="E" text="dummy header line to reset timestamp for next two lines"
 --- Tarmac line:                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH

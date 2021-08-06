@@ -157,6 +157,17 @@ Tarmac Text Rev 3t
 124 ns R Q0 3ff428a2 f98d728b -------- --------
 
 # ----------------------------------------------------------------------
+
+# Trace lines seen in the output of a Cortex-M4 RTL simulator. Note
+# that the data-bus memory access lines are given in memory order.
+# Instruction fetch lines will be ignored completely (emitted as
+# text-only events).
+
+      3041 cyc IT (00022a7c:00000006) 00022a7c     48f6 T16 LDR      r0,[pc,#984]  ; [0x22e58]
+      3039 cyc MNW4___D 2002fa00 efbeefbe
+      3037 cyc MNR4O__I 00022ae4 f7ffffcb
+
+# ----------------------------------------------------------------------
 # Manually written tests
 
 # Test LD and ST records (showing a 16-byte region of memory with
@@ -193,4 +204,3 @@ R SP 0123456789abcdef
                     R MSP_S 00000000
                     R XPSR f9000000
                     BR (00000000) A
-
