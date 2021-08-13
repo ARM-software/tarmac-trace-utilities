@@ -2442,6 +2442,32 @@ bool TraceWindow::keypress(wxKeyEvent &event)
             keep_visnode_in_view();
         }
         return true;
+    case WXK_LEFT:
+    case WXK_NUMPAD_LEFT: {
+        FunctionRange fnrange(vu);
+        if (fnrange.set_to_container(vu.curr_visible_node)) {
+            if (fnrange.callnode.trace_file_firstline ==
+                vu.curr_visible_node.trace_file_firstline) {
+                fold_ui_action(fnrange, ContainerFoldType::Fold);
+            } else {
+                vu.goto_physline(fnrange.callnode.trace_file_firstline);
+                update_location(UpdateLocationType::NewLog);
+            }
+            keep_visnode_in_view();
+            drawing_area->Refresh();
+        }
+        return true;
+    }
+    case WXK_RIGHT:
+    case WXK_NUMPAD_RIGHT: {
+        FunctionRange fnrange(vu);
+        if (fnrange.set_to_callee(vu.curr_visible_node)) {
+            unfold_ui_action(fnrange, false);
+            keep_visnode_in_view();
+            drawing_area->Refresh();
+        }
+        return true;
+    }
     }
     return false;
 }
