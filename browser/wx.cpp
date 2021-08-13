@@ -2087,8 +2087,12 @@ void TraceWindow::unfold_ui_action(const FunctionRange &fnrange, bool full)
 
     unsigned depth = full ? UINT_MAX : fnrange.depth;
 
+    unsigned prev_position = vu.curr_visible_node.trace_file_firstline;
+
     for (FoldChangeWrapper fcw(this); fcw.progress();)
         vu.set_fold_state(fnrange.firstline, fnrange.lastline, 0, depth);
+
+    vu.goto_physline(prev_position);
 }
 
 void TraceWindow::fold_all_ui_action(bool fold)
