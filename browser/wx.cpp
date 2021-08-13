@@ -1943,13 +1943,15 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
         if (callee_fnrange.set_to_callee(node)) {
             ostringstream oss;
             oss << "Folded call (lines "
-                << callee_fnrange.callnode.trace_file_firstline << "–"
+                << callee_fnrange.callnode.trace_file_firstline
+                << "\xe2\x80\x93"
                 << callee_fnrange.lastnode.trace_file_firstline << " to "
                 << br.get_symbolic_address(callee_fnrange.firstnode.pc, true)
                 << ")";
 
             contextmenu->AppendSeparator();
-            wxMenuItem *label = contextmenu->Append(wxID_ANY, oss.str());
+            wxMenuItem *label = contextmenu->Append(
+                wxID_ANY, wxString::FromUTF8(oss.str().c_str()));
             label->Enable(false);
 
             contextmenu->Append(mi_unfold, "Unfold one level");
