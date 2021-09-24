@@ -3034,7 +3034,7 @@ int TextViewWindow::baseline, TextViewWindow::line_height;
 
 bool GuiTarmacBrowserApp::OnInit()
 {
-    Argparse ap("tarmac-wx-browser", argc, argv);
+    Argparse ap("tarmac-gui-browser", argc, argv);
     TarmacUtility tu(ap);
     ap.parse();
     tu.setup();

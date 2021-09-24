@@ -17,6 +17,7 @@
  */
 
 #include "browse.hh"
+#include "libtarmac/argparse.hh"
 #include "libtarmac/disktree.hh"
 #include "libtarmac/expr.hh"
 #include "libtarmac/image.hh"
@@ -25,6 +26,7 @@
 #include "libtarmac/misc.hh"
 #include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
+#include "libtarmac/tarmacutil.hh"
 
 #include <climits>
 #include <cstring>
@@ -2120,4 +2122,17 @@ void run_browser(Browser &br)
     }
 
     endwin();
+}
+
+int main(int argc, char **argv)
+{
+    Argparse ap("tarmac-browser", argc, argv);
+    TarmacUtility tu(ap);
+    ap.parse();
+    tu.setup();
+
+    Browser br(tu.trace, tu.image_filename);
+    run_browser(br);
+
+    return 0;
 }

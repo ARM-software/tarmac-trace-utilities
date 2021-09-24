@@ -21,6 +21,3 @@
 
 find_package(Curses)
 find_package(PkgConfig)
-if (PkgConfig_FOUND)
-  pkg_check_modules(GTK gtk+-3.0)
-endif()
