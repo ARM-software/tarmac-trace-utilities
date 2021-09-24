@@ -18,6 +18,7 @@
 
 #include "libtarmac/disktree.hh"
 #include "libtarmac/misc.hh"
+#include "libtarmac/reporter.hh"
 
 #include <windows.h>
 #include <shlobj.h>
@@ -84,11 +85,11 @@ MMapFile::MMapFile(const string &filename, bool writable)
                            FILE_SHARE_READ, NULL,
                            (writable ? CREATE_ALWAYS : OPEN_EXISTING), 0, NULL);
     if (pdata->fh == INVALID_HANDLE_VALUE)
-        err(1, "%s: CreateFile", filename.c_str());
+        reporter->err(1, "%s: CreateFile", filename.c_str());
 
     LARGE_INTEGER size;
     if (!GetFileSizeEx(pdata->fh, &size))
-        err(1, "%s: GetFileSizeEx", filename.c_str());
+        reporter->err(1, "%s: GetFileSizeEx", filename.c_str());
     next_offset = curr_size = size.QuadPart;
 
     mapping = nullptr;
@@ -103,9 +104,11 @@ MMapFile::~MMapFile()
         LARGE_INTEGER pos;
         pos.QuadPart = next_offset;
         if (!SetFilePointerEx(pdata->fh, pos, NULL, FILE_BEGIN))
-            err(1, "%s: SetFilePointerEx (truncating file)", filename.c_str());
+            reporter->err(1, "%s: SetFilePointerEx (truncating file)",
+                          filename.c_str());
         if (!SetEndOfFile(pdata->fh))
-            err(1, "%s: SetEndOfFile (truncating file)", filename.c_str());
+            reporter->err(1, "%s: SetEndOfFile (truncating file)",
+                          filename.c_str());
     }
     CloseHandle(pdata->fh);
     delete pdata;
@@ -132,13 +135,13 @@ void MMapFile::map()
         pdata->fh, NULL, (writable ? PAGE_READWRITE : PAGE_READONLY),
         (mapping_size >> 16) >> 16, mapping_size & 0xFFFFFFFF, NULL);
     if (!pdata->mh)
-        err(1, "%s: CreateFileMapping", filename.c_str());
+        reporter->err(1, "%s: CreateFileMapping", filename.c_str());
 
     mapping = MapViewOfFile(pdata->mh,
                             (writable ? FILE_MAP_ALL_ACCESS : FILE_MAP_READ), 0,
                             0, curr_size);
     if (!mapping)
-        err(1, "%s: MapViewOfFile", filename.c_str());
+        reporter->err(1, "%s: MapViewOfFile", filename.c_str());
 }
 
 void MMapFile::unmap()
@@ -167,9 +170,11 @@ off_t MMapFile::alloc(size_t size)
         LARGE_INTEGER pos;
         pos.QuadPart = new_curr_size;
         if (!SetFilePointerEx(pdata->fh, pos, NULL, FILE_BEGIN))
-            err(1, "%s: SetFilePointerEx (extending file)", filename.c_str());
+            reporter->err(1, "%s: SetFilePointerEx (extending file)",
+                          filename.c_str());
         if (!SetEndOfFile(pdata->fh))
-            err(1, "%s: SetEndOfFile (extending file)", filename.c_str());
+            reporter->err(1, "%s: SetEndOfFile (extending file)",
+                          filename.c_str());
         curr_size = new_curr_size;
 
         map();

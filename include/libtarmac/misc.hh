@@ -72,13 +72,6 @@ struct TracePair {
     }
 };
 
-// Similar to the BSDish <err.h>: err and warn suffix strerror(errno)
-// to the message, whereas errx and warnx do not
-void err(int exitstatus, const char *fmt, ...);
-void errx(int exitstatus, const char *fmt, ...);
-void warn(const char *fmt, ...);
-void warnx(const char *fmt, ...);
-
 // In the per-platform source
 bool get_file_timestamp(const std::string &filename, uint64_t *out_timestamp);
 bool is_interactive();

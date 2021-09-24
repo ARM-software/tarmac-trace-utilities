@@ -18,6 +18,7 @@
 
 #include "libtarmac/disktree.hh"
 #include "libtarmac/misc.hh"
+#include "libtarmac/reporter.hh"
 
 #include <errno.h>
 #include <string.h>
@@ -58,10 +59,10 @@ MMapFile::MMapFile(const string &filename, bool writable)
     pdata->fd =
         open(filename.c_str(), writable ? O_RDWR | O_CREAT : O_RDONLY, 0666);
     if (pdata->fd < 0)
-        err(1, "%s: open", filename.c_str());
+        reporter->err(1, "%s: open", filename.c_str());
     next_offset = lseek(pdata->fd, 0, SEEK_END);
     if (next_offset == (off_t)-1)
-        err(1, "%s: lseek", filename.c_str());
+        reporter->err(1, "%s: lseek", filename.c_str());
     curr_size = next_offset;
     mapping = nullptr;
     map();
@@ -72,10 +73,10 @@ MMapFile::~MMapFile()
     unmap();
     if (writable) {
         if (ftruncate(pdata->fd, next_offset) < 0)
-            err(1, "%s: ftruncate", filename.c_str());
+            reporter->err(1, "%s: ftruncate", filename.c_str());
     }
     if (close(pdata->fd) < 0)
-        err(1, "%s: close", filename.c_str());
+        reporter->err(1, "%s: close", filename.c_str());
     delete pdata;
 }
 
@@ -87,7 +88,7 @@ void MMapFile::map()
     mapping = mmap(NULL, curr_size, PROT_READ | (writable ? PROT_WRITE : 0),
                    MAP_SHARED, pdata->fd, 0);
     if (mapping == MAP_FAILED)
-        err(1, "%s: mmap", filename.c_str());
+        reporter->err(1, "%s: mmap", filename.c_str());
 }
 
 void MMapFile::unmap()
@@ -98,7 +99,7 @@ void MMapFile::unmap()
     }
     assert(mapping);
     if (munmap(mapping, curr_size) < 0)
-        err(1, "%s: munmap", filename.c_str());
+        reporter->err(1, "%s: munmap", filename.c_str());
     mapping = nullptr;
 }
 
@@ -109,7 +110,7 @@ off_t MMapFile::alloc(size_t size)
         off_t new_curr_size = (next_offset + size) * 5 / 4 + 65536;
         assert(new_curr_size >= next_offset);
         if (ftruncate(pdata->fd, new_curr_size) < 0)
-            err(1, "%s: ftruncate (extending)", filename.c_str());
+            reporter->err(1, "%s: ftruncate (extending)", filename.c_str());
         unmap();
         curr_size = new_curr_size;
         map();

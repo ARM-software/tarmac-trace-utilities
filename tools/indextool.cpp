@@ -18,6 +18,7 @@
 
 #include "libtarmac/argparse.hh"
 #include "libtarmac/index.hh"
+#include "libtarmac/reporter.hh"
 #include "libtarmac/tarmacutil.hh"
 
 #include <stdio.h>
@@ -457,6 +458,8 @@ static void dump_memory_at_line(const IndexNavigator &IN, unsigned trace_line,
         }
     }
 }
+
+std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {

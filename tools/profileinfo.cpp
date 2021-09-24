@@ -19,6 +19,7 @@
 #include "profileinfo.hh"
 #include "calltree.hh"
 #include "libtarmac/image.hh"
+#include "libtarmac/reporter.hh"
 
 #include <iomanip>
 #include <iostream>
@@ -96,6 +97,8 @@ void ProfileInfo::run()
 
 #include "libtarmac/argparse.hh"
 #include "libtarmac/tarmacutil.hh"
+
+std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {

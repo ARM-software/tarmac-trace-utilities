@@ -20,6 +20,7 @@
 #include "libtarmac/argparse.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/registers.hh"
+#include "libtarmac/reporter.hh"
 
 #include <cassert>
 #include <fstream>
@@ -207,6 +208,8 @@ void syntax_highlight(istream &is, ostream &os)
         recv.display(os);
     }
 }
+
+std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {

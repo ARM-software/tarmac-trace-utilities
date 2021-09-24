@@ -19,6 +19,7 @@
 #include "callinfo.hh"
 #include "libtarmac/argparse.hh"
 #include "libtarmac/index.hh"
+#include "libtarmac/reporter.hh"
 #include "libtarmac/tarmacutil.hh"
 
 #include <string>
@@ -26,6 +27,8 @@
 
 using std::string;
 using std::vector;
+
+std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {

@@ -19,6 +19,7 @@
 #include "calltree.hh"
 
 #include "libtarmac/argparse.hh"
+#include "libtarmac/reporter.hh"
 #include "libtarmac/tarmacutil.hh"
 
 #include <fstream>
@@ -32,6 +33,8 @@ using std::ofstream;
 using std::ostream;
 using std::string;
 using std::unique_ptr;
+
+unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {

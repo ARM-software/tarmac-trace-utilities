@@ -20,6 +20,7 @@
 #include "libtarmac/misc.hh"
 #include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
+#include "libtarmac/reporter.hh"
 
 #include <algorithm>
 #include <cassert>
@@ -881,8 +882,7 @@ void Index::got_event_common(TarmacEvent *event, bool is_instruction)
 
 bool Index::parse_warning(const string &msg)
 {
-    clog << tarmac_filename << ":" << lineno + lineno_offset << ": " << msg
-         << endl;
+    reporter->indexing_warning(tarmac_filename, lineno + lineno_offset, msg);
     return false;
 }
 
@@ -918,9 +918,6 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
     last_memroot = memroot;
     bypcroot = 0;
 
-    streampos filesize;
-    int progress_percentage = -1;
-
     /*
      * Read in the input.
      */
@@ -934,11 +931,9 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
     prev_lineno = lineno;
     curr_pc = KNOWN_INVALID_PC;
 
-    if (show_progress_meter) {
-        in.seekg(0, ios::end);
-        filesize = in.tellg();
-        in.seekg(0);
-    }
+    in.seekg(0, ios::end);
+    reporter->indexing_start(in.tellg());
+    in.seekg(0);
 
     TarmacLineParser parser(bigend, *this);
 
@@ -960,14 +955,7 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
 
         linepos = in.tellg();
 
-        if (show_progress_meter) {
-            int new_percentage = 100 * linepos / filesize;
-            if (new_percentage != progress_percentage) {
-                progress_percentage = new_percentage;
-                cout << "\rReading trace file (" << progress_percentage << "%";
-                cout.flush();
-            }
-        }
+        reporter->indexing_progress(linepos);
 
         if (!getline(in, line))
             break;
@@ -975,23 +963,20 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
         try {
             parser.parse(line);
         } catch (TarmacParseError e) {
-            clog << tarmac_filename << ":" << lineno << ": " << e.msg << endl;
             if (in.eof()) {
-                clog << "tarmac-browser: ignoring parse error on partial last"
-                        " line (trace truncated?)"
-                     << endl;
+                ostringstream oss;
+                oss << e.msg << endl << "tarmac-browser: ignoring parse error "
+                    "on partial last line (trace truncated?)";
+                reporter->indexing_warning(tarmac_filename, lineno, oss.str());
                 break;
             } else {
-                clog << endl;
                 remove(index_filename.c_str());
-                exit(1);
+                reporter->indexing_error(tarmac_filename, lineno, e.msg);
             }
         }
     }
 
-    if (show_progress_meter) {
-        cout << "\rReading trace file (finished)" << endl;
-    }
+    reporter->indexing_done();
 
     // Call got_event with no actual event, signalling end-of-file, so
     // that the last record is output (the same flushing of
@@ -1049,7 +1034,8 @@ IndexReader::IndexReader(const TracePair &trace)
 {
     MagicNumber &magic = *mmf.getptr<MagicNumber>(0);
     if (!magic.check())
-        errx(1, "%s: magic number did not match", index_filename.c_str());
+        reporter->errx(1, "%s: magic number did not match",
+                       index_filename.c_str());
     FileHeader &hdr = *mmf.getptr<FileHeader>(sizeof(MagicNumber));
     seqroot = hdr.seqroot;
     bypcroot = hdr.bypcroot;

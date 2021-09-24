@@ -22,6 +22,7 @@
 
 #include "browse.hh"
 #include "libtarmac/argparse.hh"
+#include "libtarmac/reporter.hh"
 #include "libtarmac/tarmacutil.hh"
 
 #include <wx/wxprec.h>
@@ -296,13 +297,17 @@ struct Config {
             if (word == "font") {
                 font = line;
             } else if ((it = colour_kws.find(word)) != colour_kws.end()) {
-                if (!colours[it->second].parse(line))
-                    cerr << conf_path << ":" << lineno
-                         << ": unable to parse colour '" << line << "'" << endl;
+                if (!colours[it->second].parse(line)) {
+                    ostringstream oss;
+                    oss << conf_path << ":" << lineno
+                        << ": unable to parse colour '" << line << "'";
+                    reporter->warnx(oss.str().c_str());
+                }
             } else {
-                cerr << conf_path << ":" << lineno
-                     << ": unrecognised config directive '" << word << "'"
-                     << endl;
+                ostringstream oss;
+                oss << conf_path << ":" << lineno
+                    << ": unrecognised config directive '" << word << "'";
+                reporter->warnx(oss.str().c_str());
             }
         }
     }
@@ -3031,6 +3036,8 @@ wxIMPLEMENT_APP(GuiTarmacBrowserApp);
 wxFont TextViewWindow::font;
 int TextViewWindow::char_width;
 int TextViewWindow::baseline, TextViewWindow::line_height;
+
+std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 bool GuiTarmacBrowserApp::OnInit()
 {

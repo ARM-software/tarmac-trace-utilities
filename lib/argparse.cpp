@@ -17,6 +17,7 @@
  */
 
 #include "libtarmac/argparse.hh"
+#include "libtarmac/reporter.hh"
 
 #include <cassert>
 #include <cstdlib>
@@ -253,9 +254,11 @@ void Argparse::parse(std::function<void(void)> final_validator)
         parse_or_throw();
         final_validator();
     } catch (ArgparseError e) {
-        clog << programname << ": " << e.msg() << endl
-             << string(programname.size() + 2, ' ') << "try '" << programname
-             << " --help' for help" << endl;
+        ostringstream oss;
+        oss << programname << ": " << e.msg() << endl
+            << string(programname.size() + 2, ' ') << "try '" << programname
+            << " --help' for help";
+        reporter->errx(1, "%s", oss.str().c_str());
         exit(1);
     } catch (ArgparseHelpAction) {
         help(cout);

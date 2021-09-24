@@ -26,6 +26,7 @@
 #include "libtarmac/misc.hh"
 #include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
+#include "libtarmac/reporter.hh"
 #include "libtarmac/tarmacutil.hh"
 
 #include <climits>
@@ -2123,6 +2124,8 @@ void run_browser(Browser &br)
 
     endwin();
 }
+
+std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {

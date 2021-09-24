@@ -18,6 +18,7 @@
 
 #include "libtarmac/expr.hh"
 #include "libtarmac/argparse.hh"
+#include "libtarmac/reporter.hh"
 
 #include <fstream>
 #include <iostream>
@@ -62,6 +63,8 @@ static void test_parse_expression(const std::string &title,
     uint64_t val = expr->evaluate(tec);
     cout << title << ": evaluation gives " << val << endl;
 }
+
+std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
