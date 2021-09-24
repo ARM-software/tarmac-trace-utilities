@@ -3225,11 +3225,38 @@ void WXGUIReporter::indexing_done()
 
 std::unique_ptr<Reporter> reporter = make_wxgui_reporter();
 
+/*
+ * On Unix-like platforms, we deal with command-line syntax errors by
+ * outputting to standard error, rather than displaying a dialog box,
+ * which is more like normal Unix behaviour. This is especially useful
+ * when processing --help.
+ *
+ * On Windows, we don't even _have_ a standard error, so we have to
+ * put all that stuff in message boxes because there's no other
+ * choice.
+ */
+#ifndef _WINDOWS
+#define ARGUMENT_PARSING_TO_STDERR
+#endif
+
 bool GuiTarmacBrowserApp::OnInit()
 {
     Argparse ap("tarmac-gui-browser", argc, argv);
     TarmacUtility tu(ap);
-    ap.parse();
+
+    {
+#ifdef ARGUMENT_PARSING_TO_STDERR
+        std::unique_ptr<Reporter> old_reporter = std::move(reporter);
+        reporter = make_cli_reporter();
+#endif
+
+        ap.parse();
+
+#ifdef ARGUMENT_PARSING_TO_STDERR
+        reporter = std::move(old_reporter);
+#endif
+    }
+
     tu.setup();
 
     config.read();
