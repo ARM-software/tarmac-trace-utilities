@@ -32,6 +32,7 @@
 #include "wx/clipbrd.h"
 #include "wx/cmdline.h"
 #include "wx/dcbuffer.h"
+#include "wx/filepicker.h"
 #include "wx/pen.h"
 #include "wx/progdlg.h"
 #if wxUSE_GRAPHICS_CONTEXT
@@ -3233,6 +3234,108 @@ void WXGUIReporter::indexing_done()
 
 std::unique_ptr<Reporter> reporter = make_wxgui_reporter();
 
+class SetupDialog : public wxDialog {
+    /*
+     * This GUI browser can be invoked with a command line just like
+     * the command-line curses browser. But GUI programs are often run
+     * from launcher systems like the Start Menu and don't have a
+     * command line at all, so they also have to be able to handle
+     * that situation.
+     *
+     * If we're started with a completely empty command line (which
+     * would be a fatal error according to the standard TarmacUtility
+     * argparse configuration), then we instead put up a GUI dialog
+     * box asking for the obvious parameters (in particular, what
+     * trace file to load). This class is that dialog.
+     */
+    wxFilePickerCtrl *trace_file_picker, *image_file_picker;
+    wxChoice *reindex_choice;
+    wxCheckBox *bigendian_checkbox;
+
+  public:
+    SetupDialog(wxWindow *parent = nullptr, wxWindowID id = wxID_ANY) :
+        wxDialog(parent, id, wxT("tarmac-gui-browser setup")) {
+        auto *sizer = new wxBoxSizer(wxVERTICAL);
+
+        sizer->Add(
+            new wxStaticText(this, wxID_ANY, "Trace file to view (required)"),
+            wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
+        trace_file_picker = new wxFilePickerCtrl(
+            this, wxID_ANY, wxEmptyString, "Select a trace file to view");
+        sizer->Add(trace_file_picker, wxSizerFlags().Expand().Border(
+                       wxLEFT | wxRIGHT | wxBOTTOM));
+
+        sizer->Add(
+            new wxStaticText(this, wxID_ANY, "ELF image matching the trace"),
+            wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
+        image_file_picker = new wxFilePickerCtrl(
+            this, wxID_ANY, wxEmptyString, "Select an ELF image to use");
+        sizer->Add(image_file_picker, wxSizerFlags().Expand().Border(
+                       wxLEFT | wxRIGHT | wxBOTTOM));
+
+        sizer->Add(
+            new wxStaticText(this, wxID_ANY, "Re-index the trace file?"),
+            wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
+        reindex_choice = new wxChoice(
+            this, wxID_ANY, wxDefaultPosition,
+            edit_size("If necessary"), 0, nullptr);
+        sizer->Add(reindex_choice, wxSizerFlags().Expand().Border(
+                       wxLEFT | wxRIGHT | wxBOTTOM));
+        reindex_choice->Append("If necessary", reinterpret_cast<void *>(0));
+        reindex_choice->Append("Always", reinterpret_cast<void *>(1));
+        reindex_choice->Append("Never", reinterpret_cast<void *>(2));
+        reindex_choice->SetSelection(0);
+
+        bigendian_checkbox = new wxCheckBox(
+            this, wxID_ANY, "Trace is from a big-endian system");
+        sizer->Add(bigendian_checkbox, wxSizerFlags().Expand().Border());
+
+        sizer->Add(CreateButtonSizer(wxOK | wxCANCEL),
+                   wxSizerFlags().Right().Border());
+        SetSizerAndFit(sizer);
+
+        // You can't press OK until you've selected a trace file
+        FindWindowById(wxID_OK)->Disable();
+
+        trace_file_picker->Bind(wxEVT_FILEPICKER_CHANGED,
+                                &SetupDialog::enable_ok_button, this);
+    }
+
+    void enable_ok_button(wxFileDirPickerEvent &event) {
+        if (trace_file_picker->GetPath().empty())
+            FindWindowById(wxID_OK)->Disable();
+        else
+            FindWindowById(wxID_OK)->Enable();
+    }
+
+    static std::string wxstring_to_string(const wxString &wxs) {
+        // It's surprisingly hard to find a way in the wxString API to
+        // get the data back out into an ordinary std::string. But you
+        // can '<<' a wxString to an ostream, so here's one approach
+        // that works. It's probably slow, but that's OK, we only do
+        // it a handful of times at startup.
+        std::ostringstream oss;
+        oss << wxs.ToUTF8();
+        return oss.str();
+    }
+
+    std::string trace_file_path() const {
+        return wxstring_to_string(trace_file_picker->GetPath());
+    }
+
+    std::string image_file_path() const {
+        return wxstring_to_string(image_file_picker->GetPath());
+    }
+
+    int reindex_policy() const {
+        return reindex_choice->GetCurrentSelection();
+    }
+
+    bool big_endian() const {
+        return bigendian_checkbox->IsChecked();
+    }
+};
+
 /*
  * On Unix-like platforms, we deal with command-line syntax errors by
  * outputting to standard error, rather than displaying a dialog box,
@@ -3252,7 +3355,11 @@ bool GuiTarmacBrowserApp::OnInit()
     Argparse ap("tarmac-gui-browser", argc, argv);
     TarmacUtility tu(ap);
 
-    {
+    if (argc > 1) {
+        /*
+         * If we've been given a non-empty command line, parse it
+         * similarly to the non-GUI tools.
+         */
 #ifdef ARGUMENT_PARSING_TO_STDERR
         std::unique_ptr<Reporter> old_reporter = std::move(reporter);
         reporter = make_cli_reporter();
@@ -3263,6 +3370,40 @@ bool GuiTarmacBrowserApp::OnInit()
 #ifdef ARGUMENT_PARSING_TO_STDERR
         reporter = std::move(old_reporter);
 #endif
+    } else {
+        /*
+         * If our command line was completely empty (which would have
+         * caused a fatal error from ap.parse), then instead put up a
+         * SetupDialog.
+         *
+         * Having done that, the easiest way to use the results is to
+         * inject them back into the TarmacUtility by constructing a
+         * fake command line.
+         */
+        SetupDialog dlg;
+        if (dlg.ShowModal() != wxID_OK)
+            return false;
+
+        std::string image_path = dlg.image_file_path();
+        if (!image_path.empty())
+            ap.add_cmdline_word("--image=" + image_path);
+
+        switch (dlg.reindex_policy()) {
+          case 1:
+            ap.add_cmdline_word("--force-index");
+            break;
+          case 2:
+            ap.add_cmdline_word("--no-index");
+            break;
+        }
+
+        if (dlg.big_endian())
+            ap.add_cmdline_word("--bi");
+
+        ap.add_cmdline_word("--");
+        ap.add_cmdline_word(dlg.trace_file_path());
+
+        ap.parse();
     }
 
     tu.setup();
