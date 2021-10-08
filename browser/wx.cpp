@@ -899,7 +899,7 @@ TextViewWindow::TextViewWindow(GuiTarmacBrowserApp *app, unsigned defcols,
     drawing_area->Bind(wxEVT_KEY_DOWN, &TextViewWindow::key_event, this);
 
     auto *sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->Add(drawing_area, 1, wxEXPAND | wxALL, 0);
+    sizer->Add(drawing_area, wxSizerFlags().Expand());
     SetSizerAndFit(sizer);
 
     drawing_area->SetFocus();
@@ -2178,13 +2178,15 @@ class MemPromptDialog : public wxDialog {
 
         sizer->Add(
             new wxStaticText(this, wxID_ANY, "Enter memory address to display"),
-            1, wxEXPAND | wxALL, 8);
+            wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
         addredit =
             new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
                            edit_size("1234567890123"));
-        sizer->Add(addredit, 1, wxEXPAND | wxALL, 8);
+        sizer->Add(addredit, wxSizerFlags().Expand().Border(
+                       wxLEFT | wxRIGHT | wxBOTTOM));
 
-        sizer->Add(CreateButtonSizer(wxOK | wxCANCEL), 1, wxEXPAND | wxALL, 8);
+        sizer->Add(CreateButtonSizer(wxOK | wxCANCEL),
+                   wxSizerFlags().Expand().Border(wxALL));
 
         SetSizerAndFit(sizer);
 
