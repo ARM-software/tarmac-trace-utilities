@@ -2213,6 +2213,12 @@ void TraceWindow::mem_prompt_dialog_ended(bool ok)
     if (!mem_prompt_dialog)
         return; // just in case
 
+    if (!ok) { // user pressed Cancel
+        delete mem_prompt_dialog;
+        mem_prompt_dialog = nullptr;
+        return;
+    }
+
     string value = mem_prompt_dialog->addredit_value();
 
     Addr addr;
