@@ -277,8 +277,6 @@ struct Config {
 
     void read()
     {
-        const char *env;
-
         string conf_path;
         if (!get_conf_path("gui-browser.conf", conf_path))
             return;
@@ -2168,12 +2166,11 @@ void TraceWindow::newtrace_menuaction(wxCommandEvent &event)
 }
 
 class MemPromptDialog : public wxDialog {
-    wxWindow *parent;
     wxTextCtrl *addredit;
 
   public:
     MemPromptDialog(wxWindow *parent)
-        : wxDialog(parent, wxID_ANY, wxT("Open memory window")), parent(parent)
+        : wxDialog(parent, wxID_ANY, wxT("Open memory window"))
     {
         auto *sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -2827,11 +2824,9 @@ bool MemoryWindow::get_region_under_pos(const LogicalPos &logpos, Addr &start,
     Addr line_addr = logpos.y0;
     Addr addr = 0;
     unsigned wordsize = 0;
-    unsigned mult;
 
     switch (logpos.column) {
     case 1: // hex display
-        mult = 3;
         addr = line_addr + logpos.char_index / 3;
         if (logpos.char_index % 3 != 2) {
             // The mouse is directly over a hex byte. Highlight just that byte.
@@ -2849,7 +2844,6 @@ bool MemoryWindow::get_region_under_pos(const LogicalPos &logpos, Addr &start,
         }
         break;
     case 2: // character display
-        mult = 1;
         addr = line_addr + logpos.char_index;
         wordsize = 1;
         break;

@@ -277,7 +277,6 @@ class HelpWindow : public Window {
 };
 
 class Screen : public Window {
-    Browser &br;
     int w, h;
 
     Window *win_main;
@@ -298,7 +297,7 @@ class Screen : public Window {
 
   public:
     Screen(Browser &br)
-        : Window(), w(0), h(0), br(br), win_main(NULL), win_selected(NULL),
+        : Window(), w(0), h(0), win_main(NULL), win_selected(NULL),
           win_help(NULL), minibuf_active(false), terminated(false)
     {
     }
@@ -369,8 +368,6 @@ class Screen : public Window {
 
     void draw(int x, int y, cursorpos *cp)
     {
-        int cx, cy;
-
         bool error = false;
         string minibuf_line;
         if (!minibuf_active) {
@@ -607,7 +604,6 @@ void curses_hl_display(const HighlightedLine &line, bool highlight,
 class TraceBuffer : public Window {
     Browser &br;
     Browser::TraceView vu;
-    Time time;
     int w, h, hm1;
 
     // Index of the visible line currently at top of screen.
@@ -1601,7 +1597,6 @@ class MVERegisterDisplay : public VectorRegisterDisplay {
 
 class MemoryDisplay : public Window {
     Browser &br;
-    IndexReader &index;
     bool locked;
     off_t memroot, ext_memroot;
     unsigned line, ext_line;
@@ -1616,7 +1611,7 @@ class MemoryDisplay : public Window {
 
   public:
     MemoryDisplay(Browser &br, TraceBuffer *tbuf, Addr start_addr_)
-        : Window(), br(br), index(br.index), locked(false), memroot(0),
+        : Window(), br(br), locked(false), memroot(0),
           tbuf(tbuf), diff_memroot(0)
     {
         bytes_per_line = 16; // FIXME: configurability

@@ -441,7 +441,7 @@ unsigned Browser::TraceView::physical_to_visible_line(unsigned physline)
 unsigned Browser::TraceView::total_visible_lines()
 {
     FoldStateEndOfListSearcher searcher;
-    bool ret = fold_states.search(ref(searcher), nullptr);
+    fold_states.search(ref(searcher), nullptr);
     return searcher.vislines_before;
 }
 
