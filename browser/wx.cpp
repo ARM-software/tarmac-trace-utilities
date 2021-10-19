@@ -841,7 +841,7 @@ bool TextViewCanvas::find_xy(int x, int y, LogicalPos &logpos)
 TextViewWindow::TextViewWindow(GuiTarmacBrowserApp *app, unsigned defcols,
                                unsigned defrows, bool show_scrollbar)
     : wxFrame(NULL, wxID_ANY, "", wxDefaultPosition, wxDefaultSize), app(app),
-      defcols(defcols), defrows(defrows), wintop(0),
+      defrows(defrows), defcols(defcols), wintop(0),
       show_scrollbar(show_scrollbar)
 {
     menubar = new wxMenuBar;
