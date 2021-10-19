@@ -27,7 +27,19 @@ else()
   include(cmake/unix.cmake)
 endif()
 
-find_package(wxWidgets COMPONENTS core base)
+if(CMAKE_SYSTEM_NAME MATCHES "Windows"
+    AND NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+  # When cross-compiling for Windows from Unix, find_package seems to
+  # do the wrong thing unless you pre-set some variables strangely. I
+  # think it may be thinking more in terms of cross-compiling in the
+  # other direction.
+  set(WIN32 ON)
+  set(CMAKE_CROSSCOMPILING OFF)
+  find_package(wxWidgets COMPONENTS core base)
+  set(CMAKE_CROSSCOMPILING ON)
+else()
+  find_package(wxWidgets COMPONENTS core base)
+endif()
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 configure_file(cmake/cmake.h.in ${CMAKE_BINARY_DIR}/include/cmake.h)
