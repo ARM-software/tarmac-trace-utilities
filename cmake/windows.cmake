@@ -62,3 +62,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   # also a perfectly reasonable thing to do for bit-twiddling purposes.
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4267 /wd4018 /wd4146")
 endif()
+
+include(CheckCXXSourceCompiles)
+
+check_cxx_source_compiles("
+#include <windows.h>
+#include <shlobj.h>
+int main(void) { (void)FOLDERID_AppDataProgramData; }
+" HAVE_APPDATAPROGRAMDATA)

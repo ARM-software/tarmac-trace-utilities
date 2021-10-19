@@ -29,10 +29,14 @@ endif()
 
 find_package(wxWidgets COMPONENTS core base)
 
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
+configure_file(cmake/cmake.h.in ${CMAKE_BINARY_DIR}/include/cmake.h)
+
 # Set up the header file directory, and build the library of common
 # code.
 
 include_directories(PRIVATE include)
+include_directories(PRIVATE ${CMAKE_BINARY_DIR}/include)
 add_subdirectory(lib)
 
 # Macro to mark a binary as to be installed by 'make install' or

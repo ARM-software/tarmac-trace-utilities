@@ -20,6 +20,8 @@
 #include "libtarmac/misc.hh"
 #include "libtarmac/reporter.hh"
 
+#include "cmake.h"
+
 #include <windows.h>
 #include <shlobj.h>
 
@@ -183,6 +185,14 @@ off_t MMapFile::alloc(size_t size)
     next_offset += size;
     return ret;
 }
+
+#if !HAVE_APPDATAPROGRAMDATA
+// Compensate for this not being defined by earlier toolchain versions
+static const GUID FOLDERID_AppDataProgramData = {
+    0x559d40a3, 0xa036, 0x40fa,
+    {0xaf, 0x61, 0x84, 0xcb, 0x43, 0x0a, 0x4d, 0x34},
+};
+#endif
 
 bool get_conf_path(const string &filename, string &out)
 {
