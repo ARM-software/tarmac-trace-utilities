@@ -150,7 +150,9 @@ struct Token {
     }
 };
 
-struct TarmacLineParserImpl {
+class TarmacLineParserImpl {
+    friend class TarmacLineParser;
+
     string line;
     size_t pos, size;
     Time last_timestamp;

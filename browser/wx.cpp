@@ -1153,7 +1153,8 @@ class MemPromptDialog;
 class SubsidiaryView;
 class SubsidiaryViewListNode : public ListNode<SubsidiaryView> {
 };
-struct SubsidiaryView : public TextViewWindow, public SubsidiaryViewListNode {
+class SubsidiaryView : public TextViewWindow, public SubsidiaryViewListNode {
+  public:
     Browser &br;
 
     static vector<SubsidiaryView *> all_subviews;
