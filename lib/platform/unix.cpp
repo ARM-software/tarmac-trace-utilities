@@ -159,3 +159,18 @@ bool get_conf_path(const string &filename, string &out)
 
     return false;
 }
+
+FILE *fopen_wrapper(const char *filename, const char *mode)
+{
+    return fopen(filename, mode);
+}
+
+struct tm localtime_wrapper(time_t t)
+{
+    return *localtime(&t);
+}
+
+string asctime_wrapper(struct tm tm)
+{
+    return asctime(&tm);
+}

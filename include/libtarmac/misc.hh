@@ -20,7 +20,9 @@
 #define LIBTARMAC_MISC_HH
 
 #include <cstddef>
+#include <stdio.h>
 #include <string>
+#include <time.h>
 
 template <typename T, size_t n> static inline void enforce_array(T (&)[n]) {}
 #define lenof(x) (sizeof(enforce_array(x), x) / sizeof(*(x)))
@@ -76,6 +78,10 @@ struct TracePair {
 bool get_file_timestamp(const std::string &filename, uint64_t *out_timestamp);
 bool is_interactive();
 std::string get_error_message();
+
+FILE *fopen_wrapper(const char *filename, const char *mode);
+struct tm localtime_wrapper(time_t t);
+std::string asctime_wrapper(struct tm tm);
 
 bool get_conf_path(const std::string &filename, std::string &out);
 

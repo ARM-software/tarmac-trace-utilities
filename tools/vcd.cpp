@@ -16,6 +16,8 @@
  * This file is part of Tarmac Trace Utilities
  */
 
+#include "libtarmac/misc.hh"
+
 #include "vcd.hh"
 
 #include <cassert>
@@ -237,10 +239,10 @@ VCDFile::VCDFile(const string &ModuleName, const string &Filename, bool NoDate)
 {
     time_t tt;
     time(&tt);
-    struct tm *ti = localtime(&tt);
+    struct tm ti = localtime_wrapper(tt);
 
     if (!NoDate)
-        Date = chomp(asctime(ti));
+        Date = chomp(asctime_wrapper(ti));
 }
 
 VCDFile::~VCDFile() { addVCDKeyword("end"); }

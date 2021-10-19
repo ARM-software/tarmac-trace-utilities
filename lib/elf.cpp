@@ -270,7 +270,7 @@ using Elf64BE = Elf64<ByteOrderBE>;
 
 std::unique_ptr<ElfFile> elf_open(const string &filename)
 {
-    FILE *fp = fopen(filename.c_str(), "rb");
+    FILE *fp = fopen_wrapper(filename.c_str(), "rb");
     if (!fp)
         return nullptr;
 

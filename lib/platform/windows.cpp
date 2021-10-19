@@ -217,3 +217,25 @@ bool get_conf_path(const string &filename, string &out)
     out = oss.str();
     return true;
 }
+
+FILE *fopen_wrapper(const char *filename, const char *mode)
+{
+    FILE *ret;
+    if (fopen_s(&ret, filename, mode) != 0)
+        return NULL;
+    return ret;
+}
+
+struct tm localtime_wrapper(time_t t)
+{
+    struct tm ret;
+    localtime_s(&ret, &t);
+    return ret;
+}
+
+string asctime_wrapper(struct tm tm)
+{
+    char buffer[256];
+    asctime_s(buffer, sizeof(buffer), &tm);
+    return buffer;
+}
