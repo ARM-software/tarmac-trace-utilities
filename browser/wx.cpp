@@ -1038,7 +1038,7 @@ void TextViewWindow::left_up(wxMouseEvent &event)
 
         ostringstream oss;
         clipboard_get_paste_data(oss, selection_start, selection_end);
-        selected_text = move(oss.str());
+        selected_text = oss.str();
         write_clipboard(true, selected_text);
     }
 }
