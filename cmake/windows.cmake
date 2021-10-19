@@ -44,3 +44,21 @@ if(DEFINED PDCURSES_ROOT)
     IMPORTED_LOCATION ${PDCURSES_BUILD_DIR}/pdcurses.lib)
   set(CURSES_LIBRARIES pdcurses)
 endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  # Turn off some too-noisy MSVC compiler warnings:
+  #
+  # 4244, 4267: possible loss of data when narrowing integers. Often
+  # this is done on purpose, and I don't think it makes things clearer
+  # to write an explicit static_cast in every case.
+  #
+  # 4018: signed/unsigned mismatch in comparison. Generally this turns
+  # out to be in cases where it obviously can't go wrong anyway, e.g.
+  # an 'int' control variable in a for loop whose limit is unsigned
+  # but clearly small.
+  #
+  # 4146: applying unary '-' to an unsigned type. This _could_
+  # indicate that you've forgotten the type was unsigned, but it's
+  # also a perfectly reasonable thing to do for bit-twiddling purposes.
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4267 /wd4018 /wd4146")
+endif()
