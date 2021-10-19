@@ -2805,6 +2805,7 @@ Addr MemoryWindow::addr_from_valid_logpos(const LogicalPos &logpos)
         return line_addr + logpos.char_index;
     default:
         assert(false && "Invalid logpos in addr_from_valid_logpos");
+        return 0; // placate compiler warning
     }
 }
 

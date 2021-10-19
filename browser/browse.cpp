@@ -473,6 +473,7 @@ void Browser::TraceView::update_visible_node()
         unsigned physline_of_prev_node =
             visible_to_physical_line(visline_of_next_node - 1);
         bool ret = br.node_at_line(physline_of_prev_node, &curr_visible_node);
+        (void)ret; // squash compiler warning if asserts compiled out
         assert(ret);
     } else {
         curr_visible_node = curr_logical_node;
@@ -487,6 +488,7 @@ void Browser::TraceView::visible_to_logical_node(SeqOrderPayload &visnode,
     unsigned physline_of_target_node =
         visible_to_physical_line(curr_last_visline + 1) - 1;
     bool ret = br.node_at_line(physline_of_target_node, lognode);
+    (void)ret; // squash compiler warning if asserts compiled out
     assert(ret);
 }
 
@@ -956,6 +958,7 @@ void Browser::format_reg(string &dispstr, string &disptype, const RegisterId &r,
     }
 
     size_t expected_len = valstart + format_reg_length(r);
+    (void)expected_len; // squash compiler warning if asserts compiled out
     assert(dispstr.size() == expected_len);
     assert(disptype.size() == expected_len);
 }

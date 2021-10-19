@@ -205,6 +205,7 @@ CallTree::CallTree(IndexNavigator &IN)
         } else {
             SeqOrderPayload prevNode;
             bool success = IN.get_previous_node(node, &prevNode);
+            (void)success; // squash compiler warning if asserts compiled out
             assert(success);
             tracker.newDepth(node, prevNode);
         }
@@ -244,6 +245,7 @@ CallTree::CallTree(IndexNavigator &IN)
 
     SeqOrderPayload finalNode;
     bool success = IN.find_buffer_limit(true, &finalNode);
+    (void)success; // squash compiler warning if asserts compiled out
     assert(success);
     tracker.finish(finalNode);
 }
