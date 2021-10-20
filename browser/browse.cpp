@@ -873,10 +873,10 @@ void Browser::format_reg(string &dispstr, string &disptype, const RegisterId &r,
     for (int j = rsize; j-- > 0;) {
         char buf[3];
         if (!def[j]) {
-            sprintf(buf, "??");
+            snprintf(buf, sizeof(buf), "??");
             all_defined = false;
         } else {
-            sprintf(buf, "%02x", (unsigned)val[j]);
+            snprintf(buf, sizeof(buf), "%02x", (unsigned)val[j]);
             intval = (intval << 8) | val[j];
         }
         dispstr += buf;
@@ -979,7 +979,8 @@ void Browser::format_memory_split(string &dispaddr, string &typeaddr,
 
     {
         char buf[32];
-        sprintf(buf, "%0*llx", addr_chars, (unsigned long long)addr);
+        snprintf(buf, sizeof(buf), "%0*llx",
+                 addr_chars, (unsigned long long)addr);
         dispaddr += buf;
         type_extend(typeaddr, dispaddr, 'f'); // fixed content
     }
@@ -1011,7 +1012,7 @@ void Browser::format_memory_split(string &dispaddr, string &typeaddr,
 
         if (def) {
             char buf[4];
-            sprintf(buf, "%02x", (unsigned)val);
+            snprintf(buf, sizeof(buf), "%02x", (unsigned)val);
             disphex += buf;
             type_extend(typehex, disphex, 'v' + dh);
             if (val >= 0x20 && val < 0x7F) {

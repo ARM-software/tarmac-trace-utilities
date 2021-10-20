@@ -60,7 +60,7 @@ class TestReceiver : public ParseReceiver {
         const char *sep = "";
         // Print the bytes big-endian for legibility
         for (size_t pos = ev.bytes.size(); pos-- > 0 ;) {
-            sprintf(buf, "%02x", (unsigned)ev.bytes[pos]);
+            snprintf(buf, sizeof(buf), "%02x", (unsigned)ev.bytes[pos]);
             os << sep << buf;
             sep = ":";
         }

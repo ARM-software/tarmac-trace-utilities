@@ -56,7 +56,8 @@ class Bigint {
     {
         char buf[32];
         digits.resize(extradigits, filldigit);
-        size_t i = sprintf(buf, "%.0llu", val); // generate no digits for zero
+        size_t i = snprintf(buf, sizeof(buf),
+                            "%.0llu", val); // generate no digits for zero
         while (i-- > 0)
             digits.push_back(buf[i] - '0');
     }
@@ -155,7 +156,8 @@ static string fp_btod(unsigned long long mantissa, int power2, int precision)
         ret.push_back('0' + val.digit(digitpos--));
     {
         char expstr[32];
-        sprintf(expstr, "e%+03d", val.ndigits() == 0 ? 0 : power10);
+        snprintf(expstr, sizeof(expstr), "e%+03d",
+                 val.ndigits() == 0 ? 0 : power10);
         ret += expstr;
     }
     return ret;
