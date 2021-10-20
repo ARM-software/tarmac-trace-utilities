@@ -1622,8 +1622,8 @@ void SubsidiaryView::update_trace_window_list()
         if (tw) {
             ostringstream oss;
             oss << "#" << tw->window_index;
-            linkcombo->Append(oss.str(),
-                              reinterpret_cast<void *>(tw->window_index));
+            linkcombo->Append(oss.str(), reinterpret_cast<void *>(
+                                  static_cast<intptr_t>(tw->window_index)));
             if (tw == this->tw)
                 id = curr_id;
             curr_id++;
