@@ -1470,6 +1470,7 @@ class TraceWindow : public TextViewWindow {
     wxWindowID mi_calldepth, mi_highlight, mi_branchtarget;
     void newtrace_menuaction(wxCommandEvent &event);
     void newmem_menuaction(wxCommandEvent &event);
+    void newstk_menuaction(wxCommandEvent &event);
     void newcorereg_menuaction(wxCommandEvent &event);
     void newspreg_menuaction(wxCommandEvent &event);
     void newdpreg_menuaction(wxCommandEvent &event);
@@ -1661,6 +1662,7 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
 {
     wxWindowID mi_newtrace = NewControlId();
     wxWindowID mi_newmem = NewControlId();
+    wxWindowID mi_newstk = NewControlId();
     wxWindowID mi_newcorereg = NewControlId();
     wxWindowID mi_newspreg = NewControlId();
     wxWindowID mi_newdpreg = NewControlId();
@@ -1683,6 +1685,7 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
         wxAcceleratorEntry accel(wxACCEL_CTRL, (int)'M', wxID_CLOSE);
         newmenu->Append(mi_newmem, "Memory view")->SetAccel(&accel);
     }
+    newmenu->Append(mi_newstk, "Stack view");
     newmenu->Append(mi_newcorereg, "Core register view");
     newmenu->Append(mi_newspreg, "Single-precision FP reg view");
     newmenu->Append(mi_newdpreg, "Double-precision FP reg view");
@@ -1706,6 +1709,7 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
 
     Bind(wxEVT_MENU, &TraceWindow::newtrace_menuaction, this, mi_newtrace);
     Bind(wxEVT_MENU, &TraceWindow::newmem_menuaction, this, mi_newmem);
+    Bind(wxEVT_MENU, &TraceWindow::newstk_menuaction, this, mi_newstk);
     Bind(wxEVT_MENU, &TraceWindow::newcorereg_menuaction, this, mi_newcorereg);
     Bind(wxEVT_MENU, &TraceWindow::newspreg_menuaction, this, mi_newspreg);
     Bind(wxEVT_MENU, &TraceWindow::newdpreg_menuaction, this, mi_newdpreg);
@@ -2253,6 +2257,17 @@ void TraceWindow::mem_prompt_dialog_ended(bool ok)
     delete mem_prompt_dialog;
     mem_prompt_dialog = nullptr;
 
+    add_subview(
+        new MemoryWindow(app, addr, 16, br.index.isAArch64(), br, this));
+}
+
+void TraceWindow::newstk_menuaction(wxCommandEvent &event)
+{
+    string expr = "reg::sp";
+    MemoryWindow::StartAddr addr;
+    ostringstream error;
+    bool success = addr.parse(expr, error);
+    assert(success);
     add_subview(
         new MemoryWindow(app, addr, 16, br.index.isAArch64(), br, this));
 }
