@@ -1692,7 +1692,7 @@ class MemoryDisplay : public Window {
             string line, type;
             size_t hexpos;
 
-            br.format_memory(line, type, addr, bytes_per_line, 8, hexpos,
+            br.format_memory(line, type, addr, true, bytes_per_line, 8, hexpos,
                              memroot, diff_memroot, diff_minline);
 
             if (addr <= cursor_addr && cursor_addr < addr + bytes_per_line) {

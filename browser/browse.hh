@@ -192,15 +192,15 @@ class Browser : public IndexNavigator {
     // separately. (In which case, 'hexpos' is not needed, because
     // it's the start of the hex column.)
     void format_memory(std::string &dispstr, std::string &disptype, Addr addr,
-                       int bytes_per_line, int addr_chars, size_t &hexpos,
-                       off_t memroot, off_t diff_memroot = 0,
+                       bool addr_known, int bytes_per_line, int addr_chars,
+                       size_t &hexpos, off_t memroot, off_t diff_memroot = 0,
                        unsigned diff_minline = 0);
     void format_memory_split(std::string &dispaddr, std::string &typeaddr,
                              std::string &disphex, std::string &typehex,
                              std::string &dispchars, std::string &typechars,
-                             Addr addr, int bytes_per_line, int addr_chars,
-                             off_t memroot, off_t diff_memroot = 0,
-                             unsigned diff_minline = 0);
+                             Addr addr, bool addr_known, int bytes_per_line,
+                             int addr_chars, off_t memroot,
+                             off_t diff_memroot = 0, unsigned diff_minline = 0);
 
     // This version of evaluate_expression_addr() still lets you refer
     // to image symbols, but unlike TraceView's one, it doesn't let

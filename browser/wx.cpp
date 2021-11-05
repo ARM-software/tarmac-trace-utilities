@@ -2760,8 +2760,8 @@ void MemoryWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
 
         Addr addr = start_addr + line * bytes_per_line;
         br.format_memory_split(dispaddr, typeaddr, disphex, typehex, dispchars,
-                               typechars, addr, bytes_per_line, addr_chars,
-                               memroot, diff_memroot, diff_minline);
+                               typechars, addr, true, bytes_per_line,
+                               addr_chars, memroot, diff_memroot, diff_minline);
 
         int y = line_height * (line - line_start);
         drawing_area->add_regmem_text(0, y, dispaddr, typeaddr,
@@ -3019,8 +3019,8 @@ void MemoryWindow::clipboard_get_paste_data(ostream &os, LogicalPos start,
         string disp[3], type[3];
 
         br.format_memory_split(disp[0], type[0], disp[1], type[1], disp[2],
-                               type[2], addr, bytes_per_line, addr_chars,
-                               memroot);
+                               type[2], addr, true, bytes_per_line,
+                               addr_chars, memroot);
 
         string &s = disp[col];
 

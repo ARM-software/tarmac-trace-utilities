@@ -983,7 +983,8 @@ void Browser::format_reg(string &dispstr, string &disptype, const RegisterId &r,
 void Browser::format_memory_split(string &dispaddr, string &typeaddr,
                                   string &disphex, string &typehex,
                                   string &dispchars, string &typechars,
-                                  Addr addr, int bytes_per_line, int addr_chars,
+                                  Addr addr, bool addr_known,
+                                  int bytes_per_line, int addr_chars,
                                   off_t memroot, off_t diff_memroot,
                                   unsigned diff_minline)
 {
@@ -996,16 +997,27 @@ void Browser::format_memory_split(string &dispaddr, string &typeaddr,
 
     {
         char buf[32];
-        snprintf(buf, sizeof(buf), "%0*llx",
-                 addr_chars, (unsigned long long)addr);
+        char type;
+        assert(addr_chars < sizeof(buf));
+        if (addr_known) {
+            snprintf(buf, sizeof(buf), "%0*llx",
+                     addr_chars, (unsigned long long)addr);
+            type = 'f'; // fixed content
+        } else {
+            memset(buf, '?', addr_chars);
+            buf[addr_chars] = '\0';
+            type = 'u'; // undefined
+        }
         dispaddr += buf;
-        type_extend(typeaddr, dispaddr, 'f'); // fixed content
+        type_extend(typeaddr, dispaddr, type);
     }
 
     Addr diff_lo, diff_hi;
     bool got_diff =
-        diff_memroot && find_next_mod(diff_memroot, 'm', addr, diff_minline, +1,
-                                      diff_lo, diff_hi);
+        addr_known
+            ? false
+            : diff_memroot && find_next_mod(diff_memroot, 'm', addr,
+                                            diff_minline, +1, diff_lo, diff_hi);
 
     int prev_dh = 0;
     for (int b = 0; b < bytes_per_line; b++) {
@@ -1015,7 +1027,10 @@ void Browser::format_memory_split(string &dispaddr, string &typeaddr,
         }
 
         unsigned char val, def;
-        getmem(memroot, 'm', addr, 1, &val, &def);
+        if (addr_known)
+            getmem(memroot, 'm', addr, 1, &val, &def);
+        else
+            def = 0;
         int dh =
             (got_diff && addr >= diff_lo && addr <= diff_hi ? 'A' - 'a' : 0);
 
@@ -1051,15 +1066,15 @@ void Browser::format_memory_split(string &dispaddr, string &typeaddr,
 }
 
 void Browser::format_memory(string &line, string &type, Addr addr,
-                            int bytes_per_line, int addr_chars, size_t &hexpos,
-                            off_t memroot, off_t diff_memroot,
+                            bool addr_known, int bytes_per_line, int addr_chars,
+                            size_t &hexpos, off_t memroot, off_t diff_memroot,
                             unsigned diff_minline)
 {
     string dispaddr, typeaddr, disphex, typehex, dispchars, typechars;
 
     format_memory_split(dispaddr, typeaddr, disphex, typehex, dispchars,
-                        typechars, addr, bytes_per_line, addr_chars, memroot,
-                        diff_memroot, diff_minline);
+                        typechars, addr, addr_known, bytes_per_line, addr_chars,
+                        memroot, diff_memroot, diff_minline);
 
     static const size_t separator_len = 2;
     static const string dispsep(separator_len, ' ');
