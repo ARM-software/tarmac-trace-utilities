@@ -2731,8 +2731,11 @@ MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, Addr addr, int bpl,
 {
     set_title("Memory");
 
-    start_addr = addr % bytes_per_line;
-    wintop = addr / bytes_per_line;
+    // In MemoryWindow, the 'wintop' field seen by the parent class is
+    // ignored; we manage our own start address.
+    wintop = 0;
+
+    start_addr = addr;
 
     mi_ctx_provenance = NewControlId();
     Bind(wxEVT_MENU, &MemoryWindow::provenance_menuaction, this,
@@ -2788,7 +2791,7 @@ void MemoryWindow::mousewheel(wxMouseEvent &event)
     mousewheel_accumulator -= scaled * denominator;
 
     if (scaled) {
-        wintop -= scaled;
+        start_addr -= scaled * bytes_per_line;
         reset_addredit();
         drawing_area->Refresh();
     }
@@ -2911,25 +2914,25 @@ bool MemoryWindow::keypress(wxKeyEvent &event)
     switch (event.GetKeyCode()) {
     case WXK_UP:
     case WXK_NUMPAD_UP:
-        wintop -= 1;
+        start_addr -= bytes_per_line;
         reset_addredit();
         drawing_area->Refresh();
         return true;
     case WXK_DOWN:
     case WXK_NUMPAD_DOWN:
-        wintop += 1;
+        start_addr += bytes_per_line;
         reset_addredit();
         drawing_area->Refresh();
         return true;
     case WXK_PAGEUP:
     case WXK_NUMPAD_PAGEUP:
-        wintop -= drawing_area->height() / line_height;
+        start_addr -= drawing_area->height() / line_height * bytes_per_line;
         reset_addredit();
         drawing_area->Refresh();
         return true;
     case WXK_PAGEDOWN:
     case WXK_NUMPAD_PAGEDOWN:
-        wintop += drawing_area->height() / line_height;
+        start_addr += drawing_area->height() / line_height * bytes_per_line;
         reset_addredit();
         drawing_area->Refresh();
         return true;
@@ -2939,7 +2942,7 @@ bool MemoryWindow::keypress(wxKeyEvent &event)
 
 void MemoryWindow::reset_addredit()
 {
-    Addr addr = start_addr + ceil(wintop) * bytes_per_line;
+    Addr addr = start_addr;
     ostringstream oss;
     oss << "0x" << hex << addr;
     addredit->SetValue(oss.str());
@@ -2959,8 +2962,7 @@ void MemoryWindow::addredit_activated(wxCommandEvent &event)
         return;
     }
 
-    wintop = ((addr - start_addr) / bytes_per_line -
-              drawing_area->height() / line_height / 2);
+    start_addr = addr - (drawing_area->height() / line_height / 2) * bytes_per_line;
     reset_addredit();
     drawing_area->Refresh();
     drawing_area->SetFocus();
