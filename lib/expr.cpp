@@ -20,11 +20,13 @@
 
 #include <ctype.h>
 #include <istream>
+#include <memory>
 #include <ostream>
 #include <sstream>
 #include <string>
 
 using std::istream;
+using std::make_shared;
 using std::ostream;
 using std::ostringstream;
 using std::string;
@@ -39,7 +41,13 @@ struct ConstantExpression : Expression {
     ConstantExpression(uint64_t value_) : value(value_) {}
     uint64_t evaluate(const ExecutionContext &) { return value; }
     virtual void dump(ostream &os) { os << "(const " << value << ")"; }
+    virtual bool is_constant() { return true; }
 };
+
+ExprPtr constant_expression(uint64_t value)
+{
+    return make_shared<ConstantExpression>(value);
+}
 
 struct OperatorExpression : Expression {
     ExprPtr lhexpr, rhexpr;
@@ -64,6 +72,10 @@ struct OperatorExpression : Expression {
             rhexpr->dump(os);
         }
         os << ")";
+    }
+    virtual bool is_constant() {
+        return (lhexpr ? lhexpr->is_constant() : true) &&
+               (rhexpr ? rhexpr->is_constant() : true);
     }
 };
 

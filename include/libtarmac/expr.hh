@@ -47,10 +47,12 @@ struct Expression {
     virtual ~Expression() {}
     virtual uint64_t evaluate(const ExecutionContext &) = 0;
     virtual void dump(std::ostream &) = 0;
+    virtual bool is_constant() { return false; }
 };
 
 using ExprPtr = std::shared_ptr<Expression>;
 
 ExprPtr parse_expression(const std::string &input, std::ostream &error);
+ExprPtr constant_expression(uint64_t value);
 
 #endif // LIBTARMAC_EXPR_HH
