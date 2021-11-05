@@ -151,6 +151,7 @@ class Browser : public IndexNavigator {
         // symbols in the image, and also the values of registers at
         // the TraceView's current time.
         Addr evaluate_expression_addr(const std::string &line);
+        Addr evaluate_expression_addr(ExprPtr expr);
     };
 
     Browser(const Browser &) = delete;
@@ -205,6 +206,7 @@ class Browser : public IndexNavigator {
     // to image symbols, but unlike TraceView's one, it doesn't let
     // you refer to registers.
     Addr evaluate_expression_addr(const std::string &line);
+    Addr evaluate_expression_addr(ExprPtr expr);
 };
 
 size_t format_reg_length(const RegisterId &r);

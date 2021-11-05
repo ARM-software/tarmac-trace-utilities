@@ -657,6 +657,15 @@ struct TraceExecutionContext : ImageExecutionContext {
     }
 };
 
+static Addr evaluate_inner(ExprPtr expr, const ExecutionContext &ec)
+{
+    try {
+        return expr->evaluate(ec);
+    } catch (EvaluationError &ee) {
+        throw invalid_argument(ee.msg);
+    }
+}
+
 Addr evaluate_expression_general(const string &line, const ExecutionContext &ec)
 {
     ostringstream err;
@@ -665,11 +674,7 @@ Addr evaluate_expression_general(const string &line, const ExecutionContext &ec)
     if (!expr)
         throw invalid_argument(err.str());
 
-    try {
-        return expr->evaluate(ec);
-    } catch (EvaluationError &ee) {
-        throw invalid_argument(ee.msg);
-    }
+    return evaluate_inner(expr, ec);
 }
 
 Addr evaluate_expression_plain(const string &line)
@@ -684,10 +689,22 @@ Addr Browser::evaluate_expression_addr(const string &line)
     return evaluate_expression_general(line, ec);
 }
 
+Addr Browser::evaluate_expression_addr(ExprPtr expr)
+{
+    ImageExecutionContext ec(*this);
+    return evaluate_inner(expr, ec);
+}
+
 Addr Browser::TraceView::evaluate_expression_addr(const string &line)
 {
     TraceExecutionContext ec(*this);
     return evaluate_expression_general(line, ec);
+}
+
+Addr Browser::TraceView::evaluate_expression_addr(ExprPtr expr)
+{
+    TraceExecutionContext ec(*this);
+    return evaluate_inner(expr, ec);
 }
 
 bool Browser::TraceView::position_hidden()
