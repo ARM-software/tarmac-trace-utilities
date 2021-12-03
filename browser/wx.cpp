@@ -1333,8 +1333,21 @@ class MemoryWindow : public SubsidiaryView {
     ExprPtr start_addr_expr;
 
   public:
-    MemoryWindow(GuiTarmacBrowserApp *app, Addr addr, int bpl, bool sfb,
-                 Browser &br, TraceWindow *tw);
+    struct StartAddr {
+        // If this code base could assume C++17, it would be nicer to
+        // make this a std::variant. The point is that it holds
+        // _either_ an expression and its string form (indicated by
+        // expr not being null) _or_ a constant (if expr is null).
+        ExprPtr expr;
+        string exprstr;
+        Addr constant;
+        StartAddr() : expr(nullptr), constant(0) {}
+        StartAddr(Addr addr) : expr(nullptr), constant(addr) {}
+        bool parse(const string &s, ostringstream &error);
+    };
+
+    MemoryWindow(GuiTarmacBrowserApp *app, StartAddr addr, int bpl,
+                 bool sfb, Browser &br, TraceWindow *tw);
 };
 
 class TraceWindow : public TextViewWindow {
@@ -2230,18 +2243,16 @@ void TraceWindow::mem_prompt_dialog_ended(bool ok)
 
     string value = mem_prompt_dialog->addredit_value();
 
-    Addr addr;
-    try {
-        addr = vu.evaluate_expression_addr(value);
-    } catch (invalid_argument) {
-        wxMessageBox(wxT("Unable to evaluate input as an address"));
+    MemoryWindow::StartAddr addr;
+    ostringstream error;
+    if (!addr.parse(value, error)) {
+        wxMessageBox(wxT("Error parsing expression: " + error.str()));
         return;
     }
 
     delete mem_prompt_dialog;
     mem_prompt_dialog = nullptr;
 
-    addr &= ~(Addr)15;
     add_subview(
         new MemoryWindow(app, addr, 16, br.index.isAArch64(), br, this));
 }
@@ -2734,8 +2745,8 @@ pair<unsigned, unsigned> MemoryWindow::compute_size(int bpl, bool sfb)
     return pair<unsigned, unsigned>(w, h);
 }
 
-MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, Addr addr, int bpl,
-                           bool sfb, Browser &br, TraceWindow *tw)
+MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, StartAddr addr,
+                           int bpl, bool sfb, Browser &br, TraceWindow *tw)
     : SubsidiaryView(app, compute_size(bpl, sfb), false, br, tw),
       addr_chars(sfb ? 16 : 8), bytes_per_line(bpl)
 {
@@ -2745,9 +2756,13 @@ MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, Addr addr, int bpl,
     // ignored; we manage our own start address.
     wintop = 0;
 
-    start_addr_expr = nullptr;
-    start_addr_known = true;
-    start_addr = addr;
+    if (addr.expr) {
+        set_start_addr_expr(addr.expr, addr.exprstr);
+    } else {
+        start_addr_expr = nullptr;
+        start_addr = addr.constant;
+        start_addr -= (start_addr % bytes_per_line);
+    }
 
     mi_ctx_provenance = NewControlId();
     Bind(wxEVT_MENU, &MemoryWindow::provenance_menuaction, this,
@@ -2982,6 +2997,16 @@ void MemoryWindow::reset_addredit()
         oss << "0x" << hex << addr;
     }
     addredit->SetValue(oss.str());
+}
+
+bool MemoryWindow::StartAddr::parse(const string &s, ostringstream &error)
+{
+    expr = parse_expression(s, error);
+    if (!expr)
+        return false;
+
+    exprstr = s;
+    return true;
 }
 
 void MemoryWindow::set_start_addr_expr(ExprPtr expr, const string &exprstr)
