@@ -1184,10 +1184,13 @@ class SubsidiaryView : public TextViewWindow, public SubsidiaryViewListNode {
         }
     }
 
+    virtual void memroot_changed() { }
+
     void update_line(off_t memroot_, unsigned line_)
     {
         memroot = memroot_;
         line = line_;
+        memroot_changed();
         reset_lineedit();
         drawing_area->Refresh();
 
@@ -1318,9 +1321,15 @@ class MemoryWindow : public SubsidiaryView {
                               Addr &size);
     virtual void update_mouseover(const LogicalPos &) override;
 
+    void compute_start_addr();
+    virtual void memroot_changed() override;
+
   protected:
     int addr_chars, bytes_per_line;
     Addr start_addr;
+    bool start_addr_known;
+    string start_addr_exprstr;
+    ExprPtr start_addr_expr;
 
   public:
     MemoryWindow(GuiTarmacBrowserApp *app, Addr addr, int bpl, bool sfb,
@@ -2735,6 +2744,8 @@ MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, Addr addr, int bpl,
     // ignored; we manage our own start address.
     wintop = 0;
 
+    start_addr_expr = nullptr;
+    start_addr_known = true;
     start_addr = addr;
 
     mi_ctx_provenance = NewControlId();
@@ -2754,6 +2765,25 @@ MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, Addr addr, int bpl,
     reset_addredit();
 }
 
+void MemoryWindow::memroot_changed()
+{
+    if (start_addr_expr)
+        compute_start_addr();
+}
+
+void MemoryWindow::compute_start_addr()
+{
+    try {
+        if (tw)
+            start_addr = tw->vu.evaluate_expression_addr(start_addr_expr);
+        else
+            start_addr = br.evaluate_expression_addr(start_addr_expr);
+        start_addr_known = true;
+    } catch (invalid_argument) {
+        start_addr_known = false;
+    }
+}
+
 unsigned MemoryWindow::n_display_lines() { return 16; }
 
 void MemoryWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
@@ -2763,8 +2793,9 @@ void MemoryWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
 
         Addr addr = start_addr + line * bytes_per_line;
         br.format_memory_split(dispaddr, typeaddr, disphex, typehex, dispchars,
-                               typechars, addr, true, bytes_per_line,
-                               addr_chars, memroot, diff_memroot, diff_minline);
+                               typechars, addr, start_addr_known,
+                               bytes_per_line, addr_chars, memroot,
+                               diff_memroot, diff_minline);
 
         int y = line_height * (line - line_start);
         drawing_area->add_regmem_text(0, y, dispaddr, typeaddr,
@@ -2942,9 +2973,13 @@ bool MemoryWindow::keypress(wxKeyEvent &event)
 
 void MemoryWindow::reset_addredit()
 {
-    Addr addr = start_addr;
     ostringstream oss;
-    oss << "0x" << hex << addr;
+    if (start_addr_expr) {
+        oss << start_addr_exprstr;
+    } else {
+        Addr addr = start_addr;
+        oss << "0x" << hex << addr;
+    }
     addredit->SetValue(oss.str());
 }
 
@@ -3021,7 +3056,7 @@ void MemoryWindow::clipboard_get_paste_data(ostream &os, LogicalPos start,
         string disp[3], type[3];
 
         br.format_memory_split(disp[0], type[0], disp[1], type[1], disp[2],
-                               type[2], addr, true, bytes_per_line,
+                               type[2], addr, start_addr_known, bytes_per_line,
                                addr_chars, memroot);
 
         string &s = disp[col];
