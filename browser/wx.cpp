@@ -1321,6 +1321,7 @@ class MemoryWindow : public SubsidiaryView {
                               Addr &size);
     virtual void update_mouseover(const LogicalPos &) override;
 
+    void set_start_addr_expr(ExprPtr expr, const string &exprstr);
     void compute_start_addr();
     virtual void memroot_changed() override;
 
@@ -2983,21 +2984,52 @@ void MemoryWindow::reset_addredit()
     addredit->SetValue(oss.str());
 }
 
+void MemoryWindow::set_start_addr_expr(ExprPtr expr, const string &exprstr)
+{
+    start_addr_expr = expr;
+    compute_start_addr();
+
+    if (expr->is_constant() && start_addr_known) {
+        /*
+         * Normalise constant expressions to a plain number. This way,
+         * there's no hidden state: when you scroll the window, the
+         * new start address you obtained by scrolling will be the
+         * official start address, so that the window will stay
+         * pointing there even when the trace position changes.
+         *
+         * We only keep the start address in expression form if it's
+         * actually variable.
+         */
+        start_addr_expr = nullptr;
+
+        /*
+         * Also, for constant expressions, round to a multiple of the
+         * hex dump width, which I think is generally less confusing.
+         */
+        start_addr -= (start_addr % bytes_per_line);
+    } else {
+        /*
+         * Keep the string version of the address expression, so that
+         * it's obvious from looking at the toolbar that this memory
+         * window has a variable start point.
+         */
+        start_addr_exprstr = exprstr;
+    }
+}
+
 void MemoryWindow::addredit_activated(wxCommandEvent &event)
 {
     string value = addredit->GetValue().ToStdString();
-    Addr addr;
 
-    try {
-        if (tw)
-            addr = tw->vu.evaluate_expression_addr(value);
-        else
-            addr = br.evaluate_expression_addr(value);
-    } catch (invalid_argument) {
+    ExprPtr expr;
+    ostringstream error;
+    expr = parse_expression(value, error);
+    if (!expr) {
+        wxMessageBox(wxT("Error parsing expression: " + error.str()));
         return;
     }
 
-    start_addr = addr - (drawing_area->height() / line_height / 2) * bytes_per_line;
+    set_start_addr_expr(expr, value);
     reset_addredit();
     drawing_area->Refresh();
     drawing_area->SetFocus();
