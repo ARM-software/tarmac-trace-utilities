@@ -37,6 +37,7 @@ if (${wxWidgets_FOUND})
     set_target_properties(tarmac-gui-browser PROPERTIES
       LINK_FLAGS /subsystem:windows)
   endif()
+  install_programs(tarmac-gui-browser)
 else()
   message(WARNING "Not building tarmac-gui-browser (failed to locate wxWidgets)")
 endif()
