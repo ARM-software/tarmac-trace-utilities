@@ -32,16 +32,17 @@ struct TarmacSite {
     unsigned tarmac_line; // Line number in the trace
     off_t tarmac_pos;     // Offset (in bytes) in the trace
 
-    TarmacSite(Addr addr, Time time, unsigned tarmac_line, off_t tarmac_pos)
+    constexpr TarmacSite(Addr addr, Time time, unsigned tarmac_line,
+                         off_t tarmac_pos)
         : addr(addr), time(time), tarmac_line(tarmac_line),
           tarmac_pos(tarmac_pos)
     {
     }
-    TarmacSite(Addr addr, unsigned line)
+    constexpr TarmacSite(Addr addr, unsigned line)
         : addr(addr), time(0), tarmac_line(line), tarmac_pos(0)
     {
     }
-    TarmacSite() : addr(0), time(0), tarmac_line(0), tarmac_pos(0) {}
+    constexpr TarmacSite() : addr(0), time(0), tarmac_line(0), tarmac_pos(0) {}
     TarmacSite(const TarmacSite &) = default;
     TarmacSite &operator=(const TarmacSite &ts) = default;
 
