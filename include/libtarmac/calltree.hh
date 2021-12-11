@@ -62,6 +62,14 @@ struct TarmacSite {
         tarmac_pos = sop.trace_file_pos;
         return *this;
     }
+
+    bool operator==(const TarmacSite &rhs) const {
+        return addr == rhs.addr && time == rhs.time &&
+               tarmac_line == rhs.tarmac_line && tarmac_pos == rhs.tarmac_pos;
+    }
+    bool operator!=(const TarmacSite &rhs) const {
+      return !(*this == rhs);
+    }
 };
 
 class CallTree;
