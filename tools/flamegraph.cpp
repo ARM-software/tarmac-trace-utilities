@@ -16,9 +16,8 @@
  * This file is part of Tarmac Trace Utilities
  */
 
-#include "calltree.hh"
-
 #include "libtarmac/argparse.hh"
+#include "libtarmac/calltree.hh"
 #include "libtarmac/reporter.hh"
 #include "libtarmac/tarmacutil.hh"
 

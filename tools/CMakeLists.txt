@@ -19,19 +19,19 @@
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-add_executable(tarmac-callinfo main-callinfo.cpp callinfo.cpp)
+add_executable(tarmac-callinfo callinfo.cpp)
 target_link_libraries(tarmac-callinfo tarmac)
 
-add_executable(tarmac-calltree calltreeviewer.cpp calltree.cpp)
+add_executable(tarmac-calltree calltree.cpp)
 target_link_libraries(tarmac-calltree tarmac)
 
-add_executable(tarmac-flamegraph flamegraph.cpp calltree.cpp)
+add_executable(tarmac-flamegraph flamegraph.cpp)
 target_link_libraries(tarmac-flamegraph tarmac)
 
-add_executable(tarmac-profile profileinfo.cpp calltree.cpp)
+add_executable(tarmac-profile profileinfo.cpp)
 target_link_libraries(tarmac-profile tarmac)
 
-add_executable(tarmac-vcd vcdwriter.cpp vcd.cpp calltree.cpp)
+add_executable(tarmac-vcd vcdwriter.cpp vcd.cpp)
 target_link_libraries(tarmac-vcd tarmac)
 
 install_programs(

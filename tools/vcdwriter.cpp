@@ -16,10 +16,10 @@
  * This file is part of Tarmac Trace Utilities
  */
 
+#include "libtarmac/calltree.hh"
 #include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
 
-#include "calltree.hh"
 #include "vcd.hh"
 #include "vcdwriter.hh"
 

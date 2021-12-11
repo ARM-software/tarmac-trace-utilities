@@ -17,7 +17,7 @@
  */
 
 #include "profileinfo.hh"
-#include "calltree.hh"
+#include "libtarmac/calltree.hh"
 #include "libtarmac/image.hh"
 #include "libtarmac/reporter.hh"
 
