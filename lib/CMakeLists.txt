@@ -26,3 +26,15 @@ add_library(tarmac
   argparse.cpp btod.cpp callinfo.cpp calltree.cpp elf.cpp expr.cpp
   image.cpp index.cpp index_ds.cpp misc.cpp parser.cpp registers.cpp
   tarmacutil.cpp ${platform_sources})
+
+set(LIBTARMAC_HEADERS "")
+foreach(H argparse.hh callinfo.hh calltree.hh disktree.hh elf.hh expr.hh
+    image.hh index.hh index_ds.hh memtree.hh misc.hh parser.hh registers.hh
+    reporter.hh tarmacutil.hh)
+    list(APPEND LIBTARMAC_HEADERS ${CMAKE_SOURCE_DIR}/include/libtarmac/${H})
+endforeach()
+set_target_properties(tarmac PROPERTIES PUBLIC_HEADER "${LIBTARMAC_HEADERS}")
+
+install(TARGETS tarmac
+  LIBRARY DESTINATION lib
+  PUBLIC_HEADER DESTINATION include/libtarmac)
