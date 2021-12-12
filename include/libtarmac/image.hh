@@ -77,6 +77,15 @@ class Image {
         auto res = this->symtab.find(name);
         return (res == this->symtab.end() ? nullptr : &res->second);
     }
+    std::vector<const Symbol *>
+    find_all_symbols_starting_with(const std::string &name) const
+    {
+        std::vector<const Symbol *> res;
+        for (const auto &it : this->symtab)
+            if (it.first.rfind(name, 0) == 0)
+                res.insert(res.end(), it.second.begin(), it.second.end());
+        return res;
+    }
 
     Image(const std::string &image_filename);
     ~Image();
