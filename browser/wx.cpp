@@ -3154,8 +3154,8 @@ int TextViewWindow::char_width;
 int TextViewWindow::baseline, TextViewWindow::line_height;
 
 class WXGUIReporter : public Reporter {
-    void err(int exitstatus, const char *fmt, ...) override;
-    void errx(int exitstatus, const char *fmt, ...) override;
+    [[noreturn]] void err(int exitstatus, const char *fmt, ...) override;
+    [[noreturn]] void errx(int exitstatus, const char *fmt, ...) override;
     void warn(const char *fmt, ...) override;
     void warnx(const char *fmt, ...) override;
     void indexing_status(const std::string &index_filename,
@@ -3197,7 +3197,7 @@ string vcxxsprintf(const char *fmt, va_list ap)
     return buf.get();
 }
 
-void WXGUIReporter::err(int exitstatus, const char *fmt, ...)
+[[noreturn]] void WXGUIReporter::err(int exitstatus, const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -3210,7 +3210,7 @@ void WXGUIReporter::err(int exitstatus, const char *fmt, ...)
     exit(exitstatus);
 }
 
-void WXGUIReporter::errx(int exitstatus, const char *fmt, ...)
+[[noreturn]] void WXGUIReporter::errx(int exitstatus, const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);

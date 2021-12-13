@@ -49,8 +49,8 @@ void type_extend(string &typ, const string &str, char padvalue)
 }
 
 class CommandLineReporter : public Reporter {
-    void err(int exitstatus, const char *fmt, ...) override;
-    void errx(int exitstatus, const char *fmt, ...) override;
+    [[noreturn]] void err(int exitstatus, const char *fmt, ...) override;
+    [[noreturn]] void errx(int exitstatus, const char *fmt, ...) override;
     void warn(const char *fmt, ...) override;
     void warnx(const char *fmt, ...) override;
     void indexing_status(const std::string &index_filename,
@@ -76,7 +76,7 @@ unique_ptr<Reporter> make_cli_reporter()
     return make_unique<CommandLineReporter>();
 }
 
-void CommandLineReporter::err(int exitstatus, const char *fmt, ...)
+[[noreturn]] void CommandLineReporter::err(int exitstatus, const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -87,7 +87,7 @@ void CommandLineReporter::err(int exitstatus, const char *fmt, ...)
     exit(exitstatus);
 }
 
-void CommandLineReporter::errx(int exitstatus, const char *fmt, ...)
+[[noreturn]] void CommandLineReporter::errx(int exitstatus, const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);

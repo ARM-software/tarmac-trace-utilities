@@ -58,8 +58,8 @@ class Reporter {
     //
     // err and warn suffix strerror(errno) to the message, for
     // reporting OS-level errors; errx and warnx do not.
-    virtual void err(int exitstatus, const char *fmt, ...) = 0;
-    virtual void errx(int exitstatus, const char *fmt, ...) = 0;
+    [[noreturn]] virtual void err(int exitstatus, const char *fmt, ...) = 0;
+    [[noreturn]] virtual void errx(int exitstatus, const char *fmt, ...) = 0;
     virtual void warn(const char *fmt, ...) = 0;
     virtual void warnx(const char *fmt, ...) = 0;
 
