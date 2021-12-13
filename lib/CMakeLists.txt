@@ -37,4 +37,5 @@ set_target_properties(tarmac PROPERTIES PUBLIC_HEADER "${LIBTARMAC_HEADERS}")
 
 install(TARGETS tarmac
   LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
   PUBLIC_HEADER DESTINATION include/libtarmac)
