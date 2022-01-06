@@ -21,7 +21,7 @@ jobs:
     - name: apt update
       run: sudo apt-get update
     - name: Install dependencies for apps with a GUI
-      run: sudo apt-get install pkg-config libwxgtk3.0-dev
+      run: sudo apt-get install pkg-config libwxgtk3.0-gtk3-dev
     - name: Configure
       run: CC=${{env.CC}} CXX=${{env.CXX}} cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE:STRING=${{env.CMAKE_BUILD_TYPE}} -DFORCE_BUILDING_ALL_APPS:BOOL=ON
     - name: Build
