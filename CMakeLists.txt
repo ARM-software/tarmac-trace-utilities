@@ -27,6 +27,16 @@ else()
   include(cmake/unix.cmake)
 endif()
 
+# Provide developpers with a strict mode to ensure that all parts of
+# tarmac-trace-utilities are built and tested.
+set(FORCE_BUILDING_ALL_APPS OFF CACHE BOOL "Fail if not all applications can be built because of missing dependencies")
+
+if(FORCE_BUILDING_ALL_APPS)
+  set(REQUIRED_PACKAGE "REQUIRED")
+else()
+  set(REQUIRED_PACKAGE "")
+endif()
+
 if(CMAKE_SYSTEM_NAME MATCHES "Windows"
     AND NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
   # When cross-compiling for Windows from Unix, find_package seems to
@@ -35,10 +45,10 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows"
   # other direction.
   set(WIN32 ON)
   set(CMAKE_CROSSCOMPILING OFF)
-  find_package(wxWidgets COMPONENTS core base)
+  find_package(wxWidgets ${REQUIRED_PACKAGE} COMPONENTS core base)
   set(CMAKE_CROSSCOMPILING ON)
 else()
-  find_package(wxWidgets COMPONENTS core base)
+  find_package(wxWidgets ${REQUIRED_PACKAGE} COMPONENTS core base)
 endif()
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
@@ -78,14 +88,14 @@ add_subdirectory(browser)
 if(CMAKE_VERSION VERSION_LESS "3.12")
   # The method of finding Python was different before CMake 3.12.
   set(Python_ADDITIONAL_VERSIONS 3)
-  find_package (PythonInterp)
+  find_package (PythonInterp ${REQUIRED_PACKAGE})
   if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_MAJOR LESS 3)
     set(can_run_tests ON)
     set(python_exe ${PYTHON_EXECUTABLE})
   endif()
 else()
   # Up-to-date approach.
-  find_package (Python3 COMPONENTS Interpreter)
+  find_package (Python3 ${REQUIRED_PACKAGE} COMPONENTS Interpreter)
   if(Python3_FOUND)
     set(can_run_tests ON)
     set(python_exe ${Python3_EXECUTABLE})

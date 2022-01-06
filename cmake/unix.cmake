@@ -19,5 +19,5 @@
 # dependencies to be installed centrally by a package manager, so we
 # can just run find_package in the obvious way.
 
-find_package(Curses)
-find_package(PkgConfig)
+find_package(Curses ${REQUIRED_PACKAGE})
+find_package(PkgConfig ${REQUIRED_PACKAGE})
