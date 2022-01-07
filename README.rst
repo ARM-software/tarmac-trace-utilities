@@ -62,9 +62,9 @@ Requirements
 To build the analysis tools from source, you will need a C++ compiler
 compatible with C++14, and `CMake <https://cmake.org/>`_.
 
-To build the interactive browsing tools, you will also need a
-``curses`` library (for the terminal-based version) or GTK+ 3 (for the
-GUI version) or both.
+To build the interactive browsing tools, you will also need a ``curses``
+library (for the terminal-based version) or ``wxWidgets`` 3.0 (for the GUI
+version) or both.
 
 These are all available on current Linux distributions, for example
 Ubuntu 16.04 (``xenial``) and later, Debian 9 (``stretch``), CentOS 8,
