@@ -3413,23 +3413,12 @@ class SetupDialog : public wxDialog {
             FindWindowById(wxID_OK)->Enable();
     }
 
-    static std::string wxstring_to_string(const wxString &wxs) {
-        // It's surprisingly hard to find a way in the wxString API to
-        // get the data back out into an ordinary std::string. But you
-        // can '<<' a wxString to an ostream, so here's one approach
-        // that works. It's probably slow, but that's OK, we only do
-        // it a handful of times at startup.
-        std::ostringstream oss;
-        oss << wxs.ToUTF8();
-        return oss.str();
-    }
-
     std::string trace_file_path() const {
-        return wxstring_to_string(trace_file_picker->GetPath());
+        return trace_file_picker->GetPath().ToStdString();
     }
 
     std::string image_file_path() const {
-        return wxstring_to_string(image_file_picker->GetPath());
+        return image_file_picker->GetPath().ToStdString();
     }
 
     int reindex_policy() const {
