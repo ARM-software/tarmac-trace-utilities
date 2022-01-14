@@ -144,6 +144,10 @@ Parse warning: unsupported system operation 'AT'
 * InstructionEvent time=23233000 executed=true pc=364 iset=ARM width=32 instruction=e5c02000 disassembly="STRB     r2,[r0,#0]"
 --- Tarmac line:                     ST b0000000  ........ ........ ........ ......65     00b0000000    SO ISH INC
 * MemoryEvent time=23233000 read=false known=true addr=b0000000 size=1 contents=65
+--- Tarmac line:                     R V0<127:64> ffeeddccbbaa9988
+* RegisterEvent time=23233000 reg=v0 offset=8 bytes=ff:ee:dd:cc:bb:aa:99:88
+--- Tarmac line:                     R V0<63:0> 7766554433221100
+* RegisterEvent time=23233000 reg=v0 offset=0 bytes=77:66:55:44:33:22:11:00
 --- Tarmac line: Tarmac Text Rev 3t
 --- Tarmac line:      499294 ns  ES  EXC Reset
 * TextOnlyEvent time=499294 type="EXC" text="Reset"

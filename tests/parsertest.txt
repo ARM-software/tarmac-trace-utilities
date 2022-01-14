@@ -83,7 +83,7 @@
 2 clk cpu0 R r0 3003fe00
 
 # ----------------------------------------------------------------------
-# Trace lines seen in three different samples of broadly Cycle Models
+# Trace lines seen in multiple samples of broadly Cycle Models
 # flavoured Tarmac
 
 Tarmac Text Rev 3t
@@ -112,6 +112,9 @@ Tarmac Text Rev 3t
                     ST b0000000  ........ ........ ........ ......##     00b0000000    SO ISH INC
    23233000 ns  ES  (00000364:e5c02000) A svc:            STRB     r2,[r0,#0]
                     ST b0000000  ........ ........ ........ ......65     00b0000000    SO ISH INC
+
+                    R V0<127:64> ffeeddccbbaa9988
+                    R V0<63:0> 7766554433221100
 
 # ----------------------------------------------------------------------
 

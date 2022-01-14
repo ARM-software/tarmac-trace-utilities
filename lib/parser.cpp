@@ -216,7 +216,7 @@ class TarmacLineParserImpl {
         }
 
         // Punctuation characters that we return as single tokens
-        if (strchr(":()[],", line[pos])) {
+        if (strchr(":()[],<>", line[pos])) {
             Token ret(line[pos]);
             ret.setpos(pos, pos + 1);
             highlight(ret, HL_PUNCT);
@@ -595,6 +595,68 @@ class TarmacLineParserImpl {
                           !strncasecmp(regname.c_str(), "sp_", 3));
             bool special = is_fpcr || is_sp;
 
+            bool got_reg_subrange = false;
+            unsigned reg_subrange_skip_lo, reg_subrange_skip_hi;
+            if (tok == '<') {
+                // Sometimes seen in Cycle Models output: a
+                // specification of a partial register update, by
+                // writing a range of bits being accessed following
+                // the register name, in the form <hi:lo>. For
+                // example, "R V0<127:64> 0000000000000000".
+                //
+                // This is an alternative to the -- syntax used to
+                // omit bytes from a full-length register description,
+                // and we handle this suffix by converting it into --
+                // in the contents string.
+
+                if (special) {
+                    // If the register name is also one which we can't identify
+                    // until we see the size of data, this is too confusing to
+                    // work out what's going on. Refuse to handle this case.
+                    parse_error(tok, "cannot handle register bit range for "
+                                "this register");
+                }
+
+                tok = lex();
+
+                if (!tok.isdecimal())
+                    parse_error(tok, "expected bit offset within register");
+                unsigned top_bit = tok.decimalvalue();
+                if ((top_bit & 7) != 7)
+                    parse_error(tok, "expected high bit offset within register "
+                                "to be at the top of a byte");
+                unsigned top_byte = top_bit >> 3;
+                if (top_byte >= reg_size(reg))
+                    parse_error(tok, "high bit offset is larger than "
+                                "containing register");
+                tok = lex();
+
+                if (tok != ':')
+                    parse_error(tok, "expected ':' separating bit offsets "
+                                "in register bit range");
+                tok = lex();
+
+                if (!tok.isdecimal())
+                    parse_error(tok, "expected bit offset within register");
+                unsigned bot_bit = tok.decimalvalue();
+                if ((bot_bit & 7) != 0)
+                    parse_error(tok, "expected low bit offset within register "
+                                "to be at the bottom of a byte");
+                unsigned bot_byte = bot_bit >> 3;
+                if (bot_byte > top_byte)
+                    parse_error(tok, "low bit offset is higher than "
+                                "high bit offset");
+                tok = lex();
+
+                if (tok != '>')
+                    parse_error(tok, "expected '>' after register bit range");
+                tok = lex();
+
+                reg_subrange_skip_lo = bot_byte;
+                reg_subrange_skip_hi = reg_size(reg) - (top_byte + 1);
+                got_reg_subrange = true;
+            }
+
             if (got_reg_id && !special) {
                 // Consume tokens of register contents until we've
                 // seen as much data as we expect. We tolerate the
@@ -602,6 +664,10 @@ class TarmacLineParserImpl {
                 // spaces or colons, or having underscores in them
                 // (which our lexer will include in a single token).
                 size_t hex_digits_expected = 2 * reg_size(reg);
+                if (got_reg_subrange) {
+                    contents.append(2 * reg_subrange_skip_hi, '-');
+                    hex_digits_expected -= 2 * reg_subrange_skip_lo;
+                }
                 while (contents.size() < hex_digits_expected) {
                     if (!tok.isregvalue())
                         parse_error(tok, "expected register contents");
@@ -611,6 +677,8 @@ class TarmacLineParserImpl {
                     if (tok == ':')
                         tok = lex();
                 }
+                if (got_reg_subrange)
+                    contents.append(2 * reg_subrange_skip_lo, '-');
             } else if (special) {
                 // Special cases described above (SP and FPCR), where we have
                 // to wait to see how much data we can get out of the input

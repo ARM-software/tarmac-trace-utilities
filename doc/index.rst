@@ -1252,7 +1252,7 @@ Register lines
 ..............
 
 A register update line looks like this:
-  [ *timestamp* [ *unit* ] ] ``R`` *register-name* [ ``(`` *extra-info* ``)`` ] *contents* [ *interpretation* ]
+  [ *timestamp* [ *unit* ] ] ``R`` *register-name* [ ``(`` *extra-info* ``)`` ] [ ``<`` *high-bit* ``:`` *low-bit* ``>`` ] *contents* [ *interpretation* ]
 
 The fields are as follows:
 
@@ -1334,6 +1334,18 @@ The fields are as follows:
   version of a system register.
 
   Tarmac Trace Utilities does not use this information.
+
+*high-bit*, *low-bit*
+  Sometimes the register name is followed by a pair of bit offsets in
+  angle brackets, indicating that this update event is only affecting
+  a sub-range of the bits in the whole register. The bit offsets are
+  given in high,low order, and are inclusive at both ends. For
+  example, ``V0<127:64>`` would indicate an update to the high 64 bits
+  of a 128-bit register, and ``V0<63:0>`` would indicate an update to
+  the low 64 bits.
+
+  Tarmac Trace Utilities handles these offsets, but currently only if
+  they specify an update consisting of whole bytes of the register.
 
 *contents*
   The data written to the register. This is a hex number, written in
