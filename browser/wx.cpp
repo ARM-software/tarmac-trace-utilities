@@ -1343,7 +1343,7 @@ class MemoryWindow : public SubsidiaryView {
         Addr constant;
         StartAddr() : expr(nullptr), constant(0) {}
         StartAddr(Addr addr) : expr(nullptr), constant(addr) {}
-        bool parse(const string &s, ostringstream &error);
+        bool parse(const string &s, Browser &br, ostringstream &error);
     };
 
     MemoryWindow(GuiTarmacBrowserApp *app, StartAddr addr, int bpl,
@@ -2249,7 +2249,7 @@ void TraceWindow::mem_prompt_dialog_ended(bool ok)
 
     MemoryWindow::StartAddr addr;
     ostringstream error;
-    if (!addr.parse(value, error)) {
+    if (!addr.parse(value, br, error)) {
         wxMessageBox(wxT("Error parsing expression: " + error.str()));
         return;
     }
@@ -2266,7 +2266,7 @@ void TraceWindow::newstk_menuaction(wxCommandEvent &event)
     string expr = "reg::sp";
     MemoryWindow::StartAddr addr;
     ostringstream error;
-    bool success = addr.parse(expr, error);
+    bool success = addr.parse(expr, br, error);
     assert(success);
     add_subview(
         new MemoryWindow(app, addr, 16, br.index.isAArch64(), br, this));
@@ -3014,9 +3014,10 @@ void MemoryWindow::reset_addredit()
     addredit->SetValue(oss.str());
 }
 
-bool MemoryWindow::StartAddr::parse(const string &s, ostringstream &error)
+bool MemoryWindow::StartAddr::parse(const string &s, Browser &br,
+                                    ostringstream &error)
 {
-    expr = parse_expression(s, error);
+    expr = br.parse_expression(s, error);
     if (!expr)
         return false;
 
@@ -3063,7 +3064,7 @@ void MemoryWindow::addredit_activated(wxCommandEvent &event)
 
     ExprPtr expr;
     ostringstream error;
-    expr = parse_expression(value, error);
+    expr = br.parse_expression(value, error);
     if (!expr) {
         wxMessageBox(wxT("Error parsing expression: " + error.str()));
         return;

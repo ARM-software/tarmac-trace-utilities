@@ -1,8 +1,8 @@
 line 18: parse gives (const 1)
 line 18: evaluation gives 1
-line 19: parse gives (unscoped-id x)
+line 19: parse gives (register x)
 line 19: evaluation gives 12345
-line 20: parse gives (register-id x)
+line 20: parse gives (register x)
 line 20: evaluation gives 12345
 line 23: parse gives (+ (const 1) (const 2))
 line 23: evaluation gives 3
@@ -93,3 +93,9 @@ line 80: parse failure: unexpected token
 line 81: parse failure: expected an identifier after '::'
 line 84: parse failure: unexpected tokens after expression
 line 85: parse failure: expected closing ')'
+line 88: parse failure: unrecognised identifier scope 'badscope'
+line 89: parse failure: unrecognised identifier name 'nonexistent'
+line 90: parse failure: unrecognised register name 'nonexistent'
+line 91: parse failure: unrecognised symbol name 'nonexistent'
+line 93: parse gives (const 54321)
+line 93: evaluation gives 54321

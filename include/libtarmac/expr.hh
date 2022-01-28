@@ -24,21 +24,49 @@
 #include <ostream>
 #include <string>
 
+struct RegisterId;
+
 struct EvaluationError : std::exception {
     std::string msg;
     EvaluationError(const std::string &msg) : msg(msg) {}
 };
 
+// Class passed to parse_expression() which knows how to look up a
+// symbol name and turn it into that symbol's constant value, or how
+// to look up a register name and turn it into a RegisterId. In both
+// cases, returns false if the name doesn't exist.
+struct ParseContext {
+    virtual ~ParseContext() {}
+    virtual bool lookup_symbol(const std::string &name,
+                               uint64_t &out) const = 0;
+    virtual bool lookup_register(const std::string &name,
+                                 RegisterId &out) const = 0;
+};
+
+// Class passed to Expression::evaluate() which knows how to retrieve
+// the value of a register given a RegisterId, or return false if the
+// register's value is unavailable in this particular execution
+// context (e.g. a time in the trace before it was first written).
 struct ExecutionContext {
-    enum class Context { Register, Symbol };
     virtual ~ExecutionContext() {}
-    virtual bool lookup(const std::string &name, Context context,
-                        uint64_t &out) const = 0;
+    virtual bool lookup_register(const RegisterId &reg,
+                                 uint64_t &out) const = 0;
+};
+
+struct TrivialParseContext : ParseContext {
+    bool lookup_symbol(const std::string &name, uint64_t &out) const
+    {
+        return false;
+    }
+
+    bool lookup_register(const std::string &name, RegisterId &out) const
+    {
+        return false;
+    }
 };
 
 struct TrivialExecutionContext : ExecutionContext {
-    bool lookup(const std::string & /*name*/, Context /*context*/,
-                uint64_t & /*out*/) const
+    bool lookup_register(const RegisterId & /*reg*/, uint64_t & /*out*/) const
     {
         return false;
     }
@@ -53,7 +81,8 @@ struct Expression {
 
 using ExprPtr = std::shared_ptr<Expression>;
 
-ExprPtr parse_expression(const std::string &input, std::ostream &error);
+ExprPtr parse_expression(const std::string &input, const ParseContext &,
+                         std::ostream &error);
 ExprPtr constant_expression(uint64_t value);
 
 #endif // LIBTARMAC_EXPR_HH

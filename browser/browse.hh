@@ -24,6 +24,7 @@
 #include "libtarmac/memtree.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/parser.hh"
+#include "libtarmac/registers.hh"
 
 #include <memory>
 #include <utility>
@@ -94,7 +95,7 @@ class Browser : public IndexNavigator {
         void visible_to_logical_node(SeqOrderPayload &visnode,
                                      SeqOrderPayload *lognode);
 
-        bool lookup_register(const std::string &name, uint64_t &out);
+        bool lookup_register(const RegisterId &r, uint64_t &out);
 
       public:
         TraceView(Browser &br);
@@ -202,11 +203,17 @@ class Browser : public IndexNavigator {
                              int addr_chars, off_t memroot,
                              off_t diff_memroot = 0, unsigned diff_minline = 0);
 
+    bool lookup_register(const std::string &name, RegisterId &r);
+
     // This version of evaluate_expression_addr() still lets you refer
     // to image symbols, but unlike TraceView's one, it doesn't let
     // you refer to registers.
     Addr evaluate_expression_addr(const std::string &line);
     Addr evaluate_expression_addr(ExprPtr expr);
+
+    // And here's a parse_expression() that will refer to image symbols.
+    ExprPtr parse_expression(const std::string &line,
+                             std::ostringstream &error);
 };
 
 size_t format_reg_length(const RegisterId &r);

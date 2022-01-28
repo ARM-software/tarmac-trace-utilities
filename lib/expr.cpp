@@ -17,6 +17,7 @@
  */
 
 #include "libtarmac/expr.hh"
+#include "libtarmac/registers.hh"
 
 #include <ctype.h>
 #include <exception>
@@ -118,55 +119,21 @@ struct NegExpression : OperatorExpression {
     uint64_t op(uint64_t lhval, uint64_t /*rhval*/) { return -lhval; }
 };
 
-struct UnscopedIdExpression : Expression {
-    string name;
-    UnscopedIdExpression(const string &name_) : name(name_) {}
+struct RegisterExpression : Expression {
+    RegisterId reg;
+    string name; // for error messages
+    RegisterExpression(const RegisterId &reg, const string &name) :
+        reg(reg), name(name) {}
     uint64_t evaluate(const ExecutionContext &ec)
     {
         uint64_t toret;
 
-        for (auto context : {ExecutionContext::Context::Register,
-                             ExecutionContext::Context::Symbol}) {
-            if (ec.lookup(name, context, toret))
-                return toret;
-        }
-
-        throw EvaluationError("unrecognised symbol name '" + name + "'");
-    }
-    virtual void dump(ostream &os) { os << "(unscoped-id " << name << ")"; }
-};
-
-struct ScopedIdExpression : Expression {
-    string name;
-    ExecutionContext::Context context;
-    ScopedIdExpression(const string &name_, const string &scopename)
-        : name(name_)
-    {
-        if (scopename == "reg")
-            context = ExecutionContext::Context::Register;
-        else if (scopename == "sym")
-            context = ExecutionContext::Context::Symbol;
-        else
-            throw ParseError("unrecognised identifier scope '" + scopename +
-                             "'");
-    }
-    uint64_t evaluate(const ExecutionContext &ec)
-    {
-        uint64_t toret;
-        if (ec.lookup(name, context, toret))
+        if (ec.lookup_register(reg, toret))
             return toret;
-        throw EvaluationError("unrecognised identifier name '" + name + "'");
+
+        throw EvaluationError("register name '" + name + "'");
     }
-    virtual void dump(ostream &os)
-    {
-        os << "("
-           << (context == ExecutionContext::Context::Register
-                   ? "register-id"
-                   : context == ExecutionContext::Context::Symbol
-                         ? "symbol-id"
-                         : "BAD-CONTEXT-SCOPED-ID")
-           << " " << name << ")";
-    }
+    virtual void dump(ostream &os) { os << "(register " << name << ")"; }
 };
 
 enum {
@@ -270,8 +237,9 @@ void Lexer::advance()
 
 struct Parser {
     Lexer &lexer;
+    const ParseContext &pc;
 
-    Parser(Lexer &lexer) : lexer(lexer) {}
+    Parser(Lexer &lexer, const ParseContext &pc) : lexer(lexer), pc(pc) {}
 
     ExprPtr parse_unary();
     ExprPtr parse_mul();
@@ -302,10 +270,28 @@ ExprPtr Parser::parse_unary()
             lexer.advance();
             if (lexer.token != ID)
                 throw ParseError("expected an identifier after '::'");
-            toret = ExprPtr(new ScopedIdExpression(lexer.idvalue, id1));
+
+            if (id1 == "reg") {
+                toret = parse_register_name(lexer.idvalue);
+                if (!toret)
+                    throw ParseError("unrecognised register name '" +
+                                     lexer.idvalue + "'");
+            } else if (id1 == "sym") {
+                toret = parse_symbol_name(lexer.idvalue);
+                if (!toret)
+                    throw ParseError("unrecognised symbol name '" +
+                                     lexer.idvalue + "'");
+            } else
+                throw ParseError("unrecognised identifier scope '" + id1 + "'");
+
             lexer.advance();
         } else {
-            toret = ExprPtr(new UnscopedIdExpression(id1));
+            toret = parse_register_name(id1);
+            if (!toret)
+                toret = parse_symbol_name(lexer.idvalue);
+            if (!toret)
+                throw ParseError("unrecognised identifier name '" +
+                                 lexer.idvalue + "'");
         }
         break;
     }
@@ -331,6 +317,22 @@ ExprPtr Parser::parse_unary()
     }
 
     return toret;
+}
+
+ExprPtr Parser::parse_register_name(const string &name)
+{
+    RegisterId reg;
+    if (pc.lookup_register(name, reg))
+        return ExprPtr(new RegisterExpression(reg, name));
+    return nullptr;
+}
+
+ExprPtr Parser::parse_symbol_name(const string &name)
+{
+    uint64_t value;
+    if (pc.lookup_symbol(name, value))
+        return ExprPtr(new ConstantExpression(value));
+    return nullptr;
 }
 
 ExprPtr Parser::parse_mul()
@@ -387,10 +389,11 @@ ExprPtr Parser::parse_expr()
     return toret;
 }
 
-ExprPtr parse_expression(const string &input, ostream &error)
+ExprPtr parse_expression(const std::string &input, const ParseContext &pc,
+                         std::ostream &error)
 {
     Lexer lexer(input);
-    Parser parser(lexer);
+    Parser parser(lexer, pc);
 
     try {
         ExprPtr toret = parser.parse_expr();

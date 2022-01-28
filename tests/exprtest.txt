@@ -83,3 +83,11 @@ mem::)
 # Test junk at end of expression or subexpression
 1 x
 1 + (2 x) + 3
+
+# Test all identifier lookup failures
+badscope::x
+nonexistent
+reg::nonexistent
+sym::nonexistent
+
+sym::x

@@ -535,14 +535,44 @@ bool Browser::TraceView::goto_buffer_limit(bool end)
     return true;
 }
 
-bool Browser::TraceView::lookup_register(const string &name, uint64_t &out)
+bool Browser::lookup_register(const string &name, RegisterId &r)
 {
-    RegisterId r;
-
     /*
      * Special cases.
      */
     if (name == "pc") {
+        r = REG_pc;
+        return true;
+    }
+
+    if (name == "sp") {
+        if (index.isAArch64())
+            r = REG_64_xsp;
+        else
+            r = REG_32_sp;
+        return true;
+    }
+
+    if (name == "lr") {
+        if (index.isAArch64())
+            r = REG_64_xlr;
+        else
+            r = REG_32_lr;
+        return true;
+    }
+
+    if (lookup_reg_name(r, name))
+        return true;
+
+    return false; // not found
+}
+
+bool Browser::TraceView::lookup_register(const RegisterId &r, uint64_t &out)
+{
+    /*
+     * The PC is retrieved directly from the pc field of a seqtree node.
+     */
+    if (r == REG_pc) {
         SeqOrderPayload next_logical_node;
         unsigned target_line = (curr_logical_node.trace_file_firstline +
                                 curr_logical_node.trace_file_lines);
@@ -552,31 +582,8 @@ bool Browser::TraceView::lookup_register(const string &name, uint64_t &out)
         return got_next_node;
     }
 
-    if (name == "sp") {
-        if (index.isAArch64())
-            r = REG_64_xsp;
-        else
-            r = REG_32_sp;
-        goto found;
-    }
-
-    if (name == "lr") {
-        if (index.isAArch64())
-            r = REG_64_xlr;
-        else
-            r = REG_32_lr;
-        goto found;
-    }
-
-    if (lookup_reg_name(r, name))
-        goto found;
-
-    return false; // not found
-found:
-
     /*
-     * Now we've got the id of our register, we can look it up in
-     * the current memtree.
+     * Any other register is looked up in the current memtree.
      */
     vector<unsigned char> val(reg_size(r)), def(reg_size(r));
     auto memroot = curr_logical_node.memory_root;
@@ -588,7 +595,8 @@ found:
     out = 0;
     for (size_t j = rsize; j-- > 0;) {
         if (!def[j])
-            throw invalid_argument("register " + name + " is not defined");
+            throw invalid_argument("register " + reg_name(r) +
+                                   " is not defined");
 
         out = (out << 8) | val[j];
     }
@@ -630,30 +638,28 @@ bool Browser::TraceView::goto_pc(unsigned long long pc, int dir)
     return goto_physline(target_line);
 }
 
-struct ImageExecutionContext : ExecutionContext {
+struct TraceParseContext : ParseContext {
     Browser &br;
-    ImageExecutionContext(Browser &br) : br(br) {}
+    TraceParseContext(Browser &br) : br(br) {}
 
-    bool lookup(const string &name, Context context, uint64_t &out) const
+    bool lookup_symbol(const std::string &name, uint64_t &out) const
     {
-        if (context == ExecutionContext::Context::Symbol)
-            return br.lookup_symbol(name, out);
-        return false;
+        return br.lookup_symbol(name, out);
+    }
+
+    bool lookup_register(const std::string &name, RegisterId &out) const
+    {
+        return br.lookup_register(name, out);
     }
 };
 
-struct TraceExecutionContext : ImageExecutionContext {
+struct TraceExecutionContext : ExecutionContext {
     Browser::TraceView &vu;
-    TraceExecutionContext(Browser::TraceView &vu)
-        : ImageExecutionContext(vu.br), vu(vu)
-    {
-    }
+    TraceExecutionContext(Browser::TraceView &vu): vu(vu) {}
 
-    bool lookup(const string &name, Context context, uint64_t &out) const
+    bool lookup_register(const RegisterId &reg, uint64_t &out) const
     {
-        if (context == ExecutionContext::Context::Register)
-            return vu.lookup_register(name, out);
-        return ImageExecutionContext::lookup(name, context, out);
+        return vu.lookup_register(reg, out);
     }
 };
 
@@ -666,10 +672,11 @@ static Addr evaluate_inner(ExprPtr expr, const ExecutionContext &ec)
     }
 }
 
-Addr evaluate_expression_general(const string &line, const ExecutionContext &ec)
+Addr evaluate_expression_general(const string &line, const ParseContext &pc,
+                                 const ExecutionContext &ec)
 {
     ostringstream err;
-    ExprPtr expr = parse_expression(line, err);
+    ExprPtr expr = ::parse_expression(line, pc, err);
 
     if (!expr)
         throw invalid_argument(err.str());
@@ -679,26 +686,35 @@ Addr evaluate_expression_general(const string &line, const ExecutionContext &ec)
 
 Addr evaluate_expression_plain(const string &line)
 {
+    TrivialParseContext pc;
     TrivialExecutionContext ec;
-    return evaluate_expression_general(line, ec);
+    return evaluate_expression_general(line, pc, ec);
 }
 
 Addr Browser::evaluate_expression_addr(const string &line)
 {
-    ImageExecutionContext ec(*this);
-    return evaluate_expression_general(line, ec);
+    TraceParseContext pc(*this);
+    TrivialExecutionContext ec;
+    return evaluate_expression_general(line, pc, ec);
 }
 
 Addr Browser::evaluate_expression_addr(ExprPtr expr)
 {
-    ImageExecutionContext ec(*this);
+    TrivialExecutionContext ec;
     return evaluate_inner(expr, ec);
+}
+
+ExprPtr Browser::parse_expression(const string &line, ostringstream &error)
+{
+    TraceParseContext pc(*this);
+    return ::parse_expression(line, pc, error);
 }
 
 Addr Browser::TraceView::evaluate_expression_addr(const string &line)
 {
+    TraceParseContext pc(br);
     TraceExecutionContext ec(*this);
-    return evaluate_expression_general(line, ec);
+    return evaluate_expression_general(line, pc, ec);
 }
 
 Addr Browser::TraceView::evaluate_expression_addr(ExprPtr expr)

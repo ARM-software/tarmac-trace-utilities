@@ -18,6 +18,7 @@
 
 #include "libtarmac/expr.hh"
 #include "libtarmac/argparse.hh"
+#include "libtarmac/registers.hh"
 #include "libtarmac/reporter.hh"
 
 #include <fstream>
@@ -36,8 +37,29 @@ using std::ostringstream;
 using std::string;
 using std::unique_ptr;
 
+struct TestParseContext : ParseContext {
+    bool lookup_symbol(const string &name, uint64_t &out) const
+    {
+        if (name == "nonexistent")
+            return false;
+        out = 54321;
+        return true;
+    }
+
+    bool lookup_register(const std::string &name,
+                         RegisterId &out) const
+    {
+        if (name == "nonexistent")
+            return false;
+        // Register expressions will dump the name they were given, so
+        // it's enough here to return an arbitrary RegisterId.
+        out = REG_32_r0;
+        return true;
+    }
+};
+
 struct TestExecutionContext : ExecutionContext {
-    bool lookup(const string &name, Context context, uint64_t &out) const
+    bool lookup_register(const RegisterId & /*reg*/, uint64_t &out) const
     {
         out = 12345;
         return true;
@@ -48,7 +70,8 @@ static void test_parse_expression(const std::string &title,
                                   const std::string &str)
 {
     ostringstream err;
-    ExprPtr expr = parse_expression(str, err);
+    TestParseContext tpc;
+    ExprPtr expr = parse_expression(str, tpc, err);
 
     if (!expr) {
         cout << title << ": parse failure: " << err.str() << endl;
