@@ -23,6 +23,7 @@
 #include "libtarmac/registers.hh"
 
 #include <cstdint>
+#include <exception>
 #include <vector>
 
 struct TarmacEvent {
@@ -101,7 +102,7 @@ struct TextOnlyEvent : TarmacEvent {
     ~TextOnlyEvent() {}
 };
 
-struct TarmacParseError {
+struct TarmacParseError : std::exception {
     std::string msg;
     TarmacParseError(const std::string &msg) : msg(msg) {}
 };

@@ -19,11 +19,12 @@
 #ifndef LIBTARMAC_EXPR_HH
 #define LIBTARMAC_EXPR_HH
 
+#include <exception>
 #include <memory>
 #include <ostream>
 #include <string>
 
-struct EvaluationError {
+struct EvaluationError : std::exception {
     std::string msg;
     EvaluationError(const std::string &msg) : msg(msg) {}
 };

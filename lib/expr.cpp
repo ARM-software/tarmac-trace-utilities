@@ -19,19 +19,21 @@
 #include "libtarmac/expr.hh"
 
 #include <ctype.h>
+#include <exception>
 #include <istream>
 #include <memory>
 #include <ostream>
 #include <sstream>
 #include <string>
 
+using std::exception;
 using std::istream;
 using std::make_shared;
 using std::ostream;
 using std::ostringstream;
 using std::string;
 
-struct ParseError {
+struct ParseError : exception {
     string msg;
     ParseError(const string &msg_) : msg(msg_) {}
 };
