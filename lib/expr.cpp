@@ -268,12 +268,21 @@ void Lexer::advance()
     pos++;
 }
 
-static ExprPtr parse_unary(Lexer &lexer);
-static ExprPtr parse_mul(Lexer &lexer);
-static ExprPtr parse_add(Lexer &lexer);
-static ExprPtr parse_expr(Lexer &lexer);
+struct Parser {
+    Lexer &lexer;
 
-static ExprPtr parse_unary(Lexer &lexer)
+    Parser(Lexer &lexer) : lexer(lexer) {}
+
+    ExprPtr parse_unary();
+    ExprPtr parse_mul();
+    ExprPtr parse_add();
+    ExprPtr parse_expr();
+
+    ExprPtr parse_register_name(const string &);
+    ExprPtr parse_symbol_name(const string &);
+};
+
+ExprPtr Parser::parse_unary()
 {
     ExprPtr toret;
 
@@ -303,7 +312,7 @@ static ExprPtr parse_unary(Lexer &lexer)
 
     case '(':
         lexer.advance();
-        toret = parse_expr(lexer);
+        toret = parse_expr();
         if (lexer.token != ')')
             throw ParseError("expected closing ')'");
         lexer.advance();
@@ -311,7 +320,7 @@ static ExprPtr parse_unary(Lexer &lexer)
 
     case '-':
         lexer.advance();
-        toret = ExprPtr(new NegExpression(parse_unary(lexer)));
+        toret = ExprPtr(new NegExpression(parse_unary()));
         break;
 
     case TOK_EOF:
@@ -324,26 +333,26 @@ static ExprPtr parse_unary(Lexer &lexer)
     return toret;
 }
 
-static ExprPtr parse_mul(Lexer &lexer)
+ExprPtr Parser::parse_mul()
 {
-    ExprPtr toret = parse_unary(lexer);
+    ExprPtr toret = parse_unary();
 
     while (lexer.token == '*') {
         lexer.advance();
-        toret = ExprPtr(new MulExpression(toret, parse_unary(lexer)));
+        toret = ExprPtr(new MulExpression(toret, parse_unary()));
     }
 
     return toret;
 }
 
-static ExprPtr parse_add(Lexer &lexer)
+ExprPtr Parser::parse_add()
 {
-    ExprPtr toret = parse_mul(lexer);
+    ExprPtr toret = parse_mul();
 
     while (lexer.token == '+' || lexer.token == '-') {
         auto op = lexer.token;
         lexer.advance();
-        ExprPtr rhs = parse_mul(lexer);
+        ExprPtr rhs = parse_mul();
         switch (op) {
         case '+':
             toret = ExprPtr(new AddExpression(toret, rhs));
@@ -357,14 +366,14 @@ static ExprPtr parse_add(Lexer &lexer)
     return toret;
 }
 
-static ExprPtr parse_expr(Lexer &lexer)
+ExprPtr Parser::parse_expr()
 {
-    ExprPtr toret = parse_add(lexer);
+    ExprPtr toret = parse_add();
 
     while (lexer.token == LEFTSHIFT || lexer.token == RIGHTSHIFT) {
         auto op = lexer.token;
         lexer.advance();
-        ExprPtr rhs = parse_add(lexer);
+        ExprPtr rhs = parse_add();
         switch (op) {
         case LEFTSHIFT:
             toret = ExprPtr(new ShlExpression(toret, rhs));
@@ -381,9 +390,10 @@ static ExprPtr parse_expr(Lexer &lexer)
 ExprPtr parse_expression(const string &input, ostream &error)
 {
     Lexer lexer(input);
+    Parser parser(lexer);
 
     try {
-        ExprPtr toret = parse_expr(lexer);
+        ExprPtr toret = parser.parse_expr();
         if (lexer.token != TOK_EOF)
             throw ParseError("unexpected tokens after expression");
         return toret;
