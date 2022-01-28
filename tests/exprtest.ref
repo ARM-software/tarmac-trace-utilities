@@ -4,98 +4,98 @@ line 19: parse gives (register x)
 line 19: evaluation gives 12345
 line 20: parse gives (register x)
 line 20: evaluation gives 12345
-line 23: parse gives (+ (const 1) (const 2))
-line 23: evaluation gives 3
-line 24: parse gives (- (const 1) (const 2))
-line 24: evaluation gives 18446744073709551615
-line 25: parse gives (* (const 1) (const 2))
-line 25: evaluation gives 2
-line 26: parse gives (<< (const 1) (const 2))
-line 26: evaluation gives 4
-line 27: parse gives (>> (const 1) (const 2))
-line 27: evaluation gives 0
-line 28: parse gives (- (const 1))
-line 28: evaluation gives 18446744073709551615
-line 29: parse gives (const 1)
-line 29: evaluation gives 1
-line 32: parse gives (const 1)
-line 32: evaluation gives 1
+line 21: parse gives (const 54321)
+line 21: evaluation gives 54321
+line 24: parse gives (+ (const 1) (const 2))
+line 24: evaluation gives 3
+line 25: parse gives (- (const 1) (const 2))
+line 25: evaluation gives 18446744073709551615
+line 26: parse gives (* (const 1) (const 2))
+line 26: evaluation gives 2
+line 27: parse gives (<< (const 1) (const 2))
+line 27: evaluation gives 4
+line 28: parse gives (>> (const 1) (const 2))
+line 28: evaluation gives 0
+line 29: parse gives (- (const 1))
+line 29: evaluation gives 18446744073709551615
+line 30: parse gives (const 1)
+line 30: evaluation gives 1
 line 33: parse gives (const 1)
 line 33: evaluation gives 1
-line 36: parse gives (+ (+ (const 1) (const 2)) (const 3))
-line 36: evaluation gives 6
-line 37: parse gives (- (+ (const 1) (const 2)) (const 3))
-line 37: evaluation gives 0
-line 38: parse gives (+ (const 1) (* (const 2) (const 3)))
-line 38: evaluation gives 7
-line 39: parse gives (<< (+ (const 1) (const 2)) (const 3))
-line 39: evaluation gives 24
-line 40: parse gives (>> (+ (const 1) (const 2)) (const 3))
-line 40: evaluation gives 0
-line 41: parse gives (+ (- (const 1) (const 2)) (const 3))
-line 41: evaluation gives 2
-line 42: parse gives (- (- (const 1) (const 2)) (const 3))
-line 42: evaluation gives 18446744073709551612
-line 43: parse gives (- (const 1) (* (const 2) (const 3)))
-line 43: evaluation gives 18446744073709551611
-line 44: parse gives (<< (- (const 1) (const 2)) (const 3))
-line 44: evaluation gives 18446744073709551608
-line 45: parse gives (>> (- (const 1) (const 2)) (const 3))
-line 45: evaluation gives 2305843009213693951
-line 46: parse gives (+ (* (const 1) (const 2)) (const 3))
-line 46: evaluation gives 5
-line 47: parse gives (- (* (const 1) (const 2)) (const 3))
-line 47: evaluation gives 18446744073709551615
-line 48: parse gives (* (* (const 1) (const 2)) (const 3))
-line 48: evaluation gives 6
-line 49: parse gives (<< (* (const 1) (const 2)) (const 3))
-line 49: evaluation gives 16
-line 50: parse gives (>> (* (const 1) (const 2)) (const 3))
-line 50: evaluation gives 0
-line 51: parse gives (<< (const 1) (+ (const 2) (const 3)))
-line 51: evaluation gives 32
-line 52: parse gives (<< (const 1) (- (const 2) (const 3)))
-line 52: evaluation gives 0
-line 53: parse gives (<< (const 1) (* (const 2) (const 3)))
-line 53: evaluation gives 64
-line 54: parse gives (<< (<< (const 1) (const 2)) (const 3))
-line 54: evaluation gives 32
-line 55: parse gives (>> (<< (const 1) (const 2)) (const 3))
-line 55: evaluation gives 0
-line 56: parse gives (>> (const 1) (+ (const 2) (const 3)))
+line 34: parse gives (const 1)
+line 34: evaluation gives 1
+line 37: parse gives (+ (+ (const 1) (const 2)) (const 3))
+line 37: evaluation gives 6
+line 38: parse gives (- (+ (const 1) (const 2)) (const 3))
+line 38: evaluation gives 0
+line 39: parse gives (+ (const 1) (* (const 2) (const 3)))
+line 39: evaluation gives 7
+line 40: parse gives (<< (+ (const 1) (const 2)) (const 3))
+line 40: evaluation gives 24
+line 41: parse gives (>> (+ (const 1) (const 2)) (const 3))
+line 41: evaluation gives 0
+line 42: parse gives (+ (- (const 1) (const 2)) (const 3))
+line 42: evaluation gives 2
+line 43: parse gives (- (- (const 1) (const 2)) (const 3))
+line 43: evaluation gives 18446744073709551612
+line 44: parse gives (- (const 1) (* (const 2) (const 3)))
+line 44: evaluation gives 18446744073709551611
+line 45: parse gives (<< (- (const 1) (const 2)) (const 3))
+line 45: evaluation gives 18446744073709551608
+line 46: parse gives (>> (- (const 1) (const 2)) (const 3))
+line 46: evaluation gives 2305843009213693951
+line 47: parse gives (+ (* (const 1) (const 2)) (const 3))
+line 47: evaluation gives 5
+line 48: parse gives (- (* (const 1) (const 2)) (const 3))
+line 48: evaluation gives 18446744073709551615
+line 49: parse gives (* (* (const 1) (const 2)) (const 3))
+line 49: evaluation gives 6
+line 50: parse gives (<< (* (const 1) (const 2)) (const 3))
+line 50: evaluation gives 16
+line 51: parse gives (>> (* (const 1) (const 2)) (const 3))
+line 51: evaluation gives 0
+line 52: parse gives (<< (const 1) (+ (const 2) (const 3)))
+line 52: evaluation gives 32
+line 53: parse gives (<< (const 1) (- (const 2) (const 3)))
+line 53: evaluation gives 0
+line 54: parse gives (<< (const 1) (* (const 2) (const 3)))
+line 54: evaluation gives 64
+line 55: parse gives (<< (<< (const 1) (const 2)) (const 3))
+line 55: evaluation gives 32
+line 56: parse gives (>> (<< (const 1) (const 2)) (const 3))
 line 56: evaluation gives 0
-line 57: parse gives (>> (const 1) (- (const 2) (const 3)))
+line 57: parse gives (>> (const 1) (+ (const 2) (const 3)))
 line 57: evaluation gives 0
-line 58: parse gives (>> (const 1) (* (const 2) (const 3)))
+line 58: parse gives (>> (const 1) (- (const 2) (const 3)))
 line 58: evaluation gives 0
-line 59: parse gives (<< (>> (const 1) (const 2)) (const 3))
+line 59: parse gives (>> (const 1) (* (const 2) (const 3)))
 line 59: evaluation gives 0
-line 60: parse gives (>> (>> (const 1) (const 2)) (const 3))
+line 60: parse gives (<< (>> (const 1) (const 2)) (const 3))
 line 60: evaluation gives 0
-line 63: parse gives (* (+ (const 1) (const 2)) (const 3))
-line 63: evaluation gives 9
-line 64: parse gives (+ (const 1) (* (const 2) (const 3)))
-line 64: evaluation gives 7
-line 65: parse gives (+ (* (const 1) (const 2)) (const 3))
-line 65: evaluation gives 5
-line 66: parse gives (* (const 1) (+ (const 2) (const 3)))
+line 61: parse gives (>> (>> (const 1) (const 2)) (const 3))
+line 61: evaluation gives 0
+line 64: parse gives (* (+ (const 1) (const 2)) (const 3))
+line 64: evaluation gives 9
+line 65: parse gives (+ (const 1) (* (const 2) (const 3)))
+line 65: evaluation gives 7
+line 66: parse gives (+ (* (const 1) (const 2)) (const 3))
 line 66: evaluation gives 5
-line 69: parse failure: unexpected end of expression
+line 67: parse gives (* (const 1) (+ (const 2) (const 3)))
+line 67: evaluation gives 5
 line 70: parse failure: unexpected end of expression
 line 71: parse failure: unexpected end of expression
-line 72: parse failure: expected an identifier after '::'
-line 73: parse failure: expected closing ')'
-line 74: parse failure: unexpected end of expression
+line 72: parse failure: unexpected end of expression
+line 73: parse failure: expected an identifier after '::'
+line 74: parse failure: expected closing ')'
 line 75: parse failure: unexpected end of expression
-line 78: parse failure: unexpected token
-line 79: parse failure: unexpected tokens after expression
-line 80: parse failure: unexpected token
-line 81: parse failure: expected an identifier after '::'
-line 84: parse failure: unexpected tokens after expression
-line 85: parse failure: expected closing ')'
-line 88: parse failure: unrecognised identifier scope 'badscope'
-line 89: parse failure: unrecognised identifier name 'nonexistent'
-line 90: parse failure: unrecognised register name 'nonexistent'
-line 91: parse failure: unrecognised symbol name 'nonexistent'
-line 93: parse gives (const 54321)
-line 93: evaluation gives 54321
+line 76: parse failure: unexpected end of expression
+line 79: parse failure: unexpected token
+line 80: parse failure: unexpected tokens after expression
+line 81: parse failure: unexpected token
+line 82: parse failure: expected an identifier after '::'
+line 85: parse failure: unexpected tokens after expression
+line 86: parse failure: expected closing ')'
+line 89: parse failure: unrecognised identifier scope 'badscope'
+line 90: parse failure: unrecognised identifier name 'nonexistent'
+line 91: parse failure: unrecognised register name 'nonexistent'
+line 92: parse failure: unrecognised symbol name 'nonexistent'

@@ -18,6 +18,7 @@
 1
 x
 reg::x
+sym::x
 
 # Test all operators
 1 + 2
@@ -89,5 +90,3 @@ badscope::x
 nonexistent
 reg::nonexistent
 sym::nonexistent
-
-sym::x
