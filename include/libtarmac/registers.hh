@@ -60,6 +60,11 @@
      * in the trace, such as whether we're currently in AArch32 or             \
      * AArch64 mode. */                                                        \
     X(internal_flags, 4, 4, 1)                                                 \
+                                                                               \
+    /* pc doesn't occupy space in the address map, but it needs a name, so     \
+     * that expression evaluation can refer to it using a RegisterId. */       \
+    X(pc, 0, 0, 1)                                                             \
+                                                                               \
     /* end of list */
 
 #define MAKE_REGPREFIX_ENUM(id, size, disp, n) id,
@@ -112,6 +117,7 @@ bool reg_needs_iflags(const RegisterId &reg);
  * Useful standard register ids.
  */
 extern const RegisterId REG_iflags;
+extern const RegisterId REG_pc;
 extern const RegisterId REG_32_sp;
 extern const RegisterId REG_32_lr;
 extern const RegisterId REG_32_r0;

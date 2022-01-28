@@ -187,6 +187,7 @@ size_t reg_size(const RegisterId &reg)
 }
 
 const RegisterId REG_iflags = {RegPrefix::internal_flags, 0};
+const RegisterId REG_pc = {RegPrefix::pc, 0};
 const RegisterId REG_32_sp = {RegPrefix::r, 13};
 const RegisterId REG_32_lr = {RegPrefix::r, 14};
 const RegisterId REG_32_r0 = {RegPrefix::r, 0};

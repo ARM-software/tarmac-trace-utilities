@@ -323,6 +323,8 @@ static void dump_registers(bool got_iflags, unsigned iflags)
     for (const auto &fam : reg_families) {
         for (unsigned i = 0; i < fam.nregs; i++) {
             RegisterId r{fam.prefix, i};
+            if (reg_size(r) == 0)
+                continue;              // it's a dummy register
             cout << reg_name(r);
             if (!got_iflags && reg_needs_iflags(r)) {
                 cout << " - dependent on iflags\n";
@@ -436,6 +438,8 @@ static void dump_memory_at_line(const IndexNavigator &IN, unsigned trace_line,
         for (unsigned i = 0; i < regfam.nregs; i++) {
             RegisterId reg{regfam.prefix, i};
             size_t size = reg_size(reg);
+            if (size == 0)
+                continue;              // it's a dummy register
             vector<unsigned char> val(size), def(size);
 
             unsigned mod_line = IN.getmem(memroot, 'r', reg_offset(reg, iflags),
