@@ -1864,6 +1864,8 @@ class MemoryDisplay : public Window {
             {"t", "Lock this memory window to a specified trace line number"},
             {"l", "Lock this memory window to the current time, or unlock it "
                   "to track the current trace position again"},
+            {"F", "Stop this memory window from following a variable address "
+                  "expression, if it previously was"},
             {"1, Return", "Jump to the previous change to this byte"},
             {"2, 4, 8",
              "Jump to the previous change to this aligned {2,4,8}-byte word"},
@@ -1953,6 +1955,10 @@ class MemoryDisplay : public Window {
                 br.getmem(memroot, 'm', prov_start, prov_size, NULL, NULL);
             if (line)
                 tbuf->goto_physline(line);
+            return true;
+        } else if (c == 'F') {
+            cursor_addr_expr = nullptr;
+            cursor_addr_exprstr.clear();
             return true;
         } else {
             return false;

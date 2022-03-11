@@ -3063,15 +3063,25 @@ void MemoryWindow::addredit_activated(wxCommandEvent &event)
 {
     string value = addredit->GetValue().ToStdString();
 
-    ExprPtr expr;
-    ostringstream error;
-    expr = br.parse_expression(value, error);
-    if (!expr) {
-        wxMessageBox(wxT("Error parsing expression: " + error.str()));
-        return;
+    if (is_empty_expression(value)) {
+        // Special case: clearing the address box means 'stop
+        // following a variable expression and just become inert at
+        // the current address'.
+        start_addr_expr = nullptr;
+        start_addr_exprstr.clear();
+    } else {
+        // Otherwise, try to parse the expression.
+        ExprPtr expr;
+        ostringstream error;
+        expr = br.parse_expression(value, error);
+        if (!expr) {
+            wxMessageBox(wxT("Error parsing expression: " + error.str()));
+            return;
+        }
+
+        set_start_addr_expr(expr, value);
     }
 
-    set_start_addr_expr(expr, value);
     reset_addredit();
     drawing_area->Refresh();
     drawing_area->SetFocus();

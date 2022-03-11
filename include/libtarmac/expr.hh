@@ -85,4 +85,9 @@ ExprPtr parse_expression(const std::string &input, const ParseContext &,
                          std::ostream &error);
 ExprPtr constant_expression(uint64_t value);
 
+// Returns true if the input string would be regarded by parse_expression's
+// lexer as containing no tokens at all. (Slightly more forgiving than 'is it
+// literally an empty string?', in that it ignores whitespace.)
+bool is_empty_expression(const std::string &input);
+
 #endif // LIBTARMAC_EXPR_HH

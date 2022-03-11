@@ -405,3 +405,9 @@ ExprPtr parse_expression(const std::string &input, const ParseContext &pc,
         return nullptr;
     }
 }
+
+bool is_empty_expression(const std::string &input)
+{
+    Lexer lexer(input);
+    return lexer.token == TOK_EOF;
+}
