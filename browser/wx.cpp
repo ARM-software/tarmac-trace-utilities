@@ -2774,6 +2774,7 @@ MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, StartAddr addr,
     if (addr.expr) {
         set_start_addr_expr(addr.expr, addr.exprstr);
     } else {
+        start_addr_known = true;
         start_addr_expr = nullptr;
         start_addr = addr.constant;
         start_addr -= (start_addr % bytes_per_line);
