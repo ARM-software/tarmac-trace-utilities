@@ -550,6 +550,27 @@ class NeonRegisterDisplay;
 class MVERegisterDisplay;
 class MemoryDisplay;
 
+struct MemoryDisplayStartAddr {
+    // If this code base could assume C++17, it would be nicer to
+    // make this a std::variant. The point is that it holds
+    // _either_ an expression and its string form (indicated by
+    // expr not being null) _or_ a constant (if expr is null).
+    ExprPtr expr;
+    string exprstr;
+    Addr constant;
+    MemoryDisplayStartAddr() : expr(nullptr), constant(0) {}
+    MemoryDisplayStartAddr(Addr addr) : expr(nullptr), constant(addr) {}
+    bool parse(const string &s, Browser &br, ostringstream &error)
+    {
+        expr = br.parse_expression(s, error);
+        if (!expr)
+            return false;
+
+        exprstr = s;
+        return true;
+    }
+};
+
 void curses_hl_display(const HighlightedLine &line, bool highlight,
                        bool selected, bool underlined)
 {
@@ -709,7 +730,7 @@ class TraceBuffer : public Window {
     void set_srdisp(bool wanted);
     void set_neondisp(bool wanted);
     void set_mvedisp(bool wanted);
-    void add_mdisp(Addr start_addr);
+    void add_mdisp(MemoryDisplayStartAddr address);
     void remove_mdisp(MemoryDisplay *mdisp);
     void update_other_windows();
     void update_other_windows_diff(unsigned prev_line);
@@ -1119,14 +1140,26 @@ class TraceBuffer : public Window {
             case 'P':
                 goto_pc(vu.evaluate_expression_addr(text), -1);
                 break;
-            case 'm':
-                add_mdisp(vu.evaluate_expression_addr(text));
+            case 'm': {
+                MemoryDisplayStartAddr addr;
+                ostringstream error;
+                if (addr.parse(text, br, error))
+                    add_mdisp(addr);
+                else
+                    screen->minibuf_error("Error parsing expression: " +
+                                          error.str());
                 break;
+            }
             }
         } catch (invalid_argument) {
             if (text.size() > 0)
                 screen->minibuf_error("Invalid format for parameter");
         }
+    }
+
+    Addr evaluate_expression_addr(ExprPtr expr)
+    {
+        return vu.evaluate_expression_addr(expr);
     }
 };
 
@@ -1602,6 +1635,9 @@ class MemoryDisplay : public Window {
     unsigned line, ext_line;
     int w, h;
     Addr start_addr, cursor_addr;
+    bool addrs_known;
+    string cursor_addr_exprstr;
+    ExprPtr cursor_addr_expr;
     TraceBuffer *tbuf;
     int bytes_per_line;
     int desired_height;
@@ -1610,14 +1646,71 @@ class MemoryDisplay : public Window {
     unsigned diff_minline;
 
   public:
-    MemoryDisplay(Browser &br, TraceBuffer *tbuf, Addr start_addr_)
+    MemoryDisplay(Browser &br, TraceBuffer *tbuf, MemoryDisplayStartAddr addr)
         : Window(), br(br), locked(false), memroot(0),
           tbuf(tbuf), diff_memroot(0)
     {
         bytes_per_line = 16; // FIXME: configurability
-        cursor_addr = start_addr_;
-        start_addr = cursor_addr - (cursor_addr % bytes_per_line);
+
+        if (addr.expr) {
+            set_cursor_addr_expr(addr.expr, addr.exprstr);
+        } else {
+            addrs_known = true;
+            cursor_addr_expr = nullptr;
+            cursor_addr = addr.constant;
+            start_addr = cursor_addr - (cursor_addr % bytes_per_line);
+        }
+
         desired_height = 4;
+    }
+
+    void set_cursor_addr_expr(ExprPtr expr, const string &exprstr)
+    {
+        cursor_addr_expr = expr;
+        compute_cursor_addr();
+
+        if (expr->is_constant() && addrs_known) {
+            /*
+             * Normalise constant expressions to a plain number. This
+             * way, there's no hidden state: when you scroll the
+             * window, the new start address you obtained by scrolling
+             * will be the official start address, so that the window
+             * will stay pointing there even when the trace position
+             * changes.
+             *
+             * We only keep the start address in expression form if
+             * it's actually variable.
+             */
+            cursor_addr_expr = nullptr;
+        } else {
+            /*
+             * Keep the string version of the address expression, so that
+             * it's obvious from looking at the toolbar that this memory
+             * window has a variable start point.
+             */
+            cursor_addr_exprstr = exprstr;
+        }
+    }
+
+    void compute_cursor_addr()
+    {
+        try {
+            if (tbuf)
+                cursor_addr = tbuf->evaluate_expression_addr(cursor_addr_expr);
+            else
+                cursor_addr = br.evaluate_expression_addr(cursor_addr_expr);
+
+            /*
+             * The cursor now points at the exact value of the
+             * expression. Round down to a multiple of 16 bytes to get
+             * the window start address.
+             */
+            start_addr = cursor_addr - (cursor_addr % bytes_per_line);
+
+            addrs_known = true;
+        } catch (invalid_argument) {
+            addrs_known = false;
+        }
     }
 
     void set_size(int w_, int h_)
@@ -1635,6 +1728,9 @@ class MemoryDisplay : public Window {
             line = ext_line;
             diff_memroot = 0; // clear previous diff highlighting
         }
+
+        if (cursor_addr_expr)
+            compute_cursor_addr();
     }
 
     void goto_physline(unsigned line_)
@@ -1692,8 +1788,8 @@ class MemoryDisplay : public Window {
             string line, type;
             size_t hexpos;
 
-            br.format_memory(line, type, addr, true, bytes_per_line, 8, hexpos,
-                             memroot, diff_memroot, diff_minline);
+            br.format_memory(line, type, addr, addrs_known, bytes_per_line, 8,
+                             hexpos, memroot, diff_memroot, diff_minline);
 
             if (addr <= cursor_addr && cursor_addr < addr + bytes_per_line) {
                 cp->visible = true;
@@ -1742,6 +1838,8 @@ class MemoryDisplay : public Window {
             string addr = br.get_symbolic_address(cursor_addr);
             if (!addr.empty())
                 statusline << "   cursor at " << addr;
+            if (cursor_addr_expr)
+                statusline << "   following: " << cursor_addr_exprstr;
             string statusstr = rpad(statusline.str(), w);
             move(y + h - 1, x);
             setattr(ATTR_STATUSLINE);
@@ -2022,9 +2120,9 @@ void TraceBuffer::set_mvedisp(bool wanted)
     }
 }
 
-void TraceBuffer::add_mdisp(Addr start_addr)
+void TraceBuffer::add_mdisp(MemoryDisplayStartAddr addr)
 {
-    auto mdisp = new MemoryDisplay(br, this, start_addr);
+    auto mdisp = new MemoryDisplay(br, this, addr);
     if (screen)
         screen->add_subwin(mdisp);
     mdisps.push_back(mdisp);
