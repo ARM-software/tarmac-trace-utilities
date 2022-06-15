@@ -41,23 +41,23 @@ class IndexReader {
     std::ifstream tarmac;
     bool bigend, aarch64_used;
 
-    std::string read_tarmac(off_t pos, off_t len);
+    std::string read_tarmac(OFF_T pos, OFF_T len);
 
   public:
     AVLDisk<MemoryPayload, MemoryAnnotation> memtree;
     AVLDisk<MemorySubPayload> memsubtree;
     AVLDisk<SeqOrderPayload, SeqOrderAnnotation> seqtree;
     AVLDisk<ByPCPayload> bypctree;
-    off_t seqroot, bypcroot;
+    OFF_T seqroot, bypcroot;
     unsigned lineno_offset;
 
     IndexReader(const TracePair &trace);
 
-    const void *index_offset(off_t pos) const { return mmf.getptr<char>(pos); }
+    const void *index_offset(OFF_T pos) const { return mmf.getptr<char>(pos); }
 
-    off_t index_subtree_root(off_t pos) const
+    OFF_T index_subtree_root(OFF_T pos) const
     {
-        return *mmf.getptr<diskint<off_t>>(pos);
+        return *mmf.getptr<diskint<OFF_T>>(pos);
     }
 
     std::vector<std::string> get_trace_lines(const SeqOrderPayload &node);
@@ -113,27 +113,27 @@ class IndexNavigator {
     // Read the system's raw memory representation at a given time.
     // Return value is the line number of the latest trace event that
     // wrote any part of that data.
-    unsigned getmem(off_t memroot, char type, Addr addr, size_t size,
+    unsigned getmem(OFF_T memroot, char type, Addr addr, size_t size,
                     void *outdata, unsigned char *outdef) const;
 
     // Read the raw memory representation, and last-update indication,
     // of the first defined subregion of the specified region. Returns
     // false if no such subregion exists.
-    bool getmem_next(off_t memroot, char type, Addr addr, size_t size,
+    bool getmem_next(OFF_T memroot, char type, Addr addr, size_t size,
                      const void **outdata, Addr *outaddr, size_t *outsize,
                      unsigned *outline) const;
 
     // Read the iflags at a given time.
-    unsigned get_iflags(off_t memroot) const;
+    unsigned get_iflags(OFF_T memroot) const;
 
     // Read a particular register. get_reg_bytes returns the raw bytes
     // of the register, whereas get_reg_value returns it as a C
     // integer. Both functions fail if the register's value is not
     // fully defined; get_reg_value also fails if the register is too
     // large to fit in an integer type.
-    bool get_reg_bytes(off_t memroot, const RegisterId &reg,
+    bool get_reg_bytes(OFF_T memroot, const RegisterId &reg,
                        std::vector<unsigned char> &val) const;
-    std::pair<bool, uint64_t> get_reg_value(off_t memroot,
+    std::pair<bool, uint64_t> get_reg_value(OFF_T memroot,
                                             const RegisterId &reg) const;
 
     bool node_at_time(Time t, SeqOrderPayload *node) const;
@@ -141,7 +141,7 @@ class IndexNavigator {
     bool get_previous_node(SeqOrderPayload &in, SeqOrderPayload *out) const;
     bool get_next_node(SeqOrderPayload &in, SeqOrderPayload *out) const;
     bool find_buffer_limit(bool end, SeqOrderPayload *node) const;
-    bool find_next_mod(off_t memroot, char type, Addr addr, unsigned minline,
+    bool find_next_mod(OFF_T memroot, char type, Addr addr, unsigned minline,
                        int sign, Addr &lo, Addr &hi);
 
     // Do a raw lookup in the layered range tree that indexes

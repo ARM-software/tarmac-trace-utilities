@@ -61,7 +61,7 @@ MMapFile::MMapFile(const string &filename, bool writable)
     if (pdata->fd < 0)
         reporter->err(1, "%s: open", filename.c_str());
     next_offset = lseek(pdata->fd, 0, SEEK_END);
-    if (next_offset == (off_t)-1)
+    if (next_offset == (OFF_T)-1)
         reporter->err(1, "%s: lseek", filename.c_str());
     curr_size = next_offset;
     mapping = nullptr;
@@ -103,11 +103,11 @@ void MMapFile::unmap()
     mapping = nullptr;
 }
 
-off_t MMapFile::alloc(size_t size)
+OFF_T MMapFile::alloc(size_t size)
 {
     assert(writable);
     if ((size_t)(curr_size - next_offset) < size) {
-        off_t new_curr_size = (next_offset + size) * 5 / 4 + 65536;
+        OFF_T new_curr_size = (next_offset + size) * 5 / 4 + 65536;
         assert(new_curr_size >= next_offset);
         if (ftruncate(pdata->fd, new_curr_size) < 0)
             reporter->err(1, "%s: ftruncate (extending)", filename.c_str());
@@ -115,7 +115,7 @@ off_t MMapFile::alloc(size_t size)
         curr_size = new_curr_size;
         map();
     }
-    off_t ret = next_offset;
+    OFF_T ret = next_offset;
     next_offset += size;
     return ret;
 }

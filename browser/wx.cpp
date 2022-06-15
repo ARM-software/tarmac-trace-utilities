@@ -1162,7 +1162,7 @@ class SubsidiaryView : public TextViewWindow, public SubsidiaryViewListNode {
     unsigned all_subviews_our_index;
     static void close_all();
 
-    off_t memroot = 0, diff_memroot = 0;
+    OFF_T memroot = 0, diff_memroot = 0;
     unsigned line, diff_minline;
 
     TraceWindow *tw;
@@ -1186,7 +1186,7 @@ class SubsidiaryView : public TextViewWindow, public SubsidiaryViewListNode {
 
     virtual void memroot_changed() { }
 
-    void update_line(off_t memroot_, unsigned line_)
+    void update_line(OFF_T memroot_, unsigned line_)
     {
         memroot = memroot_;
         line = line_;
@@ -1199,7 +1199,7 @@ class SubsidiaryView : public TextViewWindow, public SubsidiaryViewListNode {
         diff_minline = 0;
     }
 
-    void diff_against(off_t diff_memroot_, unsigned diff_minline_)
+    void diff_against(OFF_T diff_memroot_, unsigned diff_minline_)
     {
         diff_memroot = diff_memroot_;
         diff_minline = diff_minline_;
@@ -1532,7 +1532,7 @@ class TraceWindow : public TextViewWindow {
 
     char context_menu_memtype;
     Addr context_menu_start, context_menu_size;
-    off_t context_menu_memroot;
+    OFF_T context_menu_memroot;
 
     wxTextCtrl *timeedit, *pcedit;
     void timeedit_activated(wxCommandEvent &event);
@@ -1548,7 +1548,7 @@ class TraceWindow : public TextViewWindow {
 
     SubsidiaryViewListNode subview_list;
     void update_subviews();
-    void tell_subviews_to_diff_against(off_t memroot, unsigned line);
+    void tell_subviews_to_diff_against(OFF_T memroot, unsigned line);
 
   public:
     TraceWindow(GuiTarmacBrowserApp *app, Browser &br);
@@ -1856,13 +1856,13 @@ void TraceWindow::update_subviews()
                          vu.curr_logical_node.trace_file_firstline);
 }
 
-void TraceWindow::tell_subviews_to_diff_against(off_t memroot, unsigned line)
+void TraceWindow::tell_subviews_to_diff_against(OFF_T memroot, unsigned line)
 {
     // We have to provide the memory root from the later of the two
     // times, and the line number from the earlier one (because diff
     // lookups are done by looking in the later tree for a list of
     // changes dated after a given line).
-    off_t curr_root = vu.curr_logical_node.memory_root;
+    OFF_T curr_root = vu.curr_logical_node.memory_root;
     unsigned curr_line = vu.curr_logical_node.trace_file_firstline;
 
     if (curr_line < line)
@@ -2439,7 +2439,7 @@ bool TraceWindow::keypress(wxKeyEvent &event)
     switch (event.GetKeyCode()) {
     case WXK_UP:
     case WXK_NUMPAD_UP: {
-        off_t prev_memroot = vu.curr_logical_node.memory_root;
+        OFF_T prev_memroot = vu.curr_logical_node.memory_root;
         unsigned prev_line = vu.curr_logical_node.trace_file_firstline;
         if (vu.prev_visible_node(&vu.curr_visible_node)) {
             update_location(UpdateLocationType::NewVis);
@@ -2450,7 +2450,7 @@ bool TraceWindow::keypress(wxKeyEvent &event)
     }
     case WXK_DOWN:
     case WXK_NUMPAD_DOWN: {
-        off_t prev_memroot = vu.curr_logical_node.memory_root;
+        OFF_T prev_memroot = vu.curr_logical_node.memory_root;
         unsigned prev_line = vu.curr_logical_node.trace_file_firstline;
         if (vu.next_visible_node(&vu.curr_visible_node)) {
             update_location(UpdateLocationType::NewVis);

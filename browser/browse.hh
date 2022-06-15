@@ -171,7 +171,7 @@ class Browser : public IndexNavigator {
     //  'V','U': same as 'v','u' but indicate that this character has
     //           changed its value between memroot and diff_memroot.
     void format_reg(std::string &dispstr, std::string &disptype,
-                    const RegisterId &r, off_t memroot, off_t diff_memroot = 0,
+                    const RegisterId &r, OFF_T memroot, OFF_T diff_memroot = 0,
                     unsigned diff_minline = 0);
 
     // Similar, but fills in the same output variables with a hex dump
@@ -194,14 +194,14 @@ class Browser : public IndexNavigator {
     // it's the start of the hex column.)
     void format_memory(std::string &dispstr, std::string &disptype, Addr addr,
                        bool addr_known, int bytes_per_line, int addr_chars,
-                       size_t &hexpos, off_t memroot, off_t diff_memroot = 0,
+                       size_t &hexpos, OFF_T memroot, OFF_T diff_memroot = 0,
                        unsigned diff_minline = 0);
     void format_memory_split(std::string &dispaddr, std::string &typeaddr,
                              std::string &disphex, std::string &typehex,
                              std::string &dispchars, std::string &typechars,
                              Addr addr, bool addr_known, int bytes_per_line,
-                             int addr_chars, off_t memroot,
-                             off_t diff_memroot = 0, unsigned diff_minline = 0);
+                             int addr_chars, OFF_T memroot,
+                             OFF_T diff_memroot = 0, unsigned diff_minline = 0);
 
     bool lookup_register(const std::string &name, RegisterId &r);
 

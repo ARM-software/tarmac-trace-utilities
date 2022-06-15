@@ -875,7 +875,7 @@ size_t format_reg_length(const RegisterId &r)
 }
 
 void Browser::format_reg(string &dispstr, string &disptype, const RegisterId &r,
-                         off_t memroot, off_t diff_memroot,
+                         OFF_T memroot, OFF_T diff_memroot,
                          unsigned diff_minline)
 {
     unsigned iflags = get_iflags(memroot);
@@ -1002,7 +1002,7 @@ void Browser::format_memory_split(string &dispaddr, string &typeaddr,
                                   string &dispchars, string &typechars,
                                   Addr addr, bool addr_known,
                                   int bytes_per_line, int addr_chars,
-                                  off_t memroot, off_t diff_memroot,
+                                  OFF_T memroot, OFF_T diff_memroot,
                                   unsigned diff_minline)
 {
     dispaddr.clear();
@@ -1084,7 +1084,7 @@ void Browser::format_memory_split(string &dispaddr, string &typeaddr,
 
 void Browser::format_memory(string &line, string &type, Addr addr,
                             bool addr_known, int bytes_per_line, int addr_chars,
-                            size_t &hexpos, off_t memroot, off_t diff_memroot,
+                            size_t &hexpos, OFF_T memroot, OFF_T diff_memroot,
                             unsigned diff_minline)
 {
     string dispaddr, typeaddr, disphex, typehex, dispchars, typechars;

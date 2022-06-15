@@ -88,7 +88,7 @@ struct CallReturn {
 
 class Index : ParseReceiver {
     string tarmac_filename, index_filename;
-    off_t last_memroot, memroot, seqroot;
+    OFF_T last_memroot, memroot, seqroot;
     unsigned long long last_sp, curr_sp, curr_pc, insns_since_lr_update;
     unsigned long long expected_next_pc, expected_next_lr;
     MMapFile *index_mmap;
@@ -112,7 +112,7 @@ class Index : ParseReceiver {
     bool seen_any_event;
     streampos linepos, oldpos;
     AVLDisk<ByPCPayload> *bypctree;
-    off_t bypcroot;
+    OFF_T bypcroot;
 
     unsigned char *make_memtree_update(char type, Addr addr, size_t size);
 
@@ -151,7 +151,7 @@ class Index : ParseReceiver {
     bool parse_warning(const string &msg);
     TarmacEvent *parse_tarmac_line(string line);
     void parse_tarmac_file(string tarmac_filename, bool show_progress_meter);
-    off_t make_sub_memtree(char type, Addr addr, size_t size);
+    OFF_T make_sub_memtree(char type, Addr addr, size_t size);
     void update_memtree(char type, Addr addr, size_t size,
                         unsigned long long contents);
     void update_memtree_if_necessary(char type, Addr addr, size_t size,
@@ -445,7 +445,7 @@ void Index::delete_from_memtree(char type, Addr addr, size_t size)
 
 unsigned char *Index::make_memtree_update(char type, Addr addr, size_t size)
 {
-    off_t contents_offset = index_mmap->alloc(size);
+    OFF_T contents_offset = index_mmap->alloc(size);
 
     delete_from_memtree(type, addr, size);
 
@@ -490,10 +490,10 @@ void Index::update_memtree_if_necessary(char type, Addr addr, size_t size,
     update_memtree(type, addr, size, contents);
 }
 
-off_t Index::make_sub_memtree(char type, Addr addr, size_t size)
+OFF_T Index::make_sub_memtree(char type, Addr addr, size_t size)
 {
-    off_t newroot_offset = index_mmap->alloc(sizeof(diskint<off_t>));
-    *index_mmap->getptr<diskint<off_t>>(newroot_offset) = 0;
+    OFF_T newroot_offset = index_mmap->alloc(sizeof(diskint<OFF_T>));
+    *index_mmap->getptr<diskint<OFF_T>>(newroot_offset) = 0;
 
     delete_from_memtree(type, addr, size);
 
@@ -544,8 +544,8 @@ void Index::update_memtree_from_read(char type, Addr addr, size_t size,
              * changed in future, this would be where to add code.
              */
         } else {
-            diskint<off_t> *subroot =
-                index_mmap->getptr<diskint<off_t>>(memp.contents);
+            diskint<OFF_T> *subroot =
+                index_mmap->getptr<diskint<OFF_T>>(memp.contents);
 
             MemorySubPayload msp;
             msp.lo = memp_search.lo;
@@ -568,18 +568,18 @@ void Index::update_memtree_from_read(char type, Addr addr, size_t size,
                     MemorySubPayload msp_insert;
                     msp_insert.lo = msp.lo;
                     msp_insert.hi = msp_found.lo - 1;
-                    off_t contents_offset =
+                    OFF_T contents_offset =
                         index_mmap->alloc(msp_insert.hi - msp_insert.lo + 1);
                     memcpy(index_mmap->getptr<unsigned char>(contents_offset),
                            data + (msp.lo - addr),
                            msp_insert.hi - msp_insert.lo + 1);
                     msp_insert.contents = contents_offset;
 
-                    off_t new_subroot_value =
+                    OFF_T new_subroot_value =
                         memsubtree->insert(*subroot, msp_insert);
                     // Take account of insert() perhaps having
                     // re-mmapped the file
-                    subroot = index_mmap->getptr<diskint<off_t>>(memp.contents);
+                    subroot = index_mmap->getptr<diskint<OFF_T>>(memp.contents);
                     *subroot = new_subroot_value;
                 }
                 msp.lo = msp_found.hi + 1;
@@ -621,8 +621,8 @@ bool Index::read_memtree_value(char type, Addr addr, size_t size,
                    treedata + (addr_lo - memp_got.lo), addr_hi - addr_lo + 1);
             memset((char *)def + (addr_lo - addr), 1, addr_hi - addr_lo + 1);
         } else {
-            off_t subroot =
-                *index_mmap->getptr<diskint<off_t>>(memp_got.contents);
+            OFF_T subroot =
+                *index_mmap->getptr<diskint<OFF_T>>(memp_got.contents);
             MemorySubPayload msp, msp_found;
             msp.lo = addr_lo;
             msp.hi = addr_hi;
@@ -681,8 +681,8 @@ class CallDepthCountingTreeWalker {
     }
     CallDepthCountingTreeWalker(const CallDepthCountingTreeWalker &) = delete;
 
-    void operator()(SeqOrderPayload &main, SeqOrderAnnotation &, off_t,
-                    SeqOrderAnnotation *, off_t, SeqOrderAnnotation *, off_t)
+    void operator()(SeqOrderPayload &main, SeqOrderAnnotation &, OFF_T,
+                    SeqOrderAnnotation *, OFF_T, SeqOrderAnnotation *, OFF_T)
     {
         if (it != callrets.end() && it->line == main.trace_file_firstline) {
             curr_depth += it->direction;
@@ -700,8 +700,8 @@ class CallDepthArrayTreeWalker {
     CallDepthArrayTreeWalker(const CallDepthArrayTreeWalker &) = delete;
 
     void operator()(SeqOrderPayload &mainpayload, SeqOrderAnnotation &main,
-                    off_t, SeqOrderAnnotation *lc, off_t,
-                    SeqOrderAnnotation *rc, off_t)
+                    OFF_T, SeqOrderAnnotation *lc, OFF_T,
+                    SeqOrderAnnotation *rc, OFF_T)
     {
         CallDepthArrayEntry current_node_array[2];
         CallDepthArrayEntry *arrays[3];
@@ -897,7 +897,7 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
     MagicNumber &magic = *index_mmap->newptr<MagicNumber>();
     magic.setup();
 
-    off_t off_header = index_mmap->alloc(sizeof(FileHeader));
+    OFF_T off_header = index_mmap->alloc(sizeof(FileHeader));
 
     memtree = new AVLDisk<MemoryPayload, MemoryAnnotation>(*index_mmap);
     memsubtree = new AVLDisk<MemorySubPayload>(*index_mmap);
@@ -1044,7 +1044,7 @@ IndexReader::IndexReader(const TracePair &trace)
     lineno_offset = hdr.lineno_offset;
 }
 
-string IndexReader::read_tarmac(off_t pos, off_t len)
+string IndexReader::read_tarmac(OFF_T pos, OFF_T len)
 {
     vector<char> vbuf(len);
     tarmac.seekg(pos);
@@ -1152,7 +1152,7 @@ struct IndexLRTSearcher {
     unsigned minindex_o, maxindex_o;
     // Identify the tree node (if any) whose call depth array minindex
     // and maxindex apply to.
-    off_t curr;
+    OFF_T curr;
 
     unsigned output_lines;
 
@@ -1164,7 +1164,7 @@ struct IndexLRTSearcher {
                      unsigned maxdepth_o)
         : index(index), target(target), mindepth_i(mindepth_i),
           maxdepth_i(maxdepth_i), mindepth_o(mindepth_o),
-          maxdepth_o(maxdepth_o), curr(-(off_t)1), output_lines(0)
+          maxdepth_o(maxdepth_o), curr(-(OFF_T)1), output_lines(0)
     {
     }
 
@@ -1203,9 +1203,9 @@ struct IndexLRTSearcher {
         return lo;
     }
 
-    int operator()(off_t lhs_off, const SeqOrderAnnotation *lhs, off_t here_off,
+    int operator()(OFF_T lhs_off, const SeqOrderAnnotation *lhs, OFF_T here_off,
                    const SeqOrderPayload &here_p,
-                   const SeqOrderAnnotation &here_a, off_t rhs_off,
+                   const SeqOrderAnnotation &here_a, OFF_T rhs_off,
                    const SeqOrderAnnotation *rhs)
     {
         if (curr != here_off) {
@@ -1289,7 +1289,7 @@ struct IndexLRTSearcher {
     }
 };
 
-bool IndexNavigator::getmem_next(off_t memroot, char type, Addr addr,
+bool IndexNavigator::getmem_next(OFF_T memroot, char type, Addr addr,
                                  size_t size, const void **outdata,
                                  Addr *outaddr, size_t *outsize,
                                  unsigned *outline) const
@@ -1325,7 +1325,7 @@ bool IndexNavigator::getmem_next(off_t memroot, char type, Addr addr,
                 *outline = memp_got.trace_file_firstline;
             return true;
         } else {
-            off_t subroot = index.index_subtree_root(memp_got.contents);
+            OFF_T subroot = index.index_subtree_root(memp_got.contents);
             MemorySubPayload msp, msp_found;
             msp.lo = addr_lo;
             msp.hi = addr_hi;
@@ -1361,7 +1361,7 @@ bool IndexNavigator::getmem_next(off_t memroot, char type, Addr addr,
     return false;
 }
 
-unsigned IndexNavigator::getmem(off_t memroot, char type, Addr addr,
+unsigned IndexNavigator::getmem(OFF_T memroot, char type, Addr addr,
                                 size_t size, void *outdata,
                                 unsigned char *outdef) const
 {
@@ -1394,7 +1394,7 @@ unsigned IndexNavigator::getmem(off_t memroot, char type, Addr addr,
                 memset((char *)outdef + (addr_lo - addr), 1,
                        addr_hi - addr_lo + 1);
         } else {
-            off_t subroot = index.index_subtree_root(memp_got.contents);
+            OFF_T subroot = index.index_subtree_root(memp_got.contents);
             MemorySubPayload msp, msp_found;
             msp.lo = addr_lo;
             msp.hi = addr_hi;
@@ -1426,7 +1426,7 @@ unsigned IndexNavigator::getmem(off_t memroot, char type, Addr addr,
     return retline;
 }
 
-bool IndexNavigator::get_reg_bytes(off_t memroot, const RegisterId &reg,
+bool IndexNavigator::get_reg_bytes(OFF_T memroot, const RegisterId &reg,
                                    vector<unsigned char> &val) const
 {
     // Look up the iflags to pass to reg_offset, but only if they're
@@ -1449,7 +1449,7 @@ bool IndexNavigator::get_reg_bytes(off_t memroot, const RegisterId &reg,
     return true;
 }
 
-pair<bool, uint64_t> IndexNavigator::get_reg_value(off_t memroot,
+pair<bool, uint64_t> IndexNavigator::get_reg_value(OFF_T memroot,
                                                    const RegisterId &reg) const
 {
     size_t size = reg_size(reg);
@@ -1470,7 +1470,7 @@ pair<bool, uint64_t> IndexNavigator::get_reg_value(off_t memroot,
     return make_pair(is_defined, toret);
 }
 
-unsigned IndexNavigator::get_iflags(off_t memroot) const
+unsigned IndexNavigator::get_iflags(OFF_T memroot) const
 {
     RegisterId reg = {RegPrefix::internal_flags, 0};
     auto gr = get_reg_value(memroot, reg);
@@ -1594,9 +1594,9 @@ struct RegMemChangesSearcher {
      * to return the min thing in that subtree.
      */
 
-    int operator()(off_t /*lhs_off*/, const MemoryAnnotation *lhs,
-                   off_t /*here_off*/, const MemoryPayload &here_p,
-                   const MemoryAnnotation & /*here_a*/, off_t /*rhs_off*/,
+    int operator()(OFF_T /*lhs_off*/, const MemoryAnnotation *lhs,
+                   OFF_T /*here_off*/, const MemoryPayload &here_p,
+                   const MemoryAnnotation & /*here_a*/, OFF_T /*rhs_off*/,
                    const MemoryAnnotation *rhs)
     {
         if (pass == 1) {
@@ -1692,7 +1692,7 @@ struct RegMemChangesSearcher {
 };
 } // namespace
 
-bool IndexNavigator::find_next_mod(off_t memroot, char type, Addr addr,
+bool IndexNavigator::find_next_mod(OFF_T memroot, char type, Addr addr,
                                    unsigned minline, int sign, Addr &lo,
                                    Addr &hi)
 {

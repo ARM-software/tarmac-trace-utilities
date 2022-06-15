@@ -160,11 +160,11 @@ void MMapFile::unmap()
     pdata->mh = NULL;
 }
 
-off_t MMapFile::alloc(size_t size)
+OFF_T MMapFile::alloc(size_t size)
 {
     assert(writable);
     if ((size_t)(curr_size - next_offset) < size) {
-        off_t new_curr_size = (next_offset + size) * 5 / 4 + 65536;
+        OFF_T new_curr_size = (next_offset + size) * 5 / 4 + 65536;
         assert(new_curr_size >= next_offset);
 
         unmap();
@@ -181,7 +181,7 @@ off_t MMapFile::alloc(size_t size)
 
         map();
     }
-    off_t ret = next_offset;
+    OFF_T ret = next_offset;
     next_offset += size;
     return ret;
 }

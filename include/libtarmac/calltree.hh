@@ -30,10 +30,10 @@ struct TarmacSite {
     Addr addr;            // PC address
     Time time;            // Time
     unsigned tarmac_line; // Line number in the trace
-    off_t tarmac_pos;     // Offset (in bytes) in the trace
+    OFF_T tarmac_pos;     // Offset (in bytes) in the trace
 
     constexpr TarmacSite(Addr addr, Time time, unsigned tarmac_line,
-                         off_t tarmac_pos)
+                         OFF_T tarmac_pos)
         : addr(addr), time(time), tarmac_line(tarmac_line),
           tarmac_pos(tarmac_pos)
     {

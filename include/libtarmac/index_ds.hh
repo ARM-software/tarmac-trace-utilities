@@ -384,8 +384,8 @@ struct MagicNumber {
 
 struct FileHeader {
     diskint<unsigned> flags; // see flag definitions below
-    diskint<off_t> seqroot;  // root of the sequential order tree
-    diskint<off_t> bypcroot; // root of the PC tree
+    diskint<OFF_T> seqroot;  // root of the sequential order tree
+    diskint<OFF_T> bypcroot; // root of the PC tree
 
     // If the actual Tarmac data starts somewhere other than line 1 of
     // the file (e.g. because of an initial header line), this stores
@@ -406,11 +406,11 @@ struct SeqOrderPayload {
     diskint<Addr> pc;       // PC of this node
 
     // Locations in the trace file, in both bytes and lines
-    diskint<off_t> trace_file_pos, trace_file_len;
+    diskint<OFF_T> trace_file_pos, trace_file_len;
     diskint<unsigned> trace_file_firstline, trace_file_lines;
 
     // Root of the memory tree representing the state just after this node
-    diskint<off_t> memory_root;
+    diskint<OFF_T> memory_root;
 
     // Current depth in the function call hierarchy
     diskint<unsigned> call_depth;
@@ -437,7 +437,7 @@ struct SeqOrderAnnotation {
 
     // Points to an array of CallDepthArrayEntry structures, as
     // defined below
-    diskint<off_t> call_depth_array;
+    diskint<OFF_T> call_depth_array;
     diskint<unsigned> call_depth_arraylen;
 
     SeqOrderAnnotation() {}
@@ -451,7 +451,7 @@ struct SeqOrderAnnotation {
 struct CallDepthArrayEntry {
     diskint<unsigned> call_depth;
     diskint<unsigned> cumulative_lines, cumulative_insns;
-    diskint<off_t> leftlink, rightlink;
+    diskint<OFF_T> leftlink, rightlink;
 };
 
 /* ----------------------------------------------------------------------
@@ -464,12 +464,12 @@ struct MemoryPayload {
     // If 'raw' is true, then 'contents' is the file offset of an
     // actual sequence of raw bytes representing the memory contents
     // described by this node. If 'raw' is false, then 'contents' is
-    // the file offset of a diskint<off_t> storing the root of a tree
+    // the file offset of a diskint<OFF_T> storing the root of a tree
     // of MemorySubPayload.
     bool raw;
 
     diskint<Addr> lo, hi; // low and high bytes touched, i.e. inclusive
-    diskint<off_t> contents;
+    diskint<OFF_T> contents;
 
     // Identifies (by its trace_file_firstline field, i.e. primary
     // key) the seqtree node in which this piece of memory was last
@@ -510,7 +510,7 @@ struct MemorySubPayload {
     diskint<Addr> lo, hi; // low and high bytes touched, i.e. inclusive
 
     // This is always just a raw range of bytes in the file
-    diskint<off_t> contents;
+    diskint<OFF_T> contents;
 
     int cmp(const struct MemorySubPayload &rhs) const
     {

@@ -226,7 +226,7 @@ class VCDVisitor : public ParseReceiver {
         // in between the call to writeVCDStart and the first writeTime.
     }
 
-    void operator()(const SeqOrderPayload &sop, off_t)
+    void operator()(const SeqOrderPayload &sop, OFF_T)
     {
         tick();
 

@@ -29,7 +29,7 @@ class MMapFile {
     const std::string filename;
     bool writable;
     PlatformData *pdata;
-    off_t curr_size, next_offset;
+    OFF_T curr_size, next_offset;
     void *mapping;
 
     void map();
@@ -39,20 +39,20 @@ class MMapFile {
     MMapFile(const std::string &filename, bool writable);
     ~MMapFile();
 
-    off_t alloc(size_t size);
-    off_t curr_offset() const { return next_offset; }
+    OFF_T alloc(size_t size);
+    OFF_T curr_offset() const { return next_offset; }
 
-    template <class T> inline T *getptr(off_t offset)
+    template <class T> inline T *getptr(OFF_T offset)
     {
-        assert(0 <= offset && (off_t)sizeof(T) <= next_offset &&
-               offset <= next_offset - (off_t)sizeof(T));
+        assert(0 <= offset && (OFF_T)sizeof(T) <= next_offset &&
+               offset <= next_offset - (OFF_T)sizeof(T));
         return (T *)((char *)mapping + offset);
     }
 
-    template <class T> inline const T *getptr(off_t offset) const
+    template <class T> inline const T *getptr(OFF_T offset) const
     {
-        assert(0 <= offset && (off_t)sizeof(T) <= next_offset &&
-               offset <= next_offset - (off_t)sizeof(T));
+        assert(0 <= offset && (OFF_T)sizeof(T) <= next_offset &&
+               offset <= next_offset - (OFF_T)sizeof(T));
         return (const T *)((char *)mapping + offset);
     }
 
@@ -105,18 +105,18 @@ class AVLDisk {
     MMapFile &mmf;
     // High-water mark. Nodes at addresses below here are already used
     // by some prior tree root and hence are immutable.
-    off_t hwm;
+    OFF_T hwm;
 
     struct node {
         // offset can be 0, meaning this is the null node
-        off_t offset, lc, rc;
+        OFF_T offset, lc, rc;
         int height;
         Payload payload;
         Annotation annotation;
     };
 
     struct disknode {
-        diskint<off_t> lc, rc;
+        diskint<OFF_T> lc, rc;
         diskint<int> height;
         Payload payload;
         Annotation annotation;
@@ -132,7 +132,7 @@ class AVLDisk {
         dn.annotation = n.annotation;
     }
 
-    node get(off_t offset) const
+    node get(OFF_T offset) const
     {
         node n;
         if (offset == 0) {
@@ -153,7 +153,7 @@ class AVLDisk {
 
     bool immutable(node &n) const { return n.offset < hwm; }
 
-    void rewrite(node &n, off_t newlc, off_t newrc)
+    void rewrite(node &n, OFF_T newlc, OFF_T newrc)
     {
         if (immutable(n))
             n.offset = mmf.alloc(sizeof(disknode));
@@ -176,7 +176,7 @@ class AVLDisk {
     node rotate_left(node &n)
     {
         node rc = get(n.rc);
-        off_t t0 = n.lc, t1 = rc.lc, t2 = rc.rc;
+        OFF_T t0 = n.lc, t1 = rc.lc, t2 = rc.rc;
         rewrite(n, t0, t1);
         rewrite(rc, n.offset, t2);
         return rc;
@@ -185,7 +185,7 @@ class AVLDisk {
     node rotate_right(node &n)
     {
         node lc = get(n.lc);
-        off_t t0 = lc.lc, t1 = lc.rc, t2 = n.rc;
+        OFF_T t0 = lc.lc, t1 = lc.rc, t2 = n.rc;
         rewrite(n, t1, t2);
         rewrite(lc, t0, n.offset);
         return lc;
@@ -254,7 +254,7 @@ class AVLDisk {
         }
 
         if (cmp < 0) {
-            off_t oldlc = lc.offset;
+            OFF_T oldlc = lc.offset;
             lc = remove_main(lc, keyfinder, removed);
             if (lc.offset == oldlc)
                 return root;
@@ -272,7 +272,7 @@ class AVLDisk {
             }
         } else {
             if (cmp > 0) {
-                off_t oldrc = rc.offset;
+                OFF_T oldrc = rc.offset;
                 rc = remove_main(rc, keyfinder, removed);
                 if (rc.offset == oldrc)
                     return root;
@@ -417,7 +417,7 @@ class AVLDisk {
     void commit() { hwm = mmf.curr_offset(); }
 
     template <class PayloadComparable>
-    off_t remove(off_t oldroot, const PayloadComparable &keyfinder, bool *found,
+    OFF_T remove(OFF_T oldroot, const PayloadComparable &keyfinder, bool *found,
                  Payload *removed_payload)
     {
 
@@ -432,8 +432,8 @@ class AVLDisk {
     }
 
     template <class PayloadComparable>
-    bool find(off_t root_offset, const PayloadComparable &keyfinder,
-              Payload *payload_out, off_t *offset_out) const
+    bool find(OFF_T root_offset, const PayloadComparable &keyfinder,
+              Payload *payload_out, OFF_T *offset_out) const
     {
 
         node root = get(root_offset);
@@ -449,8 +449,8 @@ class AVLDisk {
     }
 
     template <class PayloadComparable>
-    bool find_leftmost(off_t root_offset, const PayloadComparable &keyfinder,
-                       Payload *payload_out, off_t *offset_out) const
+    bool find_leftmost(OFF_T root_offset, const PayloadComparable &keyfinder,
+                       Payload *payload_out, OFF_T *offset_out) const
     {
 
         node root = get(root_offset);
@@ -466,8 +466,8 @@ class AVLDisk {
     }
 
     template <class PayloadComparable>
-    bool find_rightmost(off_t root_offset, const PayloadComparable &keyfinder,
-                        Payload *payload_out, off_t *offset_out) const
+    bool find_rightmost(OFF_T root_offset, const PayloadComparable &keyfinder,
+                        Payload *payload_out, OFF_T *offset_out) const
     {
 
         node root = get(root_offset);
@@ -483,8 +483,8 @@ class AVLDisk {
     }
 
     template <class PayloadComparable>
-    bool succ(off_t root_offset, const PayloadComparable &keyfinder,
-              Payload *payload_out, off_t *offset_out) const
+    bool succ(OFF_T root_offset, const PayloadComparable &keyfinder,
+              Payload *payload_out, OFF_T *offset_out) const
     {
 
         node root = get(root_offset);
@@ -500,8 +500,8 @@ class AVLDisk {
     }
 
     template <class PayloadComparable>
-    bool pred(off_t root_offset, const PayloadComparable &keyfinder,
-              Payload *payload_out, off_t *offset_out) const
+    bool pred(OFF_T root_offset, const PayloadComparable &keyfinder,
+              Payload *payload_out, OFF_T *offset_out) const
     {
 
         node root = get(root_offset);
@@ -516,7 +516,7 @@ class AVLDisk {
         return ret;
     }
 
-    off_t insert(off_t oldroot, Payload payload)
+    OFF_T insert(OFF_T oldroot, Payload payload)
     {
         node root = get(oldroot);
         node n;
@@ -532,10 +532,10 @@ class AVLDisk {
     }
 
     using Searcher =
-        std::function<int(off_t, const Annotation *, off_t, const Payload &,
-                          const Annotation &, off_t, const Annotation *)>;
+        std::function<int(OFF_T, const Annotation *, OFF_T, const Payload &,
+                          const Annotation &, OFF_T, const Annotation *)>;
 
-    bool search(off_t nodeoff, Searcher searcher, Payload *payload_out)
+    bool search(OFF_T nodeoff, Searcher searcher, Payload *payload_out)
     {
         disknode *node;
         Annotation *lca, *rca;
@@ -562,10 +562,10 @@ class AVLDisk {
     }
 
     using WalkVisitor =
-        std::function<void(Payload &, Annotation &, off_t, Annotation *, off_t,
-                           Annotation *, off_t)>;
+        std::function<void(Payload &, Annotation &, OFF_T, Annotation *, OFF_T,
+                           Annotation *, OFF_T)>;
 
-    void walk(off_t nodeoff, WalkOrder order, WalkVisitor visitor)
+    void walk(OFF_T nodeoff, WalkOrder order, WalkVisitor visitor)
     {
         node n, lc, rc;
         Annotation *lca, *rca;
@@ -597,10 +597,10 @@ class AVLDisk {
     }
 
     using ConstWalkVisitor = std::function<void(
-        const Payload &, const Annotation &, off_t, const Annotation *, off_t,
-        const Annotation *, off_t)>;
+        const Payload &, const Annotation &, OFF_T, const Annotation *, OFF_T,
+        const Annotation *, OFF_T)>;
 
-    void walk(off_t nodeoff, WalkOrder order,
+    void walk(OFF_T nodeoff, WalkOrder order,
               const ConstWalkVisitor &visitor) const
     {
         node n, lc, rc;
@@ -626,9 +626,9 @@ class AVLDisk {
             walk(n.rc, order, visitor);
     }
 
-    using SimpleVisitor = std::function<void(const Payload &, off_t)>;
+    using SimpleVisitor = std::function<void(const Payload &, OFF_T)>;
 
-    void visit(off_t nodeoff, SimpleVisitor visitor) const
+    void visit(OFF_T nodeoff, SimpleVisitor visitor) const
     {
         if (!nodeoff)
             return;

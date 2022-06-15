@@ -1171,7 +1171,7 @@ class RegisterDisplay : public Window {
   private:
     bool interpret_address;
     bool locked;
-    off_t memroot, ext_memroot;
+    OFF_T memroot, ext_memroot;
     unsigned line, ext_line;
     int w, h;
     int reg_selected;
@@ -1179,7 +1179,7 @@ class RegisterDisplay : public Window {
     char minibuf_reqtype;
     int top_line;
     vector<int> regs_per_line, reg_to_line;
-    off_t diff_memroot;
+    OFF_T diff_memroot;
     unsigned diff_minline;
 
   protected:
@@ -1202,7 +1202,7 @@ class RegisterDisplay : public Window {
         top_line = 0;
     }
 
-    void set_memroot(off_t memroot_, unsigned line_)
+    void set_memroot(OFF_T memroot_, unsigned line_)
     {
         ext_memroot = memroot_;
         ext_line = line_;
@@ -1631,7 +1631,7 @@ class MVERegisterDisplay : public VectorRegisterDisplay {
 class MemoryDisplay : public Window {
     Browser &br;
     bool locked;
-    off_t memroot, ext_memroot;
+    OFF_T memroot, ext_memroot;
     unsigned line, ext_line;
     int w, h;
     Addr start_addr, cursor_addr;
@@ -1642,7 +1642,7 @@ class MemoryDisplay : public Window {
     int bytes_per_line;
     int desired_height;
     char minibuf_reqtype;
-    off_t diff_memroot;
+    OFF_T diff_memroot;
     unsigned diff_minline;
 
   public:
@@ -1719,7 +1719,7 @@ class MemoryDisplay : public Window {
         h = h_;
     }
 
-    void set_memroot(off_t memroot_, unsigned line_)
+    void set_memroot(OFF_T memroot_, unsigned line_)
     {
         ext_memroot = memroot_;
         ext_line = line_;

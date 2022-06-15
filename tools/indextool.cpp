@@ -63,7 +63,7 @@ template <typename Payload, typename Annotation> class TreeDumper {
     {
     }
 
-    virtual void node_header(off_t offset)
+    virtual void node_header(OFF_T offset)
     {
         cout << prefix << "Node";
         if (!omit_index_offsets)
@@ -71,15 +71,15 @@ template <typename Payload, typename Annotation> class TreeDumper {
         cout << ":" << endl;
     }
 
-    void visit(const Payload &payload, off_t offset)
+    void visit(const Payload &payload, OFF_T offset)
     {
         node_header(offset);
         dump_payload(prefix + "    ", payload);
     }
 
     void walk(const Payload &payload, const Annotation &annotation,
-              off_t leftoff, const Annotation *, off_t rightoff,
-              const Annotation *, off_t offset)
+              OFF_T leftoff, const Annotation *, OFF_T rightoff,
+              const Annotation *, OFF_T offset)
     {
         string firstlineprefix, finalprefix, node_type;
 
@@ -154,7 +154,7 @@ template <typename Payload, typename Annotation> class TreeDumper {
 
       public:
         Visitor(TreeDumper *parent) : parent(parent) {}
-        void operator()(const Payload &payload, off_t offset)
+        void operator()(const Payload &payload, OFF_T offset)
         {
             parent->visit(payload, offset);
         }
@@ -166,8 +166,8 @@ template <typename Payload, typename Annotation> class TreeDumper {
       public:
         Walker(TreeDumper *parent) : parent(parent) {}
         void operator()(const Payload &payload, const Annotation &annotation,
-                        off_t lo, const Annotation *la, off_t ro,
-                        const Annotation *ra, off_t offset)
+                        OFF_T lo, const Annotation *la, OFF_T ro,
+                        const Annotation *ra, OFF_T offset)
         {
             parent->walk(payload, annotation, lo, la, ro, ra, offset);
         }
@@ -413,7 +413,7 @@ static void dump_memory_at_line(const IndexNavigator &IN, unsigned trace_line,
         cerr << "Unable to find a node at line " << trace_line << "\n";
         exit(1);
     }
-    off_t memroot = node.memory_root;
+    OFF_T memroot = node.memory_root;
     unsigned iflags = IN.get_iflags(memroot);
 
     const void *outdata;
@@ -482,7 +482,7 @@ int main(int argc, char **argv)
         RegMap,
         FullMemByLine,
     } mode = Mode::None;
-    off_t root;
+    OFF_T root;
     unsigned trace_line;
     unsigned iflags = 0;
     bool got_iflags = false;

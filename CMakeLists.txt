@@ -54,6 +54,37 @@ endif()
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 configure_file(cmake/cmake.h.in ${CMAKE_BINARY_DIR}/include/cmake.h)
 
+# Support large Tarmac traces if possible on this system.
+# Note: OFF_T is used in the code base to represent both a file offset
+# AND a pointer offset (the index files are memory mapped at some point).
+include(CheckTypeSize)
+check_type_size(off_t OFF_T LANGUAGE CXX)
+if (HAVE_OFF_T)
+  if(CMAKE_CXX_SIZEOF_DATA_PTR EQUAL 8)
+    if(OFF_T EQUAL 8)
+      # Nothing to do, off_t is 64-bit by default on this 64-bit pointers system.
+      add_compile_definitions(OFF_T=off_t)
+    else()
+      # Force OFF_T to be 64-bit for systems where we know how to do it, and
+      # fall-back to whatever is the default for other systems.
+      if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+        add_compile_definitions(OFF_T=int64_t)
+      elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+        add_compile_definitions(OFF_T=off_t _FILE_OFFSET_BITS=64)
+      else()
+        message(WARNING "Large Tarmac files are not supported: don't know how to get a 64-bit file offset on this system.")
+        add_compile_definitions(OFF_T=off_t)
+      endif()
+    endif()
+  else()
+    # The system has 32-bit pointers, there is not much we can do.
+    add_compile_definitions(OFF_T=off_t)
+    message(WARNING "Large Tarmac files are not supported on this platform.")
+  endif()
+else()
+  message(FATAL "off_t is not available on this platform")
+endif()
+
 # Set up the header file directory, and build the library of common
 # code.
 
