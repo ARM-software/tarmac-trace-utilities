@@ -2515,6 +2515,7 @@ bool TraceWindow::keypress(wxKeyEvent &event)
         FunctionRange fnrange(vu);
         if (fnrange.set_to_callee(vu.curr_visible_node)) {
             unfold_ui_action(fnrange, false);
+            update_location(UpdateLocationType::NewLog);
             keep_visnode_in_view();
             drawing_area->Refresh();
         }
