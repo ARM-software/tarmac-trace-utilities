@@ -2581,7 +2581,7 @@ RegisterWindow::RegisterWindow(GuiTarmacBrowserApp *app,
 
 bool RegisterWindow::prepare_context_menu(const LogicalPos &logpos)
 {
-    unsigned reg_index = logpos.y0 + logpos.char_index / colwid * rows;
+    unsigned reg_index = logpos.y0 + logpos.column * rows;
     if (reg_index >= regs.size())
         return false;
 
