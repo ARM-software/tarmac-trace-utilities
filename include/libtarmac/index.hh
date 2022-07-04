@@ -19,6 +19,11 @@
 #ifndef LIBTARMAC_INDEX_HH
 #define LIBTARMAC_INDEX_HH
 
+// This file needs to be included first, as it contains some macro definitions
+// to intentionally enable some platform features (e.g. large file support, ...)
+// if they have been found by CMake.
+#include "libtarmac/platform.hh"
+
 #include "libtarmac/disktree.hh"
 #include "libtarmac/image.hh"
 #include "libtarmac/index_ds.hh"
