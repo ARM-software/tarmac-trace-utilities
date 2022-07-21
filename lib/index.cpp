@@ -898,9 +898,14 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
     remove(index_filename.c_str());
     index_mmap = new MMapFile(index_filename, true);
     MagicNumber &magic = *index_mmap->newptr<MagicNumber>();
-    magic.setup();
 
     OFF_T off_header = index_mmap->alloc(sizeof(FileHeader));
+    {
+        FileHeader &hdr = *index_mmap->getptr<FileHeader>(off_header);
+        hdr.flags = 0;        // ensure FLAG_COMPLETE is not initially set
+    }
+
+    magic.setup();
 
     memtree = new AVLDisk<MemoryPayload, MemoryAnnotation>(*index_mmap);
     memsubtree = new AVLDisk<MemorySubPayload>(*index_mmap);
@@ -1008,6 +1013,7 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
             flags |= FLAG_BIGEND;
         if (aarch64_used)
             flags |= FLAG_AARCH64_USED;
+        flags |= FLAG_COMPLETE;
         hdr.flags = flags;
     }
     hdr.seqroot = seqroot;
@@ -1015,11 +1021,19 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
     hdr.lineno_offset = lineno_offset;
 }
 
-bool magic_number_ok(const string &index_filename)
+IndexHeaderState check_index_header(const string &index_filename)
 {
     MMapFile mmf(index_filename, false);
+
     MagicNumber &magic = *mmf.getptr<MagicNumber>(0);
-    return magic.check();
+    if (!magic.check())
+        return IndexHeaderState::WrongMagic;
+
+    FileHeader &hdr = *mmf.getptr<FileHeader>(sizeof(MagicNumber));
+    if (!(hdr.flags & FLAG_COMPLETE))
+        return IndexHeaderState::Incomplete;
+
+    return IndexHeaderState::OK;
 }
 
 void run_indexer(const TracePair &trace, bool bigend, bool show_progress_meter)

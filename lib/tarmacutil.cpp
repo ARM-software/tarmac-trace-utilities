@@ -128,10 +128,18 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace,
             status = IndexUpdateCheck::Missing;
         } else if (index_timestamp < trace_timestamp) {
             status = IndexUpdateCheck::TooOld;
-        } else if (!magic_number_ok(trace.index_filename)) {
-            status = IndexUpdateCheck::WrongFormat;
         } else {
-            status = IndexUpdateCheck::OK;
+            switch (check_index_header(trace.index_filename)) {
+            case IndexHeaderState::WrongMagic:
+                status = IndexUpdateCheck::WrongFormat;
+                break;
+            case IndexHeaderState::Incomplete:
+                status = IndexUpdateCheck::Incomplete;
+                break;
+            default:
+                status = IndexUpdateCheck::OK;
+                break;
+            }
         }
 
         reporter->indexing_status(trace.index_filename, trace.tarmac_filename,

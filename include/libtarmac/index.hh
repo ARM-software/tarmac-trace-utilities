@@ -37,7 +37,9 @@
 
 void run_indexer(const TracePair &trace, bool big_endian,
                  bool show_progress_meter);
-bool magic_number_ok(const std::string &index_filename);
+
+enum class IndexHeaderState { OK, WrongMagic, Incomplete };
+IndexHeaderState check_index_header(const std::string &index_filename);
 
 class IndexReader {
     const std::string index_filename;
