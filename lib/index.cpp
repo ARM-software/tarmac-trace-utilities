@@ -570,6 +570,9 @@ void Index::update_memtree_from_read(char type, Addr addr, size_t size,
                     msp_insert.hi = msp_found.lo - 1;
                     OFF_T contents_offset =
                         index_mmap->alloc(msp_insert.hi - msp_insert.lo + 1);
+                    // Take account of alloc() perhaps having
+                    // re-mmapped the file
+                    subroot = index_mmap->getptr<diskint<OFF_T>>(memp.contents);
                     memcpy(index_mmap->getptr<unsigned char>(contents_offset),
                            data + (msp.lo - addr),
                            msp_insert.hi - msp_insert.lo + 1);
