@@ -961,7 +961,10 @@ void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
             break;
         }
 
-        linepos = in.tellg();
+        // Maintain linepos ourselves, rather than calling in.tellg() numerous
+        // times. tellg() is a somehow slow function on some platforms, and this
+        // alone allows a 2x speedup in parsing time.
+        linepos += true_lineno > 1 ? line.size() + 1 : 0;
 
         reporter->indexing_progress(linepos);
 
