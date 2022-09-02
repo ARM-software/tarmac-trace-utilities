@@ -886,6 +886,7 @@ void Browser::format_reg(string &dispstr, string &disptype, const RegisterId &r,
 
     dispstr = disptype = "";
     dispstr += reg_name(r);
+    type_extend(disptype, dispstr, 'r');
     dispstr += "=";
     type_extend(disptype, dispstr, 'f');
 

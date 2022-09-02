@@ -84,6 +84,7 @@ using std::vector;
     X(TRACEPUNCT_SEL, A_NORMAL, 3, 4, A_NORMAL, 3, 4)                          \
     X(TRACEERR, A_BOLD, 3, 1, A_BOLD, 3, 1)                                    \
     X(TRACEERR_SEL, A_BOLD, 3, 1, A_BOLD, 3, 1)                                \
+    X(REGDISPLAY_NAME, A_NORMAL, 6, 0, A_NORMAL, 6, 0)                         \
     X(REGDISPLAY_FIXED, A_NORMAL, 6, 0, A_NORMAL, 6, 0)                        \
     X(REGDISPLAY_VALUE, A_NORMAL, 7, 0, A_NORMAL, 7, 0)                        \
     X(REGDISPLAY_UNKNOWN, A_NORMAL, 1, 0, A_NORMAL, 1, 0)                      \
@@ -1281,6 +1282,9 @@ class RegisterDisplay : public Window {
     {
         for (int i = 0; i < line.size(); i++) {
             switch (type[i]) {
+            case 'r':
+                setattr(ATTR_REGDISPLAY_NAME);
+                break;
             case 'f':
                 setattr(ATTR_REGDISPLAY_FIXED);
                 break;

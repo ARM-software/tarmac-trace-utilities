@@ -165,7 +165,8 @@ class Browser : public IndexNavigator {
     // where 'value' is formatted appropriately for the register type.
     // Fills in disptype with a parallel string whose characters are:
     //
-    //  'f': fixed text, such as the 'regname=' prefix or punctuation
+    //  'r': part of the register name
+    //  'f': other fixed text, such as the '=' separator or other punctuation
     //  'v': a character representing a defined part of the value
     //  'u': a character representing an undefined part of the value
     //  'V','U': same as 'v','u' but indicate that this character has

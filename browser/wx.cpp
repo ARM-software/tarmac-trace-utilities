@@ -232,6 +232,7 @@ static const map<ColourId, pair<string, RGBA>> colour_ids = {
     {'c', {"regmem-unprintable", {0.5, 0.5, 0.0, 1}}},
     {'u', {"regmem-unknown", {0.5, 0.0, 0.0, 1}}},
     {'f', {"regmem-fixed-text", {0.0, 0.5, 0.0, 1}}},
+    {'r', {"regmem-name", {0.0, 0.25, 0.0, 1}}},
 
     // Miscellaneous
     {ColourId::AreaBackground, {"background", {0.0, 0.0, 0.0, 0}}},
