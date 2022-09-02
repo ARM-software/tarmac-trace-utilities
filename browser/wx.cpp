@@ -215,6 +215,7 @@ struct RGBA {
 static const map<ColourId, pair<string, RGBA>> colour_ids = {
     // Tarmac HighlightClasses
     {HL_NONE, {"trace-text", {0.0, 0.0, 0.0, 1}}},
+    {HL_SPACE, {"trace-whitespace", {0.0, 0.0, 0.0, 1}}},
     {HL_TIMESTAMP, {"trace-timestamp", {0.0, 0.5, 0.0, 1}}},
     {HL_EVENT, {"trace-event", {0.0, 0.0, 0.0, 1}}},
     {HL_PC, {"trace-pc", {0.0, 0.0, 0.5, 1}}},

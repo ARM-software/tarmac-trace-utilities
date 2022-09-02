@@ -148,6 +148,7 @@ class HighlightReceiver : public ParseReceiver {
     {
         switch (hc) {
         case HL_NONE:
+        case HL_SPACE:
             return "\033[0;39m";
         case HL_TIMESTAMP:
             return "\033[0;32m";

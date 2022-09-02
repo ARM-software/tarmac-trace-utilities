@@ -206,8 +206,13 @@ class TarmacLineParserImpl {
     Token lex()
     {
         // Eat whitespace.
-        while (pos < size && isspace((unsigned char)line[pos]))
-            pos++;
+        if (pos < size && isspace((unsigned char)line[pos])) {
+            size_t startpos = pos;
+            do {
+                pos++;
+            } while (pos < size && isspace((unsigned char)line[pos]));
+            highlight(startpos, pos, HL_SPACE);
+        }
 
         if (pos == size) {
             Token ret;
@@ -524,7 +529,13 @@ class TarmacLineParserImpl {
 
             // Now we're done, and tok.startpos points at the
             // beginning of the instruction disassembly.
-            highlight(tok.startpos, line.size(), HL_DISASSEMBLY);
+            size_t disass_end = line.size();
+            while (disass_end > tok.startpos &&
+                   isspace((unsigned char)line[disass_end - 1]))
+                disass_end--;
+            highlight(tok.startpos, disass_end, HL_DISASSEMBLY);
+            if (disass_end < line.size())
+                highlight(disass_end, line.size(), HL_SPACE);
             InstructionEvent ev(time, executed, address, iset, width,
                                 bitpattern, line.substr(tok.startpos));
             receiver->got_event(ev);

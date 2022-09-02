@@ -38,6 +38,7 @@ enum ISet { ARM, THUMB, A64 };
 
 enum HighlightClass {
     HL_NONE,
+    HL_SPACE,
     HL_TIMESTAMP,
     HL_EVENT,
     HL_PC,
