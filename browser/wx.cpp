@@ -2267,6 +2267,7 @@ void TraceWindow::newstk_menuaction(wxCommandEvent &event)
     MemoryWindow::StartAddr addr;
     ostringstream error;
     bool success = addr.parse(expr, br, error);
+    (void)success; // avoid compiler warning at -NDEBUG
     assert(success);
     add_subview(
         new MemoryWindow(app, addr, 16, br.index.isAArch64(), br, this));

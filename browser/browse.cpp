@@ -286,8 +286,8 @@ void HighlightedLine::replace_instruction(Browser &br)
         if ((MATCH(0xfc000000, 0x94000000) && PREFIX("BL")) ||
             (MATCH(0xfc000000, 0x14000000) && PREFIX("B"))) {
             target = iev->pc + SEXT((BITS(0, 26) << 2), 28);
-        } else if (MATCH(0xff000010, 0x54000000) && PREFIX("B.") ||
-                   MATCH(0xff000010, 0x54000010) && PREFIX("BC.")) {
+        } else if ((MATCH(0xff000010, 0x54000000) && PREFIX("B.")) ||
+                   (MATCH(0xff000010, 0x54000010) && PREFIX("BC."))) {
             target = iev->pc + SEXT((BITS(5, 19) << 2), 21);
         } else if ((MATCH(0x7f000000, 0x34000000) && PREFIX("CBZ")) ||
                    (MATCH(0x7f000000, 0x35000000) && PREFIX("CBNZ"))) {
