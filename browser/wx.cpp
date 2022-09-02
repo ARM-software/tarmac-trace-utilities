@@ -386,6 +386,86 @@ template <typename Var> class TemporaryPointerAssignment {
     ~TemporaryPointerAssignment() { *varp = nullptr; }
 };
 
+// Helper class wrapping up the state and mechanism for identifying
+// double- and triple-clicks. This is fiddly because wxWidgets
+// provides two mechanisms for it, and also, doesn't support
+// triple-clicks in general.
+class ClickCounter {
+    int last_click_count = 0;
+    int max_click_count;
+    unsigned long last_click_timestamp;
+    wxPoint last_click_pos;
+
+  public:
+    ClickCounter() : max_click_count(3) {}
+    ClickCounter(int max) : max_click_count(max) {}
+
+    int operator()(wxMouseEvent &event) {
+        // This API function only works on Mac, according to the docs
+        int nclicks = event.GetClickCount();
+        if (nclicks >= 1)
+            return nclicks <= 3 ? nclicks : 3;
+
+        // Failing that, do our own identification of whether this
+        // click should be considered to follow on from the previous one.
+        bool increment = true;   // default if no criterion below fails
+
+        unsigned long timestamp = static_cast<unsigned long>(
+            event.GetTimestamp());
+        wxPoint pos = event.GetPosition();
+
+        if (last_click_count == 0) {
+            // We've never seen any click at all before, so most of
+            // our fields are not yet initialised
+            increment = false;
+        } else {
+            wxWindow *window = dynamic_cast<wxWindow *>(
+                event.GetEventObject());
+
+            // A repeat click must be within a certain time interval
+            // of the last
+
+            int timeout = wxSystemSettings::GetMetric(
+                wxSYS_DCLICK_MSEC, window);
+            if (timeout <= 0) {
+                // If the system doesn't provide a setting for this, use a
+                // reasonable default of our own
+                timeout = 500;
+            }
+            unsigned long interval = timestamp - last_click_timestamp;
+            if (interval > timeout)
+                increment = false;         // clicks too far apart in time
+
+            // And also within a certain distance in space
+
+            int xdiff = wxSystemSettings::GetMetric(wxSYS_DCLICK_X, window);
+            int ydiff = wxSystemSettings::GetMetric(wxSYS_DCLICK_Y, window);
+            if (xdiff <= 0)
+                xdiff = 10;
+            if (ydiff <= 0)
+                ydiff = 10;
+
+            if (abs(pos.x - last_click_pos.x) > xdiff)
+                increment = false;
+            if (abs(pos.y - last_click_pos.y) > ydiff)
+                increment = false;
+        }
+
+        if (increment) {
+            last_click_count++;
+            if (last_click_count > max_click_count)
+                last_click_count = max_click_count;
+        } else {
+            last_click_count = 1;
+        }
+
+        last_click_timestamp = timestamp;
+        last_click_pos = pos;
+
+        return last_click_count;
+    }
+};
+
 struct LogicalPos {
     unsigned column;
     uintmax_t y0, y1;
@@ -457,6 +537,9 @@ class TextViewCanvas : public wxWindow {
     void add_leaf_node_marker(int x, int y);
 
     bool find_xy(int x, int y, LogicalPos &logpos);
+    unsigned find_max_char_index_line(const LogicalPos &logpos);
+    unsigned find_min_char_index_word(const LogicalPos &logpos);
+    unsigned find_max_char_index_word(const LogicalPos &logpos);
 
     int width();
     int height();
@@ -524,6 +607,8 @@ class TextViewWindow : public wxFrame {
 
     virtual void redraw_canvas(unsigned line_start, unsigned line_limit) = 0;
 
+    ClickCounter click_counter;
+
     friend class TextViewCanvas;
 
   public:
@@ -586,6 +671,25 @@ class TextViewWindow : public wxFrame {
     virtual void rewrite_selection_endpoints(LogicalPos &anchor,
                                              LogicalPos &cursor)
     {
+        // Make a pair of references pointing at the first and second
+        // position respectively
+        LogicalPos *ptr0 = &anchor, *ptr1 = &cursor;
+        if (logpos_cmp(*ptr0, *ptr1) > 0)
+            swap(ptr0, ptr1);
+        LogicalPos &p0 = *ptr0, &p1 = *ptr1;
+
+        switch (selection_grain) {
+          case SelectionGrain::Word:
+            p0.char_index = drawing_area->find_min_char_index_word(p0);
+            p1.char_index = drawing_area->find_max_char_index_word(p1);
+            break;
+          case SelectionGrain::Line:
+            p0.char_index = 0;
+            p1.char_index = drawing_area->find_max_char_index_line(p1);
+            break;
+          default:                     // do nothing for Character
+            break;
+        }
     }
 
     virtual void clipboard_get_paste_data(ostream &os, LogicalPos start,
@@ -602,6 +706,11 @@ class TextViewWindow : public wxFrame {
         Dragging,
         Selected
     } selection_state;
+    enum class SelectionGrain {
+        Character,
+        Word,
+        Line
+    } selection_grain;
     LogicalPos selection_anchor, selection_start, selection_end;
 
     void set_selection_state(SelectionState state)
@@ -840,6 +949,54 @@ bool TextViewCanvas::find_xy(int x, int y, LogicalPos &logpos)
     return got_candidate;
 }
 
+unsigned TextViewCanvas::find_max_char_index_line(const LogicalPos &logpos)
+{
+    unsigned index = logpos.char_index;
+    for (auto &twc : drawn_text) {
+        if (twc.startpos.y0 == logpos.y0 &&
+            twc.startpos.y1 == logpos.y1 &&
+            twc.startpos.column == logpos.column) {
+            index = max<unsigned>(
+                twc.startpos.char_index + twc.positions.size() - 1, index);
+        }
+    }
+    return index;
+}
+
+unsigned TextViewCanvas::find_max_char_index_word(const LogicalPos &logpos)
+{
+    unsigned index = logpos.char_index;
+    for (auto &twc : drawn_text) {
+        if (twc.startpos.y0 == logpos.y0 &&
+            twc.startpos.y1 == logpos.y1 &&
+            twc.startpos.column == logpos.column &&
+            twc.startpos.char_index <= logpos.char_index &&
+            logpos.char_index < (twc.startpos.char_index +
+                                 twc.positions.size())) {
+            index = max<unsigned>(
+                twc.startpos.char_index + twc.positions.size() - 1, index);
+        }
+    }
+    return index;
+}
+
+unsigned TextViewCanvas::find_min_char_index_word(const LogicalPos &logpos)
+{
+    unsigned index = logpos.char_index;
+    for (auto &twc : drawn_text) {
+        if (twc.startpos.y0 == logpos.y0 &&
+            twc.startpos.y1 == logpos.y1 &&
+            twc.startpos.column == logpos.column &&
+            twc.startpos.char_index <= logpos.char_index &&
+            logpos.char_index < (twc.startpos.char_index +
+                                 twc.positions.size())) {
+            index = min<unsigned>(
+                twc.startpos.char_index, index);
+        }
+    }
+    return index;
+}
+
 TextViewWindow::TextViewWindow(GuiTarmacBrowserApp *app, unsigned defcols,
                                unsigned defrows, bool show_scrollbar)
     : wxFrame(NULL, wxID_ANY, "", wxDefaultPosition, wxDefaultSize), app(app),
@@ -886,6 +1043,7 @@ TextViewWindow::TextViewWindow(GuiTarmacBrowserApp *app, unsigned defcols,
         this, wxSize(defcols * char_width, defrows * line_height),
         show_scrollbar);
     drawing_area->Bind(wxEVT_LEFT_DOWN, &TextViewWindow::left_down, this);
+    drawing_area->Bind(wxEVT_LEFT_DCLICK, &TextViewWindow::left_down, this);
     drawing_area->Bind(wxEVT_RIGHT_DOWN, &TextViewWindow::right_down, this);
     drawing_area->Bind(wxEVT_MOTION, &TextViewWindow::mouse_move, this);
     drawing_area->Bind(wxEVT_LEFT_UP, &TextViewWindow::left_up, this);
@@ -921,6 +1079,8 @@ void TextViewWindow::left_down(wxMouseEvent &event)
         p = event.GetLogicalPosition(dc);
     }
 
+    int nclicks = click_counter(event);
+
     drawing_area->SetFocus();
 
     for (auto &control : controls) {
@@ -949,11 +1109,27 @@ void TextViewWindow::left_down(wxMouseEvent &event)
                 selection_end = logpos;
                 selection_anchor = selection_start;
             }
+            rewrite_selection_endpoints(selection_start, selection_end);
         } else {
             // Otherwise, a left click (even with Shift) drops an
             // anchor so that dragging can start a new selection.
             set_selection_state(SelectionState::MouseDown);
+            selection_grain = (nclicks == 1 ? SelectionGrain::Character :
+                               nclicks == 2 ? SelectionGrain::Word :
+                               SelectionGrain::Line);
             selection_anchor = logpos;
+
+            // And if it's a multiple-click, we immediately highlight
+            // a selected region.
+            if (nclicks > 1) {
+                set_selection_state(SelectionState::Dragging);
+                LogicalPos anchor = selection_anchor;
+                rewrite_selection_endpoints(anchor, logpos);
+                if (logpos_cmp(anchor, logpos) > 0)
+                    swap(anchor, logpos);
+                selection_start = anchor;
+                selection_end = logpos;
+            }
         }
         drawing_area->Refresh();
     }
