@@ -101,7 +101,7 @@ class CallTreeVisitor {
 };
 
 class CallTree {
-    IndexNavigator &IN;
+    const IndexNavigator &IN;
 
     // The first instruction in this function instance.
     TarmacSite function_entry;
@@ -116,8 +116,8 @@ class CallTree {
     std::vector<CallTree> call_trees;
 
   public:
-    CallTree(IndexNavigator &IN);
-    CallTree(IndexNavigator &IN, const TarmacSite &site)
+    CallTree(const IndexNavigator &IN);
+    CallTree(const IndexNavigator &IN, const TarmacSite &site)
         : IN(IN), function_entry(site), function_exit(), call_sites(),
           resume_sites(), call_trees()
     {

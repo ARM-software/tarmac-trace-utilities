@@ -184,7 +184,7 @@ class CallDepthTracker {
 };
 } // namespace
 
-CallTree::CallTree(IndexNavigator &IN)
+CallTree::CallTree(const IndexNavigator &IN)
     : IN(IN), function_entry(), function_exit(), call_sites(), resume_sites(),
       call_trees()
 {
