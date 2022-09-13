@@ -1064,7 +1064,7 @@ IndexReader::IndexReader(const TracePair &trace)
     lineno_offset = hdr.lineno_offset;
 }
 
-string IndexReader::read_tarmac(OFF_T pos, OFF_T len)
+string IndexReader::read_tarmac(OFF_T pos, OFF_T len) const
 {
     vector<char> vbuf(len);
     tarmac.seekg(pos);
@@ -1072,7 +1072,7 @@ string IndexReader::read_tarmac(OFF_T pos, OFF_T len)
     return string(&vbuf[0], len);
 }
 
-vector<string> IndexReader::get_trace_lines(const SeqOrderPayload &node)
+vector<string> IndexReader::get_trace_lines(const SeqOrderPayload &node) const
 {
     string sbuf = read_tarmac(node.trace_file_pos, node.trace_file_len);
     vector<string> lines;
@@ -1100,7 +1100,8 @@ vector<string> IndexReader::get_trace_lines(const SeqOrderPayload &node)
     return lines;
 }
 
-string IndexReader::get_trace_line(const SeqOrderPayload &node, unsigned lineno)
+string IndexReader::get_trace_line(const SeqOrderPayload &node,
+                                   unsigned lineno) const
 {
     vector<string> lines = get_trace_lines(node);
     if (lineno >= lines.size())

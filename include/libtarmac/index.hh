@@ -45,10 +45,10 @@ class IndexReader {
     const std::string index_filename;
     const std::string tarmac_filename;
     MMapFile mmf;
-    std::ifstream tarmac;
+    mutable std::ifstream tarmac;
     bool bigend, aarch64_used;
 
-    std::string read_tarmac(OFF_T pos, OFF_T len);
+    std::string read_tarmac(OFF_T pos, OFF_T len) const;
 
   public:
     AVLDisk<MemoryPayload, MemoryAnnotation> memtree;
@@ -67,8 +67,8 @@ class IndexReader {
         return *mmf.getptr<diskint<OFF_T>>(pos);
     }
 
-    std::vector<std::string> get_trace_lines(const SeqOrderPayload &node);
-    std::string get_trace_line(const SeqOrderPayload &node, unsigned lineno);
+    std::vector<std::string> get_trace_lines(const SeqOrderPayload &node) const;
+    std::string get_trace_line(const SeqOrderPayload &node, unsigned lineno) const;
 
     const std::string &get_index_filename() const { return index_filename; }
     const std::string &get_tarmac_filename() const { return tarmac_filename; }
