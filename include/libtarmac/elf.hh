@@ -31,6 +31,7 @@ static constexpr unsigned STB_LOCAL = 0;
 static constexpr unsigned STB_GLOBAL = 1;
 static constexpr unsigned STB_WEAK = 2;
 
+static constexpr unsigned STT_NOTYPE = 0;
 static constexpr unsigned STT_OBJECT = 1;
 static constexpr unsigned STT_FUNC = 2;
 

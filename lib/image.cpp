@@ -95,6 +95,9 @@ void Image::load_symboltable()
             default:
                 // skip the symbol
                 continue;
+            case STT_NOTYPE:
+                kind = Symbol::kind_type::any;
+                break;
             case STT_OBJECT:
                 kind = Symbol::kind_type::object;
                 break;
