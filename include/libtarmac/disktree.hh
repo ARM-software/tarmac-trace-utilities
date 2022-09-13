@@ -540,7 +540,7 @@ class AVLDisk {
         std::function<int(OFF_T, const Annotation *, OFF_T, const Payload &,
                           const Annotation &, OFF_T, const Annotation *)>;
 
-    bool search(OFF_T nodeoff, Searcher searcher, Payload *payload_out)
+    bool search(OFF_T nodeoff, Searcher searcher, Payload *payload_out) const
     {
         disknode *node;
         Annotation *lca, *rca;

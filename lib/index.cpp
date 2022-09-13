@@ -1138,7 +1138,7 @@ bool IndexNavigator::lookup_symbol(const string &name, uint64_t &addr) const
     ;
 }
 
-string IndexNavigator::get_symbolic_address(Addr addr, bool fallback)
+string IndexNavigator::get_symbolic_address(Addr addr, bool fallback) const
 {
     ostringstream res;
 
@@ -1163,7 +1163,7 @@ string IndexNavigator::get_symbolic_address(Addr addr, bool fallback)
 }
 
 struct IndexLRTSearcher {
-    IndexReader &index;
+    const IndexReader &index;
     unsigned target;
     unsigned mindepth_i, maxdepth_i;
     unsigned mindepth_o, maxdepth_o;
@@ -1179,7 +1179,7 @@ struct IndexLRTSearcher {
     class OutOfRangeException : exception {
     };
 
-    IndexLRTSearcher(IndexReader &index, unsigned target, unsigned mindepth_i,
+    IndexLRTSearcher(const IndexReader &index, unsigned target, unsigned mindepth_i,
                      unsigned maxdepth_i, unsigned mindepth_o,
                      unsigned maxdepth_o)
         : index(index), target(target), mindepth_i(mindepth_i),
@@ -1714,7 +1714,7 @@ struct RegMemChangesSearcher {
 
 bool IndexNavigator::find_next_mod(OFF_T memroot, char type, Addr addr,
                                    unsigned minline, int sign, Addr &lo,
-                                   Addr &hi)
+                                   Addr &hi) const
 {
     RegMemChangesSearcher rmcs(minline, type, addr, sign);
     index.memtree.search(memroot, ref(rmcs), nullptr);
@@ -1725,7 +1725,7 @@ bool IndexNavigator::find_next_mod(OFF_T memroot, char type, Addr addr,
 
 unsigned IndexNavigator::lrt_translate(unsigned line, unsigned mindepth_i,
                                        unsigned maxdepth_i, unsigned mindepth_o,
-                                       unsigned maxdepth_o)
+                                       unsigned maxdepth_o) const
 {
     auto pair = lrt_translate_may_fail(line, mindepth_i, maxdepth_i, mindepth_o,
                                        maxdepth_o);
@@ -1736,7 +1736,7 @@ unsigned IndexNavigator::lrt_translate(unsigned line, unsigned mindepth_i,
 std::pair<bool, unsigned>
 IndexNavigator::lrt_translate_may_fail(unsigned line, unsigned mindepth_i,
                                        unsigned maxdepth_i, unsigned mindepth_o,
-                                       unsigned maxdepth_o)
+                                       unsigned maxdepth_o) const
 {
     IndexLRTSearcher searcher(index, line, mindepth_i, maxdepth_i, mindepth_o,
                               maxdepth_o);
@@ -1750,10 +1750,9 @@ IndexNavigator::lrt_translate_may_fail(unsigned line, unsigned mindepth_i,
     return std::make_pair(success, output);
 }
 
-unsigned
-IndexNavigator::lrt_translate_range(unsigned linestart, unsigned lineend,
-                                    unsigned mindepth_i, unsigned maxdepth_i,
-                                    unsigned mindepth_o, unsigned maxdepth_o)
+unsigned IndexNavigator::lrt_translate_range(
+    unsigned linestart, unsigned lineend, unsigned mindepth_i,
+    unsigned maxdepth_i, unsigned mindepth_o, unsigned maxdepth_o) const
 {
     return (
         lrt_translate(lineend, mindepth_i, maxdepth_i, mindepth_o, maxdepth_o) -

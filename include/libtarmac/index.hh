@@ -115,7 +115,7 @@ class IndexNavigator {
     bool lookup_symbol(const std::string &name, uint64_t &addr,
                        size_t &size) const;
 
-    std::string get_symbolic_address(Addr addr, bool fallback = false);
+    std::string get_symbolic_address(Addr addr, bool fallback = false) const;
 
     // Read the system's raw memory representation at a given time.
     // Return value is the line number of the latest trace event that
@@ -149,7 +149,7 @@ class IndexNavigator {
     bool get_next_node(SeqOrderPayload &in, SeqOrderPayload *out) const;
     bool find_buffer_limit(bool end, SeqOrderPayload *node) const;
     bool find_next_mod(OFF_T memroot, char type, Addr addr, unsigned minline,
-                       int sign, Addr &lo, Addr &hi);
+                       int sign, Addr &lo, Addr &hi) const;
 
     // Do a raw lookup in the layered range tree that indexes
     // trace lines by function call depth.
@@ -161,7 +161,7 @@ class IndexNavigator {
     // [mindepth_o,maxdepth_o).
     unsigned lrt_translate(unsigned line, unsigned mindepth_i,
                            unsigned maxdepth_i, unsigned mindepth_o,
-                           unsigned maxdepth_o);
+                           unsigned maxdepth_o) const;
 
     // The above call assumes the search will succeed. If there's a
     // chance of it being out of range, use this call instead, which
@@ -171,7 +171,7 @@ class IndexNavigator {
                                                      unsigned mindepth_i,
                                                      unsigned maxdepth_i,
                                                      unsigned mindepth_o,
-                                                     unsigned maxdepth_o);
+                                                     unsigned maxdepth_o) const;
 
     // Convenience wrapper to take the difference of two lrt_translate
     // calls.
@@ -182,7 +182,7 @@ class IndexNavigator {
     // is in the output range.
     unsigned lrt_translate_range(unsigned linestart, unsigned lineend,
                                  unsigned mindepth_i, unsigned maxdepth_i,
-                                 unsigned mindepth_o, unsigned maxdepth_o);
+                                 unsigned mindepth_o, unsigned maxdepth_o) const;
 };
 
 #endif // LIBTARMAC_INDEX_HH
