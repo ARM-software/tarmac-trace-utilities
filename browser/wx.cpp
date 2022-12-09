@@ -3060,7 +3060,9 @@ bool MemoryWindow::get_region_under_pos(const LogicalPos &logpos, Addr &start,
 {
     if (selection_state == SelectionState::Selected &&
         logpos_cmp(logpos, selection_start) >= 0 &&
-        logpos_cmp(logpos, selection_end) <= 0) {
+        logpos_cmp(logpos, selection_end) <= 0 &&
+        selection_start.column != 0 &&
+        selection_end.column != 0) {
         // The mouse is in the selected region, so return that whole region.
         start = addr_from_valid_logpos(selection_start);
         size = addr_from_valid_logpos(selection_end) - start + 1;
