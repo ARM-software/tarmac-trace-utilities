@@ -3300,6 +3300,16 @@ void MemoryWindow::rewrite_selection_endpoints(LogicalPos &anchor,
             cursor.y0 = anchor.y0;
             cursor.char_index = 0;
         }
+
+        if (selection_grain != SelectionGrain::Character) {
+            if (cursor.char_index < anchor.char_index) {
+                cursor.char_index = 0;
+                anchor.char_index = UINT_MAX;
+            } else {
+                anchor.char_index = 0;
+                cursor.char_index = UINT_MAX;
+            }
+        }
         return;
     }
 
