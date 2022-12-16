@@ -728,7 +728,8 @@ bool Browser::TraceView::position_hidden()
 {
     SeqOrderPayload expected_logical_node;
     visible_to_logical_node(curr_visible_node, &expected_logical_node);
-    return (expected_logical_node.mod_time != curr_logical_node.mod_time);
+    return (expected_logical_node.trace_file_firstline !=
+            curr_logical_node.trace_file_firstline);
 }
 
 bool Browser::TraceView::get_current_pc(unsigned long long &pc)
@@ -820,7 +821,7 @@ bool Browser::TraceView::physline_range_for_folded_function_after(
     SeqOrderPayload lognode;
     visible_to_logical_node(visnode, &lognode);
 
-    if (visnode.mod_time == lognode.mod_time)
+    if (visnode.trace_file_firstline == lognode.trace_file_firstline)
         return false; // no folded function at this point
 
     *depth = lognode.call_depth + 1;
