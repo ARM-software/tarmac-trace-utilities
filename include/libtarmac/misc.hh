@@ -27,7 +27,7 @@
 template <typename T, size_t n> static inline void enforce_array(T (&)[n]) {}
 #define lenof(x) (sizeof(enforce_array(x), x) / sizeof(*(x)))
 
-typedef unsigned Time;
+typedef unsigned long long Time;
 typedef unsigned long long Addr;
 
 template <typename value> inline value absdiff(value a, value b)

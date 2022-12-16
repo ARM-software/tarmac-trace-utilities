@@ -134,7 +134,7 @@ void CallTree::generate_flame_graph_recurse(ostringstream &stackstream,
 void CallTree::generate_flame_graph(ostream &os) const
 {
     ostringstream stackstream;
-    map<string, unsigned> output;
+    map<string, Time> output;
     generate_flame_graph_recurse(stackstream, output, nullptr);
     for (auto &kv : output)
         os << kv.first << ' ' << kv.second << endl;
