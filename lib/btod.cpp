@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+#include "libtarmac/misc.hh"
+
 using std::map;
 using std::string;
 using std::vector;
