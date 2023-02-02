@@ -1,4 +1,4 @@
-# Copyright 2016-2021 Arm Limited. All rights reserved.
+# Copyright 2016-2021,2023 Arm Limited. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -180,3 +180,19 @@ add_test(NAME vcd-date
       ${CMAKE_BINARY_DIR}/tarmac-vcd --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac -o quicksort-date.vcd
   )
 
+# Test class Argparse.
+add_test(NAME Argparse-help
+  COMMAND ${test_driver_cmd}
+      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse-help.ref
+      ${CMAKE_BINARY_DIR}/argparsetest --help
+  )
+add_test(NAME Argparse-short
+  COMMAND ${test_driver_cmd}
+      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref
+      ${CMAKE_BINARY_DIR}/argparsetest -s -v 2 arg1 multi1 multi2
+  )
+add_test(NAME Argparse-long
+  COMMAND ${test_driver_cmd}
+      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref
+      ${CMAKE_BINARY_DIR}/argparsetest --switch --value 2 arg1 multi1 multi2
+  )

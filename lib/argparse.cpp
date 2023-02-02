@@ -418,34 +418,3 @@ void Argparse::help(ostream &os)
     os << "also:" << endl;
     showopt(programname + " --help", "display this text", SPECIALHELPINDENT1);
 }
-
-#ifdef ARGTEST
-
-// g++ -g -O0 --std=c++14 -DARGTEST -o argtest argparse.cpp
-int main(int argc, char **argv)
-{
-    bool switchSeen = false;
-    string value = "<no value>";
-    string arg = "<no arg>";
-    vector<string> multis;
-
-    Argparse ap("argtest", argc, argv);
-    ap.optnoval({"-s", "--switch"}, "option without a value",
-                [&]() { switchSeen = true; });
-    ap.optval({"-v", "--value"}, "VALUE", "option with a value",
-              [&](const string &s) { value = s; });
-    ap.positional("POS1", "first positional argument",
-                  [&](const string &s) { arg = s; });
-    ap.positional_multiple("REST", "rest of positional arguments",
-                           [&](const string &s) { multis.push_back(s); });
-    ap.parse();
-
-    cout << "switchSeen = " << switchSeen << endl
-         << "value = " << value << endl
-         << "arg = " << arg << endl
-         << "multis = [";
-    for (auto &s : multis)
-        cout << " '" << s << "'";
-    cout << " ]" << endl;
-}
-#endif

@@ -1,0 +1,9 @@
+usage: argparsetest [options] POS1 REST...
+options:
+    -s, --switch        option without a value
+    -v, --value=VALUE   option with a value
+positional arguments:
+    POS1                first positional argument
+    REST                rest of positional arguments
+also:
+    argparsetest --help         display this text
