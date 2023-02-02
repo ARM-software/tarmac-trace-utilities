@@ -165,7 +165,8 @@ static string fp_btod(unsigned long long mantissa, int power2, int precision)
     return ret;
 }
 
-string ieee_btod(unsigned long long val, int ebits, int mbits, int digits)
+static string ieee_btod(unsigned long long val, int ebits, int mbits,
+                        int digits)
 {
     string ret = (val & (1ULL << (ebits + mbits)) ? "-" : " ");
     int exp = (val >> mbits) & ((1ULL << ebits) - 1);
