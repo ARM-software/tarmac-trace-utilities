@@ -57,22 +57,21 @@ Argparse::Opt::Opt(bool has_val, const vector<string> &optnames,
     }
 }
 
-Argparse::Argparse(const std::string &programname, int argc, char **argv)
+Argparse::Argparse(const string &programname, int argc, char **argv)
     : Argparse(programname)
 {
     for (int i = 1; i < argc; i++)
         add_cmdline_word(argv[i]);
 }
 
-Argparse::Argparse(const std::string &programname,
-                   const std::vector<string> &words)
+Argparse::Argparse(const string &programname, const vector<string> &words)
     : Argparse(programname)
 {
-    for (const std::string &word : words)
+    for (const string &word : words)
         add_cmdline_word(word);
 }
 
-void Argparse::add_opt(std::unique_ptr<Opt> opt)
+void Argparse::add_opt(unique_ptr<Opt> opt)
 {
     auto optraw = opt.get();
     options.push_back(move(opt));
@@ -101,7 +100,7 @@ void Argparse::optval(const vector<string> &optnames, const string &metavar,
     add_opt(move(opt));
 }
 
-void Argparse::positional(const std::string &metavar, const std::string &help,
+void Argparse::positional(const string &metavar, const string &help,
                           OptValResponder responder, bool required)
 {
     assert(!multiple_positional && "Can't add a single positional argument"
@@ -114,8 +113,7 @@ void Argparse::positional(const std::string &metavar, const std::string &help,
     add_opt(move(opt));
 }
 
-void Argparse::positional_multiple(const std::string &metavar,
-                                   const std::string &help,
+void Argparse::positional_multiple(const string &metavar, const string &help,
                                    OptValResponder responder)
 {
     assert(!multiple_positional && "Can't have two multiple positional"
