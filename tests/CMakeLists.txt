@@ -196,3 +196,10 @@ add_test(NAME Argparse-long
       --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref
       ${CMAKE_BINARY_DIR}/argparsetest --switch --value 2 arg1 multi1 multi2
   )
+
+# Test btod.
+add_test(NAME btod
+  COMMAND ${test_driver_cmd}
+      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/btod.ref
+      ${CMAKE_BINARY_DIR}/btodtest
+  )
