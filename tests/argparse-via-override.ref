@@ -1,0 +1,4 @@
+switchSeen = 1
+value = 10
+arg = arg1
+multis = [ 'multi1' 'multi2' ]

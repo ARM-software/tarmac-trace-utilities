@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021, 2023 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #ifndef TARMAC_ARGPARSE_HH
 #define TARMAC_ARGPARSE_HH
 
+#include <deque>
 #include <functional>
 #include <map>
 #include <memory>
@@ -47,8 +48,24 @@ class Argparse {
 
     Argparse(const std::string &programname) : programname(programname) {}
     Argparse(const std::string &programname, int argc, char **argv);
-    Argparse(const std::string &programname, const std::vector<std::string> &);
-    void add_cmdline_word(const std::string &word);
+    template <template <class> class Container>
+    Argparse(const std::string &programname,
+             const Container<std::string> &words)
+        : Argparse(programname)
+    {
+        for (const std::string &word : words)
+            append_cmdline_word(word);
+    }
+
+    void append_cmdline_word(const std::string &arg)
+    {
+        arguments.push_back(arg);
+    }
+
+    void prepend_cmdline_word(const std::string &arg)
+    {
+        arguments.push_front(arg);
+    }
 
     void optnoval(const std::vector<std::string> &optnames,
                   const std::string &help, OptNoValResponder responder);
@@ -106,7 +123,7 @@ class Argparse {
     void add_opt(std::unique_ptr<Opt> opt);
 
     std::string programname;
-    std::vector<std::string> arguments;
+    std::deque<std::string> arguments;
     std::vector<std::unique_ptr<Opt>> options;
     std::map<std::string, const Opt *> longopts;
     std::map<char, const Opt *> shortopts;

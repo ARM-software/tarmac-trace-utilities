@@ -196,6 +196,16 @@ add_test(NAME Argparse-long
       --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref
       ${CMAKE_BINARY_DIR}/argparsetest --switch --value 2 arg1 multi1 multi2
   )
+add_test(NAME Argparse-via
+  COMMAND ${test_driver_cmd}
+      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref
+      ${CMAKE_BINARY_DIR}/argparsetest --via-file ${CMAKE_CURRENT_SOURCE_DIR}/argparse-via.txt
+  )
+add_test(NAME Argparse-via-override
+  COMMAND ${test_driver_cmd}
+      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse-via-override.ref
+      ${CMAKE_BINARY_DIR}/argparsetest --via-file ${CMAKE_CURRENT_SOURCE_DIR}/argparse-via.txt --value 10
+  )
 
 # Test btod.
 add_test(NAME btod

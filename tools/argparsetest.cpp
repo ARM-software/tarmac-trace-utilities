@@ -16,6 +16,7 @@
  * This file is part of Tarmac Trace Utilities
  */
 
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -28,6 +29,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
+using std::ifstream;
 
 std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
@@ -43,6 +45,20 @@ int main(int argc, char **argv)
                 [&]() { switchSeen = true; });
     ap.optval({"-v", "--value"}, "VALUE", "option with a value",
               [&](const string &s) { value = s; });
+    ap.optval({"--via-file"}, "FILE", "supply command line option via FILE",
+              [&](const string &via) {
+                  ifstream f(via.c_str());
+                  vector<string> words;
+                  while (!f.eof()) {
+                      string word;
+                      f >> word;
+                      words.push_back(word);
+                  }
+                  while (!words.empty()) {
+                      ap.prepend_cmdline_word(words.back());
+                      words.pop_back();
+                  }
+              });
     ap.positional("POS1", "first positional argument",
                   [&](const string &s) { arg = s; });
     ap.positional_multiple("REST", "rest of positional arguments",

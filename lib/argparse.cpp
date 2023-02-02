@@ -26,6 +26,7 @@
 #include <sstream>
 
 using std::cout;
+using std::deque;
 using std::endl;
 using std::exit;
 using std::make_unique;
@@ -60,14 +61,7 @@ Argparse::Argparse(const string &programname, int argc, char **argv)
     : Argparse(programname)
 {
     for (int i = 1; i < argc; i++)
-        add_cmdline_word(argv[i]);
-}
-
-Argparse::Argparse(const string &programname, const vector<string> &words)
-    : Argparse(programname)
-{
-    for (const string &word : words)
-        add_cmdline_word(word);
+        append_cmdline_word(argv[i]);
 }
 
 void Argparse::add_opt(unique_ptr<Opt> opt)
@@ -125,17 +119,15 @@ void Argparse::positional_multiple(const string &metavar, const string &help,
     add_opt(move(opt));
 }
 
-void Argparse::add_cmdline_word(const string &arg) { arguments.push_back(arg); }
-
 void Argparse::parse_or_throw()
 {
     bool doing_opts = true; // becomes false if we see "--" terminator
-    auto argit = arguments.begin(), argend = arguments.end();
     auto posit = single_positionals.begin();
     auto posend = single_positionals.end();
 
-    while (argit != argend) {
-        const string &arg = *argit++;
+    while (!arguments.empty()) {
+        const string arg = arguments.front();
+        arguments.pop_front();
 
         if (doing_opts && arg.size() > 0 && arg[0] == '-') {
             // This is an option of some kind.
@@ -151,7 +143,7 @@ void Argparse::parse_or_throw()
             if (ndashes == 2) {
                 size_t equals = arg.find('=');
                 size_t nameend = equals != string::npos ? equals : arg.size();
-                string name = arg.substr(ndashes, nameend - ndashes);
+                const string name = arg.substr(ndashes, nameend - ndashes);
 
                 if (name == "help")
                     throw ArgparseHelpAction();
@@ -168,8 +160,9 @@ void Argparse::parse_or_throw()
 
                     if (equals != string::npos) {
                         val = arg.substr(equals + 1);
-                    } else if (argit != argend) {
-                        val = *argit++;
+                    } else if (!arguments.empty()) {
+                        val = arguments.front();
+                        arguments.pop_front();
                     } else {
                         throw ArgparseError("'--" + name +
                                             "': "
@@ -203,8 +196,9 @@ void Argparse::parse_or_throw()
                         if (pos < end) {
                             val = arg.substr(pos);
                             pos = end;
-                        } else if (argit != argend) {
-                            val = *argit++;
+                        } else if (!arguments.empty()) {
+                            val = arguments.front();
+                            arguments.pop_front();
                         } else {
                             throw ArgparseError("'-" + string(1, chr) +
                                                 "': "

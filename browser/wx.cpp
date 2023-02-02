@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2023 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3687,22 +3687,22 @@ bool GuiTarmacBrowserApp::OnInit()
 
         std::string image_path = dlg.image_file_path();
         if (!image_path.empty())
-            ap.add_cmdline_word("--image=" + image_path);
+            ap.append_cmdline_word("--image=" + image_path);
 
         switch (dlg.reindex_policy()) {
           case 1:
-            ap.add_cmdline_word("--force-index");
+            ap.append_cmdline_word("--force-index");
             break;
           case 2:
-            ap.add_cmdline_word("--no-index");
+            ap.append_cmdline_word("--no-index");
             break;
         }
 
         if (dlg.big_endian())
-            ap.add_cmdline_word("--bi");
+            ap.append_cmdline_word("--bi");
 
-        ap.add_cmdline_word("--");
-        ap.add_cmdline_word(dlg.trace_file_path());
+        ap.append_cmdline_word("--");
+        ap.append_cmdline_word(dlg.trace_file_path());
 
         ap.parse();
     }
