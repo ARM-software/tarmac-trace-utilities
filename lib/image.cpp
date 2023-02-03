@@ -39,6 +39,32 @@ string Symbol::getName() const
     return name;
 }
 
+static inline bool want_to_index_symbol(string name)
+{
+    // Don't index anonymous symbols.
+    if (name.empty())
+        return false;
+
+    // Don't index Arm mapping symbols.
+    //
+    // These are symbols beginning with '$a', '$t', '$x' or '$d', and
+    // their job is to tell a static disassembler which parts of the
+    // file they should be disassembling as Arm, Thumb or data (in
+    // AArch32), or as code or data (in AArch64). They're extremely
+    // common and often have identical names, so they're never useful
+    // as a means of identifying a particular address.
+    //
+    // For more information on mapping symbols see the AAELF32 spec:
+    // https://github.com/ARM-software/abi-aa/blob/main/aaelf32/aaelf32.rst#mapping-symbols
+    if (name.size() >= 2 && name[0] == '$' &&
+        (name[1] == 'a' || name[1] == 't' ||
+         name[1] == 'x' || name[1] == 'd'))
+        return false;
+
+    // Index everything else.
+    return true;
+}
+
 void Image::add_symbol(const Symbol &sym_)
 {
     // store the symbol
@@ -108,7 +134,7 @@ void Image::load_symboltable()
 
             string symbol_name =
                 elf_file->strtab_string(strtab_shdr, sym.st_name);
-            if (!symbol_name.empty())
+            if (want_to_index_symbol(symbol_name))
                 add_symbol(Symbol(static_cast<Addr>(sym.st_value), sym.st_size,
                                   symbol_name, binding, kind));
         }
