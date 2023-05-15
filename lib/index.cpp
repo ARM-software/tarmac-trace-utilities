@@ -86,7 +86,7 @@ struct CallReturn {
 };
 
 class Index : ParseReceiver {
-    string tarmac_filename, index_filename;
+    TracePair trace;
     OFF_T last_memroot, memroot, seqroot;
     unsigned long long last_sp, curr_sp, curr_pc, insns_since_lr_update;
     unsigned long long expected_next_pc, expected_next_lr;
@@ -125,10 +125,10 @@ class Index : ParseReceiver {
     }
 
   public:
-    Index(string index_filename, bool bigend)
-        : index_filename(index_filename), expected_next_pc(KNOWN_INVALID_PC),
-          index_mmap(nullptr), memtree(nullptr), memsubtree(nullptr),
-          seqtree(nullptr), bigend(bigend), aarch64_used(false), last_iset(ARM)
+    Index(const TracePair &trace, bool bigend)
+        : trace(trace), expected_next_pc(KNOWN_INVALID_PC), index_mmap(nullptr),
+          memtree(nullptr), memsubtree(nullptr), seqtree(nullptr),
+          bigend(bigend), aarch64_used(false), last_iset(ARM)
     {
     }
 
@@ -149,7 +149,7 @@ class Index : ParseReceiver {
     void got_event_common(TarmacEvent *event, bool is_instruction);
     bool parse_warning(const string &msg);
     TarmacEvent *parse_tarmac_line(string line);
-    void parse_tarmac_file(string tarmac_filename);
+    void parse_tarmac_file();
     OFF_T make_sub_memtree(char type, Addr addr, size_t size);
     void update_memtree(char type, Addr addr, size_t size,
                         unsigned long long contents);
@@ -884,18 +884,17 @@ void Index::got_event_common(TarmacEvent *event, bool is_instruction)
 
 bool Index::parse_warning(const string &msg)
 {
-    reporter->indexing_warning(tarmac_filename, lineno + lineno_offset, msg);
+    reporter->indexing_warning(trace.tarmac_filename, lineno + lineno_offset,
+                               msg);
     return false;
 }
 
-void Index::parse_tarmac_file(string tarmac_filename_)
+void Index::parse_tarmac_file()
 {
     string line;
 
-    tarmac_filename = tarmac_filename_;
-
-    remove(index_filename.c_str());
-    index_mmap = new MMapFile(index_filename, true);
+    remove(trace.index_filename.c_str());
+    index_mmap = new MMapFile(trace.index_filename, true);
     MagicNumber &magic = *index_mmap->newptr<MagicNumber>();
 
     OFF_T off_header = index_mmap->alloc(sizeof(FileHeader));
@@ -928,7 +927,7 @@ void Index::parse_tarmac_file(string tarmac_filename_)
     /*
      * Read in the input.
      */
-    ifstream in(tarmac_filename.c_str(),
+    ifstream in(trace.tarmac_filename.c_str(),
                 std::ios_base::in | std::ios_base::binary);
     true_lineno = 0;
     lineno = 1;
@@ -977,11 +976,12 @@ void Index::parse_tarmac_file(string tarmac_filename_)
                 ostringstream oss;
                 oss << e.msg << endl << "tarmac-browser: ignoring parse error "
                     "on partial last line (trace truncated?)";
-                reporter->indexing_warning(tarmac_filename, lineno, oss.str());
+                reporter->indexing_warning(trace.tarmac_filename, lineno,
+                                           oss.str());
                 break;
             } else {
-                remove(index_filename.c_str());
-                reporter->indexing_error(tarmac_filename, lineno, e.msg);
+                remove(trace.index_filename.c_str());
+                reporter->indexing_error(trace.tarmac_filename, lineno, e.msg);
             }
         }
     }
@@ -1040,8 +1040,8 @@ IndexHeaderState check_index_header(const string &index_filename)
 
 void run_indexer(const TracePair &trace, bool bigend)
 {
-    Index index(trace.index_filename, bigend);
-    index.parse_tarmac_file(trace.tarmac_filename);
+    Index index(trace, bigend);
+    index.parse_tarmac_file();
 }
 
 IndexReader::IndexReader(const TracePair &trace)
