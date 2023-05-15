@@ -146,6 +146,10 @@ void CommandLineReporter::indexing_status(const string &index_filename,
         clog << "index file " << index_filename
              << " looks ok; not rebuilding it" << endl;
         break;
+      case IndexUpdateCheck::Forced:
+        // If the user asked explicitly for a reindex, we don't need
+        // to say why we're doing it
+        break;
     }
 }
 

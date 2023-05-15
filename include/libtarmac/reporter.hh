@@ -30,6 +30,7 @@ enum class IndexUpdateCheck {
     TooOld,         // rebuild needed: index older than trace file
     WrongFormat,    // rebuild needed: index has wrong file format version
     Incomplete,     // rebuild needed: previous generation did not finish
+    Forced,         // rebuild explicitly requested by user
 };
 
 /*
