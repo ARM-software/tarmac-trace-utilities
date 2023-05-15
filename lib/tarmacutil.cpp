@@ -117,6 +117,7 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace,
         reporter->err(1, "%s: stat", trace.tarmac_filename.c_str());
 
     reporter->set_indexing_verbosity(verbose);
+    reporter->set_indexing_progress(show_progress_meter);
 
     if (doIndexing == Troolean::Auto) {
         uint64_t index_timestamp;
