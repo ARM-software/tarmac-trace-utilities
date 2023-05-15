@@ -111,16 +111,15 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
 {
     Troolean doIndexing = indexing; // so we can translate Auto into Yes or No
 
-    uint64_t trace_timestamp;
-    if (!get_file_timestamp(trace.tarmac_filename, &trace_timestamp))
-        reporter->err(1, "%s: stat", trace.tarmac_filename.c_str());
-
     reporter->set_indexing_verbosity(verbose);
     reporter->set_indexing_progress(show_progress_meter);
 
     if (doIndexing == Troolean::Auto) {
-        uint64_t index_timestamp;
+        uint64_t trace_timestamp, index_timestamp;
         IndexUpdateCheck status;
+
+        if (!get_file_timestamp(trace.tarmac_filename, &trace_timestamp))
+            reporter->err(1, "%s: stat", trace.tarmac_filename.c_str());
 
         if (!get_file_timestamp(trace.index_filename, &index_timestamp)) {
             status = IndexUpdateCheck::Missing;
