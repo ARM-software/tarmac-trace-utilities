@@ -33,6 +33,8 @@ enum class IndexUpdateCheck {
     Forced,         // rebuild explicitly requested by user
 };
 
+struct TracePair;
+
 /*
  * A Reporter is an object that knows how to display diagnostics to
  * the user, and perhaps exit in the case where diagnostics are fatal.
@@ -70,8 +72,7 @@ class Reporter {
     // Announce the status of an index update check (i.e. whether an
     // index needs to be created, or whether it already exists and
     // appears up to date).
-    virtual void indexing_status(const std::string &index_filename,
-                                 const std::string &trace_filename,
+    virtual void indexing_status(const TracePair &pair,
                                  IndexUpdateCheck status) = 0;
 
     // Report a warning or fatal error during indexing, such as a

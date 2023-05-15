@@ -3362,8 +3362,7 @@ class WXGUIReporter : public Reporter {
     [[noreturn]] void errx(int exitstatus, const char *fmt, ...) override;
     void warn(const char *fmt, ...) override;
     void warnx(const char *fmt, ...) override;
-    void indexing_status(const std::string &index_filename,
-                         const std::string &trace_filename,
+    void indexing_status(const TracePair &trace,
                          IndexUpdateCheck status) override;
     void indexing_warning(const string &trace_filename,
                           unsigned lineno, const string &msg) override;
@@ -3449,13 +3448,12 @@ void WXGUIReporter::warnx(const char *fmt, ...)
     dlg.ShowModal();
 }
 
-void WXGUIReporter::indexing_status(const string &index_filename,
-                                    const string &trace_filename,
+void WXGUIReporter::indexing_status(const TracePair &trace,
                                     IndexUpdateCheck status)
 {
     ostringstream oss;
-    oss << "Indexing trace file " << trace_filename << endl
-        << "to index file " << index_filename;
+    oss << "Indexing trace file " << trace.tarmac_filename << endl
+        << "to index file " << trace.index_filename;
 
     switch (status) {
       case IndexUpdateCheck::Missing:

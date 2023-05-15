@@ -139,13 +139,11 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
             }
         }
 
-        reporter->indexing_status(trace.index_filename, trace.tarmac_filename,
-                                  status);
+        reporter->indexing_status(trace, status);
         doIndexing = (status == IndexUpdateCheck::OK ?
                       Troolean::No : Troolean::Yes);
     } else if (doIndexing == Troolean::Yes) {
-        reporter->indexing_status(trace.index_filename, trace.tarmac_filename,
-                                  IndexUpdateCheck::Forced);
+        reporter->indexing_status(trace, IndexUpdateCheck::Forced);
     }
 
     if (doIndexing == Troolean::Yes)
