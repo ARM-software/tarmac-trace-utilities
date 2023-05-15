@@ -43,7 +43,7 @@ IndexHeaderState check_index_header(const std::string &index_filename);
 class IndexReader {
     const std::string index_filename;
     const std::string tarmac_filename;
-    MMapFile mmf;
+    std::shared_ptr<Arena> arena;
     mutable std::ifstream tarmac;
     bool bigend, aarch64_used;
 
@@ -59,11 +59,14 @@ class IndexReader {
 
     IndexReader(const TracePair &trace);
 
-    const void *index_offset(OFF_T pos) const { return mmf.getptr<char>(pos); }
+    const void *index_offset(OFF_T pos) const
+    {
+        return arena->getptr<char>(pos);
+    }
 
     OFF_T index_subtree_root(OFF_T pos) const
     {
-        return *mmf.getptr<diskint<OFF_T>>(pos);
+        return *arena->getptr<diskint<OFF_T>>(pos);
     }
 
     std::vector<std::string> get_trace_lines(const SeqOrderPayload &node) const;

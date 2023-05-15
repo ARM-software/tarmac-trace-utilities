@@ -103,21 +103,13 @@ void MMapFile::unmap()
     mapping = nullptr;
 }
 
-OFF_T MMapFile::alloc(size_t size)
+void MMapFile::resize(size_t newsize)
 {
-    assert(writable);
-    if ((size_t)(curr_size - next_offset) < size) {
-        OFF_T new_curr_size = (next_offset + size) * 5 / 4 + 65536;
-        assert(new_curr_size >= next_offset);
-        if (ftruncate(pdata->fd, new_curr_size) < 0)
-            reporter->err(1, "%s: ftruncate (extending)", filename.c_str());
-        unmap();
-        curr_size = new_curr_size;
-        map();
-    }
-    OFF_T ret = next_offset;
-    next_offset += size;
-    return ret;
+    if (ftruncate(pdata->fd, newsize) < 0)
+        reporter->err(1, "%s: ftruncate (extending)", filename.c_str());
+    unmap();
+    curr_size = newsize;
+    map();
 }
 
 static bool try_make_conf_path(const char *env_var, const char *suffix,

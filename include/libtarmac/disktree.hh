@@ -28,21 +28,17 @@
 #include <functional>
 #include <string>
 
-class MMapFile {
-    struct PlatformData;
+// Base class for a memory arena that will contain the index data structures.
+class Arena {
+  protected:
+    OFF_T curr_size = 0, next_offset = 0;
+    void *mapping = nullptr;
 
-    const std::string filename;
-    bool writable;
-    PlatformData *pdata;
-    OFF_T curr_size, next_offset;
-    void *mapping;
-
-    void map();
-    void unmap();
+  private:
+    virtual void resize(size_t newsize) = 0; // must update curr_size
 
   public:
-    MMapFile(const std::string &filename, bool writable);
-    ~MMapFile();
+    virtual ~Arena() = default;
 
     OFF_T alloc(size_t size);
     OFF_T curr_offset() const { return next_offset; }
@@ -65,6 +61,33 @@ class MMapFile {
     {
         return getptr<T>(alloc(sizeof(T)));
     }
+};
+
+// Arena stored in a disk file, accessed via memory-mapping
+class MMapFile: public Arena {
+    struct PlatformData;
+
+    const std::string filename;
+    bool writable;
+    PlatformData *pdata;
+
+    void map();
+    void unmap();
+
+    void resize(size_t newsize) override;
+
+  public:
+    MMapFile(const std::string &filename, bool writable);
+    ~MMapFile();
+};
+
+// Arena stored as an allocated block of ordinary memory
+class MemArena: public Arena {
+    void resize(size_t newsize) override;
+
+  public:
+    MemArena() = default;
+    ~MemArena();
 };
 
 template <class Int> class diskint {
@@ -107,7 +130,7 @@ template <class Payload> class EmptyAnnotation {
 
 template <class Payload, class Annotation = EmptyAnnotation<Payload>>
 class AVLDisk {
-    MMapFile &mmf;
+    Arena &arena;
     // High-water mark. Nodes at addresses below here are already used
     // by some prior tree root and hence are immutable.
     OFF_T hwm;
@@ -129,7 +152,7 @@ class AVLDisk {
 
     void put(node &n)
     {
-        disknode &dn = *mmf.getptr<disknode>(n.offset);
+        disknode &dn = *arena.getptr<disknode>(n.offset);
         dn.lc = n.lc;
         dn.rc = n.rc;
         dn.height = n.height;
@@ -145,7 +168,7 @@ class AVLDisk {
             n.lc = n.rc = 0;
             n.height = 0;
         } else {
-            disknode &dn = *mmf.getptr<disknode>(offset);
+            disknode &dn = *arena.getptr<disknode>(offset);
             n.offset = offset;
             n.lc = dn.lc;
             n.rc = dn.rc;
@@ -161,7 +184,7 @@ class AVLDisk {
     void rewrite(node &n, OFF_T newlc, OFF_T newrc)
     {
         if (immutable(n))
-            n.offset = mmf.alloc(sizeof(disknode));
+            n.offset = arena.alloc(sizeof(disknode));
 
         n.lc = newlc;
         n.rc = newrc;
@@ -417,9 +440,9 @@ class AVLDisk {
     }
 
   public:
-    AVLDisk(MMapFile &mmf) : mmf(mmf) { hwm = mmf.curr_offset(); }
+    AVLDisk(Arena &arena) : arena(arena) { hwm = arena.curr_offset(); }
 
-    void commit() { hwm = mmf.curr_offset(); }
+    void commit() { hwm = arena.curr_offset(); }
 
     template <class PayloadComparable>
     OFF_T remove(OFF_T oldroot, const PayloadComparable &keyfinder, bool *found,
@@ -525,7 +548,7 @@ class AVLDisk {
     {
         node root = get(oldroot);
         node n;
-        n.offset = mmf.alloc(sizeof(disknode));
+        n.offset = arena.alloc(sizeof(disknode));
         n.lc = 0;
         n.rc = 0;
         n.height = 1;
@@ -546,10 +569,10 @@ class AVLDisk {
         Annotation *lca, *rca;
 
         while (nodeoff) {
-            node = mmf.getptr<disknode>(nodeoff);
-            lca = node->lc ? &mmf.getptr<disknode>(node->lc)->annotation
+            node = arena.getptr<disknode>(nodeoff);
+            lca = node->lc ? &arena.getptr<disknode>(node->lc)->annotation
                            : nullptr;
-            rca = node->rc ? &mmf.getptr<disknode>(node->rc)->annotation
+            rca = node->rc ? &arena.getptr<disknode>(node->rc)->annotation
                            : nullptr;
             int direction = searcher(node->lc, lca, nodeoff, node->payload,
                                      node->annotation, node->rc, rca);

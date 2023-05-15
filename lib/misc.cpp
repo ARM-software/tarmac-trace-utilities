@@ -17,6 +17,7 @@
  */
 
 #include "libtarmac/misc.hh"
+#include "libtarmac/disktree.hh"
 #include "libtarmac/reporter.hh"
 
 #include <errno.h>
@@ -189,4 +190,29 @@ void CommandLineReporter::indexing_done()
         return;
 
     clog << "\rReading trace file (finished)" << endl;
+}
+
+OFF_T Arena::alloc(size_t size)
+{
+    if ((size_t)(curr_size - next_offset) < size) {
+        OFF_T new_curr_size = (next_offset + size) * 5 / 4 + 65536;
+        assert(new_curr_size >= next_offset);
+        resize(new_curr_size);
+    }
+    OFF_T ret = next_offset;
+    next_offset += size;
+    return ret;
+}
+
+MemArena::~MemArena()
+{
+    free(mapping);
+}
+
+void MemArena::resize(size_t newsize)
+{
+    mapping = realloc(mapping, newsize);
+    if (!mapping)
+        reporter->errx(1, "Out of memory");
+    curr_size = newsize;
 }

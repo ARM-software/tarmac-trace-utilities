@@ -160,30 +160,21 @@ void MMapFile::unmap()
     pdata->mh = NULL;
 }
 
-OFF_T MMapFile::alloc(size_t size)
+void MMapFile::resize(size_t newsize)
 {
-    assert(writable);
-    if ((size_t)(curr_size - next_offset) < size) {
-        OFF_T new_curr_size = (next_offset + size) * 5 / 4 + 65536;
-        assert(new_curr_size >= next_offset);
+    unmap();
 
-        unmap();
+    LARGE_INTEGER pos;
+    pos.QuadPart = newsize;
+    if (!SetFilePointerEx(pdata->fh, pos, NULL, FILE_BEGIN))
+        reporter->err(1, "%s: SetFilePointerEx (extending file)",
+                      filename.c_str());
+    if (!SetEndOfFile(pdata->fh))
+        reporter->err(1, "%s: SetEndOfFile (extending file)",
+                      filename.c_str());
+    curr_size = newsize;
 
-        LARGE_INTEGER pos;
-        pos.QuadPart = new_curr_size;
-        if (!SetFilePointerEx(pdata->fh, pos, NULL, FILE_BEGIN))
-            reporter->err(1, "%s: SetFilePointerEx (extending file)",
-                          filename.c_str());
-        if (!SetEndOfFile(pdata->fh))
-            reporter->err(1, "%s: SetEndOfFile (extending file)",
-                          filename.c_str());
-        curr_size = new_curr_size;
-
-        map();
-    }
-    OFF_T ret = next_offset;
-    next_offset += size;
-    return ret;
+    map();
 }
 
 #if !HAVE_APPDATAPROGRAMDATA

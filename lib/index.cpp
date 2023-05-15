@@ -90,7 +90,7 @@ class Index : ParseReceiver {
     OFF_T last_memroot, memroot, seqroot;
     unsigned long long last_sp, curr_sp, curr_pc, insns_since_lr_update;
     unsigned long long expected_next_pc, expected_next_lr;
-    MMapFile *index_mmap;
+    Arena *arena;
     AVLDisk<MemoryPayload, MemoryAnnotation> *memtree;
     AVLDisk<MemorySubPayload> *memsubtree;
     AVLDisk<SeqOrderPayload, SeqOrderAnnotation> *seqtree;
@@ -126,7 +126,7 @@ class Index : ParseReceiver {
 
   public:
     Index(const TracePair &trace, bool bigend)
-        : trace(trace), expected_next_pc(KNOWN_INVALID_PC), index_mmap(nullptr),
+        : trace(trace), expected_next_pc(KNOWN_INVALID_PC), arena(nullptr),
           memtree(nullptr), memsubtree(nullptr), seqtree(nullptr),
           bigend(bigend), aarch64_used(false), last_iset(ARM)
     {
@@ -134,8 +134,8 @@ class Index : ParseReceiver {
 
     ~Index()
     {
-        if (index_mmap)
-            delete index_mmap;
+        if (arena)
+            delete arena;
         if (memtree)
             delete memtree;
         if (memsubtree)
@@ -444,7 +444,7 @@ void Index::delete_from_memtree(char type, Addr addr, size_t size)
 
 unsigned char *Index::make_memtree_update(char type, Addr addr, size_t size)
 {
-    OFF_T contents_offset = index_mmap->alloc(size);
+    OFF_T contents_offset = arena->alloc(size);
 
     delete_from_memtree(type, addr, size);
 
@@ -457,7 +457,7 @@ unsigned char *Index::make_memtree_update(char type, Addr addr, size_t size)
     memp.trace_file_firstline = prev_lineno;
     memroot = memtree->insert(memroot, memp);
 
-    return index_mmap->getptr<unsigned char>(contents_offset);
+    return arena->getptr<unsigned char>(contents_offset);
 }
 
 void Index::update_memtree(char type, Addr addr, size_t size,
@@ -491,8 +491,8 @@ void Index::update_memtree_if_necessary(char type, Addr addr, size_t size,
 
 OFF_T Index::make_sub_memtree(char type, Addr addr, size_t size)
 {
-    OFF_T newroot_offset = index_mmap->alloc(sizeof(diskint<OFF_T>));
-    *index_mmap->getptr<diskint<OFF_T>>(newroot_offset) = 0;
+    OFF_T newroot_offset = arena->alloc(sizeof(diskint<OFF_T>));
+    *arena->getptr<diskint<OFF_T>>(newroot_offset) = 0;
 
     delete_from_memtree(type, addr, size);
 
@@ -544,7 +544,7 @@ void Index::update_memtree_from_read(char type, Addr addr, size_t size,
              */
         } else {
             diskint<OFF_T> *subroot =
-                index_mmap->getptr<diskint<OFF_T>>(memp.contents);
+                arena->getptr<diskint<OFF_T>>(memp.contents);
 
             MemorySubPayload msp;
             msp.lo = memp_search.lo;
@@ -568,11 +568,11 @@ void Index::update_memtree_from_read(char type, Addr addr, size_t size,
                     msp_insert.lo = msp.lo;
                     msp_insert.hi = msp_found.lo - 1;
                     OFF_T contents_offset =
-                        index_mmap->alloc(msp_insert.hi - msp_insert.lo + 1);
+                        arena->alloc(msp_insert.hi - msp_insert.lo + 1);
                     // Take account of alloc() perhaps having
                     // re-mmapped the file
-                    subroot = index_mmap->getptr<diskint<OFF_T>>(memp.contents);
-                    memcpy(index_mmap->getptr<unsigned char>(contents_offset),
+                    subroot = arena->getptr<diskint<OFF_T>>(memp.contents);
+                    memcpy(arena->getptr<unsigned char>(contents_offset),
                            data + (msp.lo - addr),
                            msp_insert.hi - msp_insert.lo + 1);
                     msp_insert.contents = contents_offset;
@@ -581,7 +581,7 @@ void Index::update_memtree_from_read(char type, Addr addr, size_t size,
                         memsubtree->insert(*subroot, msp_insert);
                     // Take account of insert() perhaps having
                     // re-mmapped the file
-                    subroot = index_mmap->getptr<diskint<OFF_T>>(memp.contents);
+                    subroot = arena->getptr<diskint<OFF_T>>(memp.contents);
                     *subroot = new_subroot_value;
                 }
                 msp.lo = msp_found.hi + 1;
@@ -618,13 +618,13 @@ bool Index::read_memtree_value(char type, Addr addr, size_t size,
 
         if (memp_got.raw) {
             const unsigned char *treedata =
-                index_mmap->getptr<unsigned char>(memp_got.contents);
+                arena->getptr<unsigned char>(memp_got.contents);
             memcpy((char *)data + (addr_lo - addr),
                    treedata + (addr_lo - memp_got.lo), addr_hi - addr_lo + 1);
             memset((char *)def + (addr_lo - addr), 1, addr_hi - addr_lo + 1);
         } else {
             OFF_T subroot =
-                *index_mmap->getptr<diskint<OFF_T>>(memp_got.contents);
+                *arena->getptr<diskint<OFF_T>>(memp_got.contents);
             MemorySubPayload msp, msp_found;
             msp.lo = addr_lo;
             msp.hi = addr_hi;
@@ -633,7 +633,7 @@ bool Index::read_memtree_value(char type, Addr addr, size_t size,
                 Addr subaddr_lo = max(msp.lo, msp_found.lo);
                 Addr subaddr_hi = min(msp.hi, msp_found.hi);
                 const unsigned char *treedata =
-                    index_mmap->getptr<unsigned char>(msp_found.contents);
+                    arena->getptr<unsigned char>(msp_found.contents);
                 memcpy((char *)data + (subaddr_lo - addr),
                        treedata + (subaddr_lo - msp_found.lo),
                        subaddr_hi - subaddr_lo + 1);
@@ -695,10 +695,10 @@ class CallDepthCountingTreeWalker {
 };
 
 class CallDepthArrayTreeWalker {
-    MMapFile *index_mmap;
+    Arena *arena;
 
   public:
-    CallDepthArrayTreeWalker(MMapFile *index_mmap) : index_mmap(index_mmap) {}
+    CallDepthArrayTreeWalker(Arena *arena) : arena(arena) {}
     CallDepthArrayTreeWalker(const CallDepthArrayTreeWalker &) = delete;
 
     void operator()(SeqOrderPayload &mainpayload, SeqOrderAnnotation &main,
@@ -726,7 +726,7 @@ class CallDepthArrayTreeWalker {
         // right subtrees, if present.
         if (lc) {
             arrays[LC] =
-                index_mmap->getptr<CallDepthArrayEntry>(lc->call_depth_array);
+                arena->getptr<CallDepthArrayEntry>(lc->call_depth_array);
             len[LC] = lc->call_depth_arraylen;
         } else {
             arrays[LC] = nullptr;
@@ -734,7 +734,7 @@ class CallDepthArrayTreeWalker {
         }
         if (rc) {
             arrays[RC] =
-                index_mmap->getptr<CallDepthArrayEntry>(rc->call_depth_array);
+                arena->getptr<CallDepthArrayEntry>(rc->call_depth_array);
             len[RC] = rc->call_depth_arraylen;
         } else {
             arrays[RC] = nullptr;
@@ -766,20 +766,20 @@ class CallDepthArrayTreeWalker {
         }
 
         main.call_depth_array =
-            index_mmap->alloc(new_arraylen * sizeof(CallDepthArrayEntry));
+            arena->alloc(new_arraylen * sizeof(CallDepthArrayEntry));
         CallDepthArrayEntry *new_array =
-            index_mmap->getptr<CallDepthArrayEntry>(main.call_depth_array);
+            arena->getptr<CallDepthArrayEntry>(main.call_depth_array);
         main.call_depth_arraylen = new_arraylen;
 
         // Reinitialise arrays[], since it contains pointers into the
         // memory-mapped file which might have been invalidated by the
-        // above call to index_mmap->alloc.
+        // above call to arena->alloc.
         if (lc)
             arrays[LC] =
-                index_mmap->getptr<CallDepthArrayEntry>(lc->call_depth_array);
+                arena->getptr<CallDepthArrayEntry>(lc->call_depth_array);
         if (rc)
             arrays[RC] =
-                index_mmap->getptr<CallDepthArrayEntry>(rc->call_depth_array);
+                arena->getptr<CallDepthArrayEntry>(rc->call_depth_array);
 
         // Now do a second merge pass over the same arrays actually
         // populating the new array.
@@ -894,21 +894,21 @@ void Index::parse_tarmac_file()
     string line;
 
     remove(trace.index_filename.c_str());
-    index_mmap = new MMapFile(trace.index_filename, true);
-    MagicNumber &magic = *index_mmap->newptr<MagicNumber>();
+    arena = new MMapFile(trace.index_filename, true);
+    MagicNumber &magic = *arena->newptr<MagicNumber>();
 
-    OFF_T off_header = index_mmap->alloc(sizeof(FileHeader));
+    OFF_T off_header = arena->alloc(sizeof(FileHeader));
     {
-        FileHeader &hdr = *index_mmap->getptr<FileHeader>(off_header);
+        FileHeader &hdr = *arena->getptr<FileHeader>(off_header);
         hdr.flags = 0;        // ensure FLAG_COMPLETE is not initially set
     }
 
     magic.setup();
 
-    memtree = new AVLDisk<MemoryPayload, MemoryAnnotation>(*index_mmap);
-    memsubtree = new AVLDisk<MemorySubPayload>(*index_mmap);
-    seqtree = new AVLDisk<SeqOrderPayload, SeqOrderAnnotation>(*index_mmap);
-    bypctree = new AVLDisk<ByPCPayload>(*index_mmap);
+    memtree = new AVLDisk<MemoryPayload, MemoryAnnotation>(*arena);
+    memsubtree = new AVLDisk<MemorySubPayload>(*arena);
+    seqtree = new AVLDisk<SeqOrderPayload, SeqOrderAnnotation>(*arena);
+    bypctree = new AVLDisk<ByPCPayload>(*arena);
     memroot = seqroot = 0;
     // Set the initial contents of memory to be a sub-memtree, so that
     // we can fill in anything we later find out about via MR events.
@@ -1004,11 +1004,11 @@ void Index::parse_tarmac_file()
         seqtree->walk(seqroot, WalkOrder::Inorder, ref(visitor));
     }
     {
-        CallDepthArrayTreeWalker visitor(index_mmap);
+        CallDepthArrayTreeWalker visitor(arena);
         seqtree->walk(seqroot, WalkOrder::Postorder, ref(visitor));
     }
 
-    FileHeader &hdr = *index_mmap->getptr<FileHeader>(off_header);
+    FileHeader &hdr = *arena->getptr<FileHeader>(off_header);
     {
         unsigned flags = 0;
         if (bigend)
@@ -1025,13 +1025,13 @@ void Index::parse_tarmac_file()
 
 IndexHeaderState check_index_header(const string &index_filename)
 {
-    MMapFile mmf(index_filename, false);
+    MMapFile arena(index_filename, false);
 
-    MagicNumber &magic = *mmf.getptr<MagicNumber>(0);
+    MagicNumber &magic = *arena.getptr<MagicNumber>(0);
     if (!magic.check())
         return IndexHeaderState::WrongMagic;
 
-    FileHeader &hdr = *mmf.getptr<FileHeader>(sizeof(MagicNumber));
+    FileHeader &hdr = *arena.getptr<FileHeader>(sizeof(MagicNumber));
     if (!(hdr.flags & FLAG_COMPLETE))
         return IndexHeaderState::Incomplete;
 
@@ -1046,16 +1046,17 @@ void run_indexer(const TracePair &trace, bool bigend)
 
 IndexReader::IndexReader(const TracePair &trace)
     : index_filename(trace.index_filename),
-      tarmac_filename(trace.tarmac_filename), mmf(index_filename, false),
+      tarmac_filename(trace.tarmac_filename),
+      arena(make_shared<MMapFile>(index_filename, false)),
       tarmac(tarmac_filename, std::ios_base::in | std::ios_base::binary),
-      bigend(), aarch64_used(), memtree(mmf), memsubtree(mmf), seqtree(mmf),
-      bypctree(mmf)
+      bigend(), aarch64_used(), memtree(*arena), memsubtree(*arena),
+      seqtree(*arena), bypctree(*arena)
 {
-    MagicNumber &magic = *mmf.getptr<MagicNumber>(0);
+    MagicNumber &magic = *arena->getptr<MagicNumber>(0);
     if (!magic.check())
         reporter->errx(1, "%s: magic number did not match",
                        index_filename.c_str());
-    FileHeader &hdr = *mmf.getptr<FileHeader>(sizeof(MagicNumber));
+    FileHeader &hdr = *arena->getptr<FileHeader>(sizeof(MagicNumber));
     seqroot = hdr.seqroot;
     bypcroot = hdr.bypcroot;
     bigend = (hdr.flags & FLAG_BIGEND);
