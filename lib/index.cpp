@@ -149,7 +149,7 @@ class Index : ParseReceiver {
     void got_event_common(TarmacEvent *event, bool is_instruction);
     bool parse_warning(const string &msg);
     TarmacEvent *parse_tarmac_line(string line);
-    void parse_tarmac_file(string tarmac_filename, bool show_progress_meter);
+    void parse_tarmac_file(string tarmac_filename);
     OFF_T make_sub_memtree(char type, Addr addr, size_t size);
     void update_memtree(char type, Addr addr, size_t size,
                         unsigned long long contents);
@@ -888,7 +888,7 @@ bool Index::parse_warning(const string &msg)
     return false;
 }
 
-void Index::parse_tarmac_file(string tarmac_filename_, bool show_progress_meter)
+void Index::parse_tarmac_file(string tarmac_filename_)
 {
     string line;
 
@@ -1038,10 +1038,10 @@ IndexHeaderState check_index_header(const string &index_filename)
     return IndexHeaderState::OK;
 }
 
-void run_indexer(const TracePair &trace, bool bigend, bool show_progress_meter)
+void run_indexer(const TracePair &trace, bool bigend)
 {
     Index index(trace.index_filename, bigend);
-    index.parse_tarmac_file(trace.tarmac_filename, show_progress_meter);
+    index.parse_tarmac_file(trace.tarmac_filename);
 }
 
 IndexReader::IndexReader(const TracePair &trace)

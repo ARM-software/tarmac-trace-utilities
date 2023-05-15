@@ -148,7 +148,7 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace,
     }
 
     if (doIndexing == Troolean::Yes)
-        run_indexer(trace, bigend, show_progress_meter);
+        run_indexer(trace, bigend);
 }
 
 void TarmacUtilityBase::setup_noexit()

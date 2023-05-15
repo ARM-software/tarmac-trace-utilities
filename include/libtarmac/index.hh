@@ -35,8 +35,7 @@
 #include <string>
 #include <vector>
 
-void run_indexer(const TracePair &trace, bool big_endian,
-                 bool show_progress_meter);
+void run_indexer(const TracePair &trace, bool big_endian);
 
 enum class IndexHeaderState { OK, WrongMagic, Incomplete };
 IndexHeaderState check_index_header(const std::string &index_filename);
