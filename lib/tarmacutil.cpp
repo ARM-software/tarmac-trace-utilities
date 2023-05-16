@@ -107,11 +107,10 @@ TarmacUtilityMT::TarmacUtilityMT(Argparse &ap, bool can_use_image)
                            });
 }
 
-void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace,
-                                            Troolean doIndexing, bool bigend,
-                                            bool verbose,
-                                            bool show_progress_meter)
+void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
 {
+    Troolean doIndexing = indexing; // so we can translate Auto into Yes or No
+
     uint64_t trace_timestamp;
     if (!get_file_timestamp(trace.tarmac_filename, &trace_timestamp))
         reporter->err(1, "%s: stat", trace.tarmac_filename.c_str());

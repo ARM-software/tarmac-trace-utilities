@@ -59,9 +59,7 @@ class TarmacUtilityBase {
     bool verbose;
     bool show_progress_meter;
 
-    static void updateIndexIfNeeded(const TracePair &trace, Troolean doIndexing,
-                                    bool bigend, bool verbose,
-                                    bool show_progress_meter);
+    void updateIndexIfNeeded(const TracePair &trace) const;
 
   private:
     // Subclass-dependent functionality.
@@ -83,8 +81,7 @@ struct TarmacUtility : public TarmacUtilityBase {
     virtual void postProcessOptions() override;
     virtual void setupIndex() const override
     {
-        TarmacUtilityBase::updateIndexIfNeeded(trace, indexing, bigend, verbose,
-                                               show_progress_meter);
+        updateIndexIfNeeded(trace);
     }
 };
 
@@ -100,8 +97,7 @@ struct TarmacUtilityMT : public TarmacUtilityBase {
     virtual void setupIndex() const override
     {
         for (const TracePair &trace : traces)
-            TarmacUtilityBase::updateIndexIfNeeded(
-                trace, indexing, bigend, verbose, show_progress_meter);
+            updateIndexIfNeeded(trace);
     }
 };
 
