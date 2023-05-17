@@ -914,6 +914,8 @@ void Index::parse_tarmac_file()
     seqtree = new AVLDisk<SeqOrderPayload, SeqOrderAnnotation>(*arena);
     bypctree = new AVLDisk<ByPCPayload>(*arena);
     memroot = seqroot = 0;
+    prev_lineno = 0; // used to fill in last-mod time in make_sub_memtree
+
     // Set the initial contents of memory to be a sub-memtree, so that
     // we can fill in anything we later find out about via MR events.
     //
@@ -921,11 +923,10 @@ void Index::parse_tarmac_file()
     // really meaning the full size of the address space, because I
     // know that make_sub_memtree will subtract 1 from it and wrap
     // around.
-    current_time = -(Time)1;
-    seen_instruction_at_current_time = false;
-    prev_lineno = 0; // used to fill in last-mod time in make_sub_memtree
     make_sub_memtree('m', 0, 0);
     last_memroot = memroot;
+    current_time = -(Time)1;
+    seen_instruction_at_current_time = false;
     bypcroot = 0;
 
     /*
