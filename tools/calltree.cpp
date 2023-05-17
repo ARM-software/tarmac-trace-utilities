@@ -26,7 +26,8 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 int main(int argc, char **argv)
 {
     Argparse ap("tarmac-calltree", argc, argv);
-    TarmacUtility tu(ap);
+    TarmacUtility tu;
+    tu.add_options(ap);
     ap.parse();
     tu.setup();
 

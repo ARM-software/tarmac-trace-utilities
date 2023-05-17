@@ -40,7 +40,8 @@ int main(int argc, char **argv)
     unique_ptr<string> outfile = nullptr;
 
     Argparse ap("tarmac-flamegraph", argc, argv);
-    TarmacUtility tu(ap);
+    TarmacUtility tu;
+    tu.add_options(ap);
     ap.optval({"-o", "--output"}, "OUTFILE",
               "write output to OUTFILE "
               "(default: standard output)",

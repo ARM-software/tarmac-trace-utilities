@@ -27,10 +27,13 @@
 
 class TarmacUtilityBase {
   public:
-    // The constructor for TarmacUtilityBase adds most of the standard
-    // options to the provided Argparse object. Derived classes'
-    // constructors can add extras if they want to.
-    TarmacUtilityBase(Argparse &ap, bool can_use_image);
+    TarmacUtilityBase();
+
+    // Add command-line options to the provided Argparse object. A
+    // standard set of these is provided; derived classes can override
+    // this to add further options (but should call the base class
+    // version).
+    virtual void add_options(Argparse &ap);
 
     // After calling Argparse::parse(), this function will do the
     // tool's standard initial setup, building or rebuilding the index
@@ -46,12 +49,18 @@ class TarmacUtilityBase {
     bool only_index() const { return onlyIndex; }
     bool is_verbose() const { return verbose; }
 
+    // Functions that clients can call before add_options(), to signal
+    // which functionality is present and/or relevant in this tool, so
+    // as to control its command-line options and behaviour.
+    void cannot_use_image() { can_use_image = false; }
+
     std::string image_filename;
 
   protected:
     enum class Troolean { No, Auto, Yes };
 
     Troolean indexing = Troolean::Auto;
+    bool can_use_image = true;
     bool onlyIndex = false;
     bool index_on_disk = true;
     // Marks whether bigend was specified via a parameter
@@ -77,8 +86,11 @@ class TarmacUtilityBase {
 struct TarmacUtility : public TarmacUtilityBase {
     TracePair trace;
 
-    TarmacUtility(Argparse &ap, bool can_use_image = true,
-                  bool trace_required = true);
+    bool trace_required = true;
+
+    void trace_argument_optional() { trace_required = false; }
+
+    virtual void add_options(Argparse &ap) override;
     virtual void postProcessOptions() override;
     virtual void setupIndex() const override
     {
@@ -93,7 +105,7 @@ struct TarmacUtility : public TarmacUtilityBase {
 struct TarmacUtilityMT : public TarmacUtilityBase {
     std::vector<TracePair> traces;
 
-    TarmacUtilityMT(Argparse &ap, bool can_use_image = true);
+    virtual void add_options(Argparse &ap) override;
     virtual void postProcessOptions() override {}
     virtual void setupIndex() const override
     {

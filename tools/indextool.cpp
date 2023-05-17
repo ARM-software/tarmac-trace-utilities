@@ -488,7 +488,10 @@ int main(int argc, char **argv)
     bool got_iflags = false;
 
     Argparse ap("tarmac-indextool", argc, argv);
-    TarmacUtility tu(ap, false, false);
+    TarmacUtility tu;
+    tu.cannot_use_image();
+    tu.trace_argument_optional();
+    tu.add_options(ap);
 
     ap.optnoval({"--header"}, "dump file header",
                 [&]() { mode = Mode::Header; });

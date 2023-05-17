@@ -380,7 +380,8 @@ int main(int argc, char **argv)
     bool no_date = false;
 
     Argparse ap("tarmac-vcd", argc, argv);
-    TarmacUtility tu(ap);
+    TarmacUtility tu;
+    tu.add_options(ap);
 
     ap.optval({"-o", "--output"}, "VCDFILE",
               "VCD file name (default: tarmac_filename.vcd)",

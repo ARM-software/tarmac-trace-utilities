@@ -35,7 +35,8 @@ int main(int argc, char **argv)
     vector<string> functions;
 
     Argparse ap("tarmac-callinfo", argc, argv);
-    TarmacUtility tu(ap);
+    TarmacUtility tu;
+    tu.add_options(ap);
 
     ap.positional_multiple("FUNCTION",
                            "name or hex address of function to "

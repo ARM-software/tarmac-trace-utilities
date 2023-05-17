@@ -29,8 +29,10 @@
 using std::make_shared;
 using std::string;
 
-TarmacUtilityBase::TarmacUtilityBase(Argparse &ap, bool can_use_image)
-    : verbose(is_interactive()), show_progress_meter(verbose)
+TarmacUtilityBase::TarmacUtilityBase()
+    : verbose(is_interactive()), show_progress_meter(verbose) {}
+
+void TarmacUtilityBase::add_options(Argparse &ap)
 {
     if (can_use_image)
         ap.optval({"--image"}, "IMAGEFILE", "image file name",
@@ -65,10 +67,10 @@ TarmacUtilityBase::TarmacUtilityBase(Argparse &ap, bool can_use_image)
                 [this]() { show_progress_meter = true; });
 }
 
-TarmacUtility::TarmacUtility(Argparse &ap, bool can_use_image,
-                             bool trace_required)
-    : TarmacUtilityBase(ap, can_use_image)
+void TarmacUtility::add_options(Argparse &ap)
 {
+    TarmacUtilityBase::add_options(ap);
+
     ap.optval({"--index"}, "INDEXFILE", "index file name",
               [this](const string &s) { trace.index_filename = s; });
     ap.positional("TRACEFILE", "Tarmac trace file to read",
@@ -114,9 +116,10 @@ void TarmacUtility::postProcessOptions()
     }
 }
 
-TarmacUtilityMT::TarmacUtilityMT(Argparse &ap, bool can_use_image)
-    : TarmacUtilityBase(ap, can_use_image)
+void TarmacUtilityMT::add_options(Argparse &ap)
 {
+    TarmacUtilityBase::add_options(ap);
+
     auto add_pair = [this](const string &s) {
         TracePair pair;
         pair.tarmac_filename = s;
