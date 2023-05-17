@@ -31,6 +31,7 @@ enum class IndexUpdateCheck {
     WrongFormat,    // rebuild needed: index has wrong file format version
     Incomplete,     // rebuild needed: previous generation did not finish
     Forced,         // rebuild explicitly requested by user
+    InMemory,       // index is not stored on disk at all, so must be built
 };
 
 struct TracePair;

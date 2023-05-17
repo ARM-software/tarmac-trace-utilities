@@ -123,6 +123,9 @@ void CommandLineReporter::indexing_status(const TracePair &pair,
         return;
 
     switch (status) {
+      case IndexUpdateCheck::InMemory:
+        // If index is in memory, no need to print anything
+        break;
       case IndexUpdateCheck::Missing:
         clog << "index file " << pair.index_filename
              << " does not exist; building it" << endl;

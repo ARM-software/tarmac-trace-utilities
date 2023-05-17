@@ -16,14 +16,17 @@
  * This file is part of Tarmac Trace Utilities
  */
 
+#include "libtarmac/disktree.hh"
 #include "libtarmac/tarmacutil.hh"
 #include "libtarmac/index.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/reporter.hh"
 
 #include <iostream>
+#include <memory>
 #include <stdlib.h>
 
+using std::make_shared;
 using std::string;
 
 TarmacUtilityBase::TarmacUtilityBase(Argparse &ap, bool can_use_image)
@@ -41,6 +44,8 @@ TarmacUtilityBase::TarmacUtilityBase(Argparse &ap, bool can_use_image)
                 [this]() { indexing = Troolean::Yes; });
     ap.optnoval({"--no-index"}, "do not regenerate index",
                 [this]() { indexing = Troolean::No; });
+    ap.optnoval({"--memory-index"}, "keep index in memory instead of on disk",
+                [this]() { index_on_disk = false; });
     ap.optnoval({"--li"}, "assume trace is from a little-endian platform",
                 [this]() {
                     bigend = false;
@@ -78,8 +83,19 @@ static string defaultIndexFilename(string tarmac_filename)
 
 void TarmacUtility::postProcessOptions()
 {
-    if (trace.index_filename.empty())
-        trace.index_filename = defaultIndexFilename(trace.tarmac_filename);
+    trace.index_on_disk = index_on_disk;
+    if (index_on_disk) {
+        if (trace.index_filename.empty())
+            trace.index_filename = defaultIndexFilename(trace.tarmac_filename);
+    } else {
+        if (indexing == Troolean::No)
+            reporter->warnx("Ignoring --no-index since index is in memory");
+        if (!trace.index_filename.empty())
+            reporter->warnx("Ignoring index file name since index is "
+                            "in memory");
+        indexing = Troolean::Yes;
+        trace.memory_index = make_shared<MemArena>();
+    }
 
     std::shared_ptr<Image> image =
         image_filename.empty() ? nullptr
@@ -101,10 +117,15 @@ void TarmacUtility::postProcessOptions()
 TarmacUtilityMT::TarmacUtilityMT(Argparse &ap, bool can_use_image)
     : TarmacUtilityBase(ap, can_use_image)
 {
-    ap.positional_multiple("TRACEFILE", "Tarmac trace files to read",
-                           [this](const string &s) {
-                               traces.emplace_back(s, defaultIndexFilename(s));
-                           });
+    auto add_pair = [this](const string &s) {
+        TracePair pair;
+        pair.tarmac_filename = s;
+        pair.index_on_disk = index_on_disk;
+        if (index_on_disk)
+            pair.index_filename = defaultIndexFilename(s);
+        traces.push_back(pair);
+    };
+    ap.positional_multiple("TRACEFILE", "Tarmac trace files to read", add_pair);
 }
 
 void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
@@ -114,7 +135,11 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
     reporter->set_indexing_verbosity(verbose);
     reporter->set_indexing_progress(show_progress_meter);
 
-    if (doIndexing == Troolean::Auto) {
+    if (!trace.index_on_disk) {
+        // If we're indexing to memory, there can never be an existing index
+        doIndexing = Troolean::Yes;
+        reporter->indexing_status(trace, IndexUpdateCheck::InMemory);
+    } else if (doIndexing == Troolean::Auto) {
         uint64_t trace_timestamp, index_timestamp;
         IndexUpdateCheck status;
 

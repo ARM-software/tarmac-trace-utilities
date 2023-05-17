@@ -53,6 +53,7 @@ class TarmacUtilityBase {
 
     Troolean indexing = Troolean::Auto;
     bool onlyIndex = false;
+    bool index_on_disk = true;
     // Marks whether bigend was specified via a parameter
     bool bigend_explicit = false;
     bool bigend = false;

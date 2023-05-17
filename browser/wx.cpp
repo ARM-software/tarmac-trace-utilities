@@ -3452,10 +3452,14 @@ void WXGUIReporter::indexing_status(const TracePair &trace,
                                     IndexUpdateCheck status)
 {
     ostringstream oss;
-    oss << "Indexing trace file " << trace.tarmac_filename << endl
-        << "to index file " << trace.index_filename;
+    oss << "Indexing trace file " << trace.tarmac_filename;
+    if (trace.index_on_disk)
+        oss << endl << "to index file " << trace.index_filename;
 
     switch (status) {
+      case IndexUpdateCheck::InMemory:
+        // If the index is in memory, no need to print a message at all
+        break;
       case IndexUpdateCheck::Missing:
         oss << endl << "(new index file)";
         break;

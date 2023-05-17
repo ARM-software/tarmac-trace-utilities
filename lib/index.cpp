@@ -44,6 +44,7 @@ using std::hex;
 using std::ifstream;
 using std::ios;
 using std::make_pair;
+using std::make_shared;
 using std::make_unique;
 using std::max;
 using std::min;
@@ -51,6 +52,7 @@ using std::ostringstream;
 using std::pair;
 using std::ref;
 using std::set;
+using std::shared_ptr;
 using std::showbase;
 using std::streampos;
 using std::string;
@@ -90,7 +92,7 @@ class Index : ParseReceiver {
     OFF_T last_memroot, memroot, seqroot;
     unsigned long long last_sp, curr_sp, curr_pc, insns_since_lr_update;
     unsigned long long expected_next_pc, expected_next_lr;
-    Arena *arena;
+    shared_ptr<Arena> arena;
     AVLDisk<MemoryPayload, MemoryAnnotation> *memtree;
     AVLDisk<MemorySubPayload> *memsubtree;
     AVLDisk<SeqOrderPayload, SeqOrderAnnotation> *seqtree;
@@ -134,8 +136,6 @@ class Index : ParseReceiver {
 
     ~Index()
     {
-        if (arena)
-            delete arena;
         if (memtree)
             delete memtree;
         if (memsubtree)
@@ -893,8 +893,12 @@ void Index::parse_tarmac_file()
 {
     string line;
 
-    remove(trace.index_filename.c_str());
-    arena = new MMapFile(trace.index_filename, true);
+    if (trace.index_on_disk) {
+        remove(trace.index_filename.c_str());
+        arena = make_shared<MMapFile>(trace.index_filename, true);
+    } else {
+        arena = trace.memory_index;
+    }
     MagicNumber &magic = *arena->newptr<MagicNumber>();
 
     OFF_T off_header = arena->alloc(sizeof(FileHeader));
@@ -980,7 +984,8 @@ void Index::parse_tarmac_file()
                                            oss.str());
                 break;
             } else {
-                remove(trace.index_filename.c_str());
+                if (trace.index_on_disk)
+                    remove(trace.index_filename.c_str());
                 reporter->indexing_error(trace.tarmac_filename, lineno, e.msg);
             }
         }
@@ -1004,7 +1009,7 @@ void Index::parse_tarmac_file()
         seqtree->walk(seqroot, WalkOrder::Inorder, ref(visitor));
     }
     {
-        CallDepthArrayTreeWalker visitor(arena);
+        CallDepthArrayTreeWalker visitor(arena.get());
         seqtree->walk(seqroot, WalkOrder::Postorder, ref(visitor));
     }
 
@@ -1044,10 +1049,18 @@ void run_indexer(const TracePair &trace, bool bigend)
     index.parse_tarmac_file();
 }
 
+static shared_ptr<Arena> get_index_mapping(const TracePair &trace)
+{
+    if (trace.index_on_disk)
+        return make_shared<MMapFile>(trace.index_filename, false);
+    else
+        return trace.memory_index;
+}
+
 IndexReader::IndexReader(const TracePair &trace)
     : index_filename(trace.index_filename),
       tarmac_filename(trace.tarmac_filename),
-      arena(make_shared<MMapFile>(index_filename, false)),
+      arena(get_index_mapping(trace)),
       tarmac(tarmac_filename, std::ios_base::in | std::ios_base::binary),
       bigend(), aarch64_used(), memtree(*arena), memsubtree(*arena),
       seqtree(*arena), bypctree(*arena)

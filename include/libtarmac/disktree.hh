@@ -26,6 +26,7 @@
 
 #include <cassert>
 #include <functional>
+#include <memory>
 #include <string>
 
 // Base class for a memory arena that will contain the index data structures.
@@ -666,6 +667,17 @@ class AVLDisk {
         visitor(n.payload, nodeoff);
         visit(n.rc, visitor);
     }
+};
+
+// A class encapsulating information about the filename of a Tarmac
+// trace file, and where its index is going to be kept - either in a
+// file alongside, or in memory via a MemArena.
+struct TracePair {
+    std::string tarmac_filename;
+
+    bool index_on_disk;
+    std::string index_filename;             // if index_on_disk is true
+    std::shared_ptr<MemArena> memory_index; // if index_on_disk is false
 };
 
 #endif // LIBTARMAC_DISKTREE_HH

@@ -60,20 +60,6 @@ template <class Payload> class Infinity {
     int cmp(const Payload &) const { return sign; }
 };
 
-// A tuple class that encapsulates the filenames of a Tarmac trace
-// file and its associated index.
-struct TracePair {
-    std::string tarmac_filename;
-    std::string index_filename;
-
-    TracePair() = default;
-    TracePair(const std::string &tarmac_filename,
-              const std::string &index_filename)
-        : tarmac_filename(tarmac_filename), index_filename(index_filename)
-    {
-    }
-};
-
 // In the per-platform source
 bool get_file_timestamp(const std::string &filename, uint64_t *out_timestamp);
 bool is_interactive();
