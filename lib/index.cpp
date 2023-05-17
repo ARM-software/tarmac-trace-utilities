@@ -89,6 +89,7 @@ struct CallReturn {
 
 class Index : ParseReceiver {
     TracePair trace;
+    TraceParams params;
     OFF_T last_memroot, memroot, seqroot;
     unsigned long long last_sp, curr_sp, curr_pc, insns_since_lr_update;
     unsigned long long expected_next_pc, expected_next_lr;
@@ -127,10 +128,10 @@ class Index : ParseReceiver {
     }
 
   public:
-    Index(const TracePair &trace, bool bigend)
-        : trace(trace), expected_next_pc(KNOWN_INVALID_PC), arena(nullptr),
-          memtree(nullptr), memsubtree(nullptr), seqtree(nullptr),
-          bigend(bigend), aarch64_used(false), last_iset(ARM)
+    Index(const TracePair &trace, const TraceParams &params, bool bigend)
+        : trace(trace), params(params), expected_next_pc(KNOWN_INVALID_PC),
+          arena(nullptr), memtree(nullptr), memsubtree(nullptr),
+          seqtree(nullptr), bigend(bigend), aarch64_used(false), last_iset(ARM)
     {
     }
 
@@ -175,13 +176,15 @@ void Index::update_sp(unsigned long long sp)
 {
     curr_sp = sp;
 
-    for (auto it = pending_calls.begin(); it != pending_calls.end();) {
-        if (it->sp >= sp)
-            break;
+    if (params.record_calls) {
+        for (auto it = pending_calls.begin(); it != pending_calls.end();) {
+            if (it->sp >= sp)
+                break;
 
-        auto to_erase = it;
-        ++it;
-        pending_calls.erase(to_erase);
+            auto to_erase = it;
+            ++it;
+            pending_calls.erase(to_erase);
+        }
     }
 }
 
@@ -191,7 +194,7 @@ void Index::update_pc(unsigned long long pc, unsigned long long next_pc,
     if (iset == A64)
         aarch64_used = true;
 
-    if (((pc ^ expected_next_pc) & ~1ULL) != 0) {
+    if (params.record_calls && ((pc ^ expected_next_pc) & ~1ULL) != 0) {
         // The last instruction transferred control to somewhere other
         // than the obvious next memory location. See if the obvious
         // next location - or something near it - was also left in lr.
@@ -463,6 +466,9 @@ unsigned char *Index::make_memtree_update(char type, Addr addr, size_t size)
 void Index::update_memtree(char type, Addr addr, size_t size,
                            unsigned long long contents)
 {
+    if (type == 'm' && !params.record_memory)
+        return;
+
     unsigned char *contents_ptr = make_memtree_update(type, addr, size);
     if (type == 'm' && bigend) {
         for (size_t i = 0; i < size; i++)
@@ -476,6 +482,9 @@ void Index::update_memtree(char type, Addr addr, size_t size,
 void Index::update_memtree_if_necessary(char type, Addr addr, size_t size,
                                         unsigned long long contents)
 {
+    if (type == 'm' && !params.record_memory)
+        return;
+
     /*
      * Wrapper around update_memtree which avoids writing extra data
      * into the index if the value at the specified address hasn't
@@ -511,6 +520,9 @@ OFF_T Index::make_sub_memtree(char type, Addr addr, size_t size)
 void Index::update_memtree_from_read(char type, Addr addr, size_t size,
                                      unsigned long long contents)
 {
+    if (type == 'm' && !params.record_memory)
+        return;
+
     auto data_ptr = make_unique<unsigned char[]>(size);
     unsigned char *data = data_ptr.get();
     if (bigend) {
@@ -1005,13 +1017,15 @@ void Index::parse_tarmac_file()
      * returns as best we can within our own memory, postprocess the
      * main seqtree to fill in the call depth fields.
      */
-    {
-        CallDepthCountingTreeWalker visitor(found_callrets);
-        seqtree->walk(seqroot, WalkOrder::Inorder, ref(visitor));
-    }
-    {
-        CallDepthArrayTreeWalker visitor(arena.get());
-        seqtree->walk(seqroot, WalkOrder::Postorder, ref(visitor));
+    if (params.record_calls) {
+        {
+            CallDepthCountingTreeWalker visitor(found_callrets);
+            seqtree->walk(seqroot, WalkOrder::Inorder, ref(visitor));
+        }
+        {
+            CallDepthArrayTreeWalker visitor(arena.get());
+            seqtree->walk(seqroot, WalkOrder::Postorder, ref(visitor));
+        }
     }
 
     FileHeader &hdr = *arena->getptr<FileHeader>(off_header);
@@ -1044,9 +1058,9 @@ IndexHeaderState check_index_header(const string &index_filename)
     return IndexHeaderState::OK;
 }
 
-void run_indexer(const TracePair &trace, bool bigend)
+void run_indexer(const TracePair &trace, const TraceParams &params, bool bigend)
 {
-    Index index(trace, bigend);
+    Index index(trace, params, bigend);
     index.parse_tarmac_file();
 }
 

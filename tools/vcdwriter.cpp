@@ -379,8 +379,12 @@ int main(int argc, char **argv)
     string vcd_filename("");
     bool no_date = false;
 
+    TraceParams params;
+    params.record_memory = false;
+
     Argparse ap("tarmac-vcd", argc, argv);
     TarmacUtility tu;
+    tu.set_params(params);
     tu.add_options(ap);
 
     ap.optval({"-o", "--output"}, "VCDFILE",

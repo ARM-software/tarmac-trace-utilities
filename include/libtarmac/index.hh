@@ -35,7 +35,26 @@
 #include <string>
 #include <vector>
 
-void run_indexer(const TracePair &trace, bool big_endian);
+// Parameters that tell run_indexer which features it can leave out of
+// its index to save disk space
+struct TraceParams {
+    bool record_memory = true;
+    bool record_calls = true;
+
+    bool can_store_on_disk() const {
+        /*
+         * At present, we only permit disk-based indexes if they
+         * contain all the optional parts. This prevents one tool
+         * finding a deficient index written by another. With a system
+         * of header flags indicating the missing pieces that could be
+         * changed, but this is the simplest thing for the moment.
+         */
+        return record_memory && record_calls;
+    }
+};
+
+void run_indexer(const TracePair &trace, const TraceParams &params,
+                 bool big_endian);
 
 enum class IndexHeaderState { OK, WrongMagic, Incomplete };
 IndexHeaderState check_index_header(const std::string &index_filename);

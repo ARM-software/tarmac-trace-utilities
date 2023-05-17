@@ -20,6 +20,7 @@
 #define TARMAC_MAIN_COMMON_HH
 
 #include "libtarmac/argparse.hh"
+#include "libtarmac/index.hh"
 #include "libtarmac/misc.hh"
 
 #include <string>
@@ -53,6 +54,7 @@ class TarmacUtilityBase {
     // which functionality is present and/or relevant in this tool, so
     // as to control its command-line options and behaviour.
     void cannot_use_image() { can_use_image = false; }
+    void set_params(const TraceParams &params_) { params = params_; }
 
     std::string image_filename;
 
@@ -68,6 +70,8 @@ class TarmacUtilityBase {
     bool bigend = false;
     bool verbose;
     bool show_progress_meter;
+
+    TraceParams params;
 
     void updateIndexIfNeeded(const TracePair &trace) const;
 

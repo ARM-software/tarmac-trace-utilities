@@ -34,20 +34,25 @@ TarmacUtilityBase::TarmacUtilityBase()
 
 void TarmacUtilityBase::add_options(Argparse &ap)
 {
+    if (!params.can_store_on_disk())
+        index_on_disk = false;
+
     if (can_use_image)
         ap.optval({"--image"}, "IMAGEFILE", "image file name",
                   [this](const string &s) { image_filename = s; });
-    ap.optnoval({"--only-index"}, "generate index and do nothing else",
-                [this]() {
-                    indexing = Troolean::Yes;
-                    onlyIndex = true;
-                });
-    ap.optnoval({"--force-index"}, "regenerate index unconditionally",
-                [this]() { indexing = Troolean::Yes; });
-    ap.optnoval({"--no-index"}, "do not regenerate index",
-                [this]() { indexing = Troolean::No; });
-    ap.optnoval({"--memory-index"}, "keep index in memory instead of on disk",
-                [this]() { index_on_disk = false; });
+    if (index_on_disk) {
+        ap.optnoval({"--only-index"}, "generate index and do nothing else",
+                    [this]() {
+                        indexing = Troolean::Yes;
+                        onlyIndex = true;
+                    });
+        ap.optnoval({"--force-index"}, "regenerate index unconditionally",
+                    [this]() { indexing = Troolean::Yes; });
+        ap.optnoval({"--no-index"}, "do not regenerate index",
+                    [this]() { indexing = Troolean::No; });
+        ap.optnoval({"--memory-index"}, "keep index in memory instead of on "
+                    "disk", [this]() { index_on_disk = false; });
+    }
     ap.optnoval({"--li"}, "assume trace is from a little-endian platform",
                 [this]() {
                     bigend = false;
@@ -175,7 +180,7 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
     }
 
     if (doIndexing == Troolean::Yes)
-        run_indexer(trace, bigend);
+        run_indexer(trace, params, bigend);
 }
 
 void TarmacUtilityBase::setup_noexit()

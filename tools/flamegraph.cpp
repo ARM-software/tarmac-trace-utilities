@@ -39,8 +39,12 @@ int main(int argc, char **argv)
 {
     unique_ptr<string> outfile = nullptr;
 
+    TraceParams params;
+    params.record_memory = false;
+
     Argparse ap("tarmac-flamegraph", argc, argv);
     TarmacUtility tu;
+    tu.set_params(params);
     tu.add_options(ap);
     ap.optval({"-o", "--output"}, "OUTFILE",
               "write output to OUTFILE "
