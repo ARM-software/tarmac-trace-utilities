@@ -131,9 +131,37 @@ template <class Payload> class EmptyAnnotation {
 
 template <class Payload, class Annotation = EmptyAnnotation<Payload>>
 class AVLDisk {
+    friend class AVLTest; // so the unit test can look inside
+
     Arena &arena;
-    // High-water mark. Nodes at addresses below here are already used
-    // by some prior tree root and hence are immutable.
+
+    // This tree structure can operate in two mutually exclusive
+    // modes, indicated by this flag.
+    //
+    // In one mode (refcounting==false), nodes are periodically marked
+    // as immutable by calling commit(), and after that, new tree
+    // roots can reuse immutable nodes unchanged, or clone them and
+    // modify the clone, but all tree roots existing before the commit
+    // remain valid forever. This is the mode used by the full TTU
+    // indexer, which builds a sequence of tree roots representing the
+    // state of memory at every instant of a trace, all simultaneously
+    // valid but sharing most of their nodes.
+    //
+    // In the other mode (refcounting==true), commit() must never be
+    // called at all, and instead, nodes have a reference count, used
+    // to implement copy-on-write: a node with a refcount > 1 may not
+    // be modified by an operation on one of the trees using that
+    // node. Instead, the node is cloned, and the link from its parent
+    // is rewritten to point at the clone (causing the old node's
+    // refcount to be decremented, maybe making it modifiable again).
+    // This mode allows a small number of tree roots to be kept live
+    // at a time, but each one to be disposed of when no longer
+    // needed.
+    bool refcounting;
+
+    // High-water mark, used in non-refcounting mode. Nodes at
+    // addresses below here are already used by some prior tree root
+    // and hence are immutable.
     OFF_T hwm;
 
     struct node {
@@ -146,10 +174,69 @@ class AVLDisk {
 
     struct disknode {
         diskint<OFF_T> lc, rc;
-        diskint<int> height;
+        diskint<int> height, refcount;
         Payload payload;
         Annotation annotation;
     };
+
+    // When this tree structure is used in a mode where we aren't
+    // trying to record everything for ever, nodes can be freed, in
+    // which case we keep them on a free list for reuse.
+    OFF_T freehead;
+    struct freenode {
+        OFF_T next;
+    };
+
+    OFF_T alloc_node()
+    {
+        OFF_T newnode;
+        if (freehead) {
+            freenode &fn = *arena.getptr<freenode>(freehead);
+            newnode = freehead;
+            freehead = fn.next;
+        } else {
+            newnode = arena.alloc(sizeof(disknode));
+        }
+
+        disknode &dn = *arena.getptr<disknode>(newnode);
+        dn.refcount = 0;
+        return newnode;
+    }
+
+    inline int adjust_refcount(OFF_T offset, int adj)
+    {
+        if (!refcounting)
+            return 1;    // return value shouldn't matter in this case
+        if (!offset)
+            return 1;    // the null pointer doesn't get adjusted anyway
+
+        disknode &dn = *arena.getptr<disknode>(offset);
+        int rc = dn.refcount;
+        rc += adj;
+        dn.refcount = rc;
+        return rc;
+    }
+
+    inline int adjust_refcount(node &n, int adj)
+    {
+        return adjust_refcount(n.offset, adj);
+    }
+
+    void free_node(OFF_T offset, int adjustment = -1)
+    {
+        assert(refcounting && "Cannot free nodes in high-water-mark mode");
+        if (adjust_refcount(offset, adjustment) <= 0) {
+            disknode &dn = *arena.getptr<disknode>(offset);
+            if (dn.lc)
+                free_node(dn.lc);
+            if (dn.rc)
+                free_node(dn.rc);
+
+            freenode &fn = *arena.getptr<freenode>(offset);
+            fn.next = freehead;
+            freehead = offset;
+        }
+    }
 
     void put(node &n)
     {
@@ -180,15 +267,33 @@ class AVLDisk {
         return n;
     }
 
-    bool immutable(node &n) const { return n.offset < hwm; }
+    bool immutable(node &n) const {
+        if (!refcounting) {
+            return n.offset < hwm;
+        } else {
+            disknode &dn = *arena.getptr<disknode>(n.offset);
+            return dn.refcount > 1;
+        }
+    }
 
-    void rewrite(node &n, OFF_T newlc, OFF_T newrc)
+    void rewrite(node &n, OFF_T newlc, OFF_T newrc, bool must_modify)
     {
-        if (immutable(n))
-            n.offset = arena.alloc(sizeof(disknode));
+        if (immutable(n) || must_modify) {
+            n.offset = alloc_node();
+            if (n.lc)
+                adjust_refcount(n.lc, +1);
+            if (n.rc)
+                adjust_refcount(n.rc, +1);
+        }
 
+        adjust_refcount(n.lc, -1);
         n.lc = newlc;
+        adjust_refcount(n.lc, +1);
+
+        adjust_refcount(n.rc, -1);
         n.rc = newrc;
+        adjust_refcount(n.rc, +1);
+
         n.height = std::max(get(newlc).height, get(newrc).height) + 1;
         n.annotation = Annotation(n.payload);
         if (n.lc) {
@@ -202,28 +307,31 @@ class AVLDisk {
         put(n);
     }
 
-    node rotate_left(node &n)
+    node rotate_left(node &n, bool must_modify)
     {
         node rc = get(n.rc);
         OFF_T t0 = n.lc, t1 = rc.lc, t2 = rc.rc;
-        rewrite(n, t0, t1);
-        rewrite(rc, n.offset, t2);
+        rewrite(n, t0, t1, must_modify);
+        rewrite(rc, n.offset, t2, must_modify);
         return rc;
     }
 
-    node rotate_right(node &n)
+    node rotate_right(node &n, bool must_modify)
     {
         node lc = get(n.lc);
         OFF_T t0 = lc.lc, t1 = lc.rc, t2 = n.rc;
-        rewrite(n, t1, t2);
-        rewrite(lc, t0, n.offset);
+        rewrite(n, t1, t2, must_modify);
+        rewrite(lc, t0, n.offset, must_modify);
         return lc;
     }
 
-    node insert_main(node &root, node &n)
+    node insert_main(node &root, node &n, bool must_modify)
     {
         if (root.offset == 0)
             return n;
+
+        if (immutable(root))
+            must_modify = true;
 
         node lc = get(root.lc), rc = get(root.rc);
         int k;
@@ -232,30 +340,32 @@ class AVLDisk {
         assert(cmp != 0);
 
         if (cmp > 0) {
-            lc = insert_main(lc, n);
-            rewrite(root, lc.offset, rc.offset);
+            lc = insert_main(lc, n, must_modify);
+            rewrite(root, lc.offset, rc.offset, must_modify);
+            must_modify = false;       // now our root is guaranteed unique
             k = rc.height;
 
             if (lc.height == k + 2) {
                 node lrc = get(lc.rc);
                 if (lrc.height == k + 1) {
-                    lc = rotate_left(lc);
-                    rewrite(root, lc.offset, rc.offset);
+                    lc = rotate_left(lc, must_modify);
+                    rewrite(root, lc.offset, rc.offset, must_modify);
                 }
-                return rotate_right(root);
+                return rotate_right(root, must_modify);
             }
         } else {
-            rc = insert_main(rc, n);
-            rewrite(root, lc.offset, rc.offset);
+            rc = insert_main(rc, n, must_modify);
+            rewrite(root, lc.offset, rc.offset, must_modify);
+            must_modify = false;       // now our root is guaranteed unique
             k = lc.height;
 
             if (rc.height == k + 2) {
                 node rlc = get(rc.lc);
                 if (rlc.height == k + 1) {
-                    rc = rotate_right(rc);
-                    rewrite(root, lc.offset, rc.offset);
+                    rc = rotate_right(rc, must_modify);
+                    rewrite(root, lc.offset, rc.offset, must_modify);
                 }
-                return rotate_left(root);
+                return rotate_left(root, must_modify);
             }
         }
 
@@ -264,7 +374,7 @@ class AVLDisk {
 
     template <class PayloadComparable>
     node remove_main(node &root, const PayloadComparable *keyfinder,
-                     node *removed)
+                     node *removed, bool must_modify)
     {
 
         if (root.offset == 0) {
@@ -272,6 +382,10 @@ class AVLDisk {
             *removed = root;
             return root;
         }
+
+        if (immutable(root))
+            must_modify = true;
+
         node lc = get(root.lc), rc = get(root.rc);
         int k;
 
@@ -284,25 +398,26 @@ class AVLDisk {
 
         if (cmp < 0) {
             OFF_T oldlc = lc.offset;
-            lc = remove_main(lc, keyfinder, removed);
+            lc = remove_main(lc, keyfinder, removed, must_modify);
             if (lc.offset == oldlc)
                 return root;
 
-            rewrite(root, lc.offset, rc.offset);
+            rewrite(root, lc.offset, rc.offset, must_modify);
+            must_modify = false;       // now our root is guaranteed unique
             k = lc.height;
 
             if (rc.height == k + 2) {
                 node rlc = get(rc.lc);
                 if (rlc.height == k + 1) {
-                    rc = rotate_right(rc);
-                    rewrite(root, lc.offset, rc.offset);
+                    rc = rotate_right(rc, must_modify);
+                    rewrite(root, lc.offset, rc.offset, must_modify);
                 }
-                return rotate_left(root);
+                return rotate_left(root, must_modify);
             }
         } else {
             if (cmp > 0) {
                 OFF_T oldrc = rc.offset;
-                rc = remove_main(rc, keyfinder, removed);
+                rc = remove_main(rc, keyfinder, removed, must_modify);
                 if (rc.offset == oldrc)
                     return root;
             } else {
@@ -314,21 +429,24 @@ class AVLDisk {
                 } else if (!root.rc) {
                     return get(root.lc);
                 } else {
-                    rc = remove_main<PayloadComparable>(rc, nullptr, &root);
-                    rewrite(root, lc.offset, rc.offset);
+                    rc = remove_main<PayloadComparable>(rc, nullptr, &root,
+                                                        must_modify);
+                    rewrite(root, lc.offset, rc.offset, must_modify);
+                    must_modify = false; // now our root is guaranteed unique
                 }
             }
 
-            rewrite(root, lc.offset, rc.offset);
+            rewrite(root, lc.offset, rc.offset, must_modify);
+            must_modify = false;       // now our root is guaranteed unique
             k = rc.height;
 
             if (lc.height == k + 2) {
                 node lrc = get(lc.rc);
                 if (lrc.height == k + 1) {
-                    lc = rotate_left(lc);
-                    rewrite(root, lc.offset, rc.offset);
+                    lc = rotate_left(lc, must_modify);
+                    rewrite(root, lc.offset, rc.offset, must_modify);
                 }
-                return rotate_right(root);
+                return rotate_right(root, must_modify);
             }
         }
 
@@ -441,9 +559,29 @@ class AVLDisk {
     }
 
   public:
-    AVLDisk(Arena &arena) : arena(arena) { hwm = arena.curr_offset(); }
+    AVLDisk(Arena &arena, bool refcounting = false)
+        : arena(arena), refcounting(refcounting)
+    {
+        hwm = arena.curr_offset();
+        freehead = 0;
+    }
 
-    void commit() { hwm = arena.curr_offset(); }
+    void commit()
+    {
+        assert(!refcounting && "commit() is illegal in refcounting mode");
+        hwm = arena.curr_offset();
+    }
+
+    OFF_T clone_tree(OFF_T root)
+    {
+        adjust_refcount(root, +1);
+        return root;
+    }
+
+    void free_tree(OFF_T root)
+    {
+        free_node(root);
+    }
 
     template <class PayloadComparable>
     OFF_T remove(OFF_T oldroot, const PayloadComparable &keyfinder, bool *found,
@@ -452,11 +590,16 @@ class AVLDisk {
 
         node root = get(oldroot);
         node removed;
-        root = remove_main(root, &keyfinder, &removed);
+        bool must_modify = immutable(root);
+        adjust_refcount(root, -1);
+        root = remove_main(root, &keyfinder, &removed, must_modify);
+        adjust_refcount(root, +1);
         if (found)
             *found = removed.offset != 0;
         if (removed_payload && removed.offset != 0)
             *removed_payload = removed.payload;
+        if (refcounting && removed.offset != 0)
+            free_node(removed.offset, 0); // check if we've zeroed its refcount
         return root.offset;
     }
 
@@ -549,14 +692,17 @@ class AVLDisk {
     {
         node root = get(oldroot);
         node n;
-        n.offset = arena.alloc(sizeof(disknode));
+        n.offset = alloc_node();
         n.lc = 0;
         n.rc = 0;
         n.height = 1;
         n.payload = payload;
         n.annotation = Annotation(n.payload);
         put(n);
-        root = insert_main(root, n);
+        bool must_modify = immutable(root);
+        adjust_refcount(root, -1);
+        root = insert_main(root, n, must_modify);
+        adjust_refcount(root, +1);
         return root.offset;
     }
 

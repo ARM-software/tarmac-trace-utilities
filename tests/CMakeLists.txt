@@ -213,3 +213,9 @@ add_test(NAME btod
       --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/btod.ref
       ${CMAKE_BINARY_DIR}/btodtest
   )
+
+# Test the reference counting in the AVL tree system.
+add_test(NAME avl
+  COMMAND ${test_driver_cmd}
+      ${CMAKE_BINARY_DIR}/avltest
+  )

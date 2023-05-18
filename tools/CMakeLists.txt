@@ -54,3 +54,6 @@ target_link_libraries(argparsetest tarmac)
 
 add_executable(btodtest btodtest.cpp)
 target_link_libraries(btodtest tarmac)
+
+add_executable(avltest avltest.cpp)
+target_link_libraries(avltest tarmac)
