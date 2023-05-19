@@ -107,7 +107,7 @@ void Argparse::positional(const string &metavar, const string &help,
 }
 
 void Argparse::positional_multiple(const string &metavar, const string &help,
-                                   OptValResponder responder)
+                                   OptValResponder responder, bool required)
 {
     assert(!multiple_positional && "Can't have two multiple positional"
                                    " arguments");
@@ -115,6 +115,7 @@ void Argparse::positional_multiple(const string &metavar, const string &help,
     opt->metavar = metavar;
     opt->valresponder = responder;
     opt->multiple = true;
+    opt->required = required;
     multiple_positional = opt.get();
     add_opt(move(opt));
 }

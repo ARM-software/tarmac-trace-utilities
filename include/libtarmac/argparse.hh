@@ -76,7 +76,7 @@ class Argparse {
                     OptValResponder responder, bool required = true);
     void positional_multiple(const std::string &metavar,
                              const std::string &help,
-                             OptValResponder responder);
+                             OptValResponder responder, bool required = true);
 
     void help(std::ostream &os);
 
