@@ -56,6 +56,7 @@ using std::shared_ptr;
 using std::showbase;
 using std::streampos;
 using std::string;
+using std::unique_ptr;
 using std::vector;
 
 struct PendingCall {
@@ -110,11 +111,13 @@ class Index : ParseReceiver {
 
     // Used during parsing (shared between parse_tarmac_line and
     // got_event):
+    TarmacLineParser parser;
+    unique_ptr<ifstream> ifs;
     size_t lineno, true_lineno, lineno_offset, prev_lineno;
     bool seen_any_event;
     streampos linepos, oldpos;
     AVLDisk<ByPCPayload> *bypctree;
-    OFF_T bypcroot;
+    OFF_T header_offset, bypcroot;
 
     unsigned char *make_memtree_update(char type, Addr addr, size_t size);
 
@@ -131,7 +134,8 @@ class Index : ParseReceiver {
     Index(const TracePair &trace, const TraceParams &params, bool bigend)
         : trace(trace), params(params), expected_next_pc(KNOWN_INVALID_PC),
           arena(nullptr), memtree(nullptr), memsubtree(nullptr),
-          seqtree(nullptr), bigend(bigend), aarch64_used(false), last_iset(ARM)
+          seqtree(nullptr), bigend(bigend), aarch64_used(false), last_iset(ARM),
+          parser(bigend, *this)
     {
     }
 
@@ -170,6 +174,13 @@ class Index : ParseReceiver {
     void got_event(MemoryEvent &ev);
     void got_event(InstructionEvent &ev);
     void got_event(TextOnlyEvent &ev);
+
+    void open_index_file();
+    void open_trace_file();
+    bool read_one_trace_line();
+    void finish_reading_trace_file();
+    void build_call_tree();
+    void finalise_index();
 };
 
 void Index::update_sp(unsigned long long sp)
@@ -901,23 +912,20 @@ bool Index::parse_warning(const string &msg)
     return false;
 }
 
-void Index::parse_tarmac_file()
+void Index::open_index_file()
 {
-    string line;
-
     if (trace.index_on_disk) {
         remove(trace.index_filename.c_str());
         arena = make_shared<MMapFile>(trace.index_filename, true);
     } else {
         arena = trace.memory_index;
     }
+
     MagicNumber &magic = *arena->newptr<MagicNumber>();
 
-    OFF_T off_header = arena->alloc(sizeof(FileHeader));
-    {
-        FileHeader &hdr = *arena->getptr<FileHeader>(off_header);
-        hdr.flags = 0;        // ensure FLAG_COMPLETE is not initially set
-    }
+    header_offset = arena->alloc(sizeof(FileHeader));
+    FileHeader &hdr = *arena->getptr<FileHeader>(header_offset);
+    hdr.flags = 0;        // ensure FLAG_COMPLETE is not initially set
 
     magic.setup();
 
@@ -925,6 +933,16 @@ void Index::parse_tarmac_file()
     memsubtree = new AVLDisk<MemorySubPayload>(*arena);
     seqtree = new AVLDisk<SeqOrderPayload, SeqOrderAnnotation>(*arena);
     bypctree = new AVLDisk<ByPCPayload>(*arena);
+}
+
+void Index::open_trace_file()
+{
+    /*
+     * Read in the input.
+     */
+    ifs = make_unique<ifstream>(trace.tarmac_filename.c_str(),
+                                std::ios_base::in | std::ios_base::binary);
+
     memroot = seqroot = 0;
     prev_lineno = 0; // used to fill in last-mod time in make_sub_memtree
 
@@ -940,12 +958,6 @@ void Index::parse_tarmac_file()
     current_time = -(Time)1;
     seen_instruction_at_current_time = false;
     bypcroot = 0;
-
-    /*
-     * Read in the input.
-     */
-    ifstream in(trace.tarmac_filename.c_str(),
-                std::ios_base::in | std::ios_base::binary);
     true_lineno = 0;
     lineno = 1;
     oldpos = 0;
@@ -954,55 +966,67 @@ void Index::parse_tarmac_file()
     prev_lineno = lineno;
     curr_pc = KNOWN_INVALID_PC;
 
-    in.seekg(0, ios::end);
-    reporter->indexing_start(in.tellg());
-    in.seekg(0);
+    ifs->seekg(0, ios::end);
+    reporter->indexing_start(ifs->tellg());
+    ifs->seekg(0);
+}
 
-    TarmacLineParser parser(bigend, *this);
+bool Index::read_one_trace_line()
+{
+    true_lineno++;
+    if (seen_any_event)
+        lineno++;
 
-    while (true) {
-        true_lineno++;
-        if (seen_any_event)
-            lineno++;
+    if (ifs->eof()) {
+        // If getline() above returned a truncated line, then it
+        // will have set the fail flag on the stream, which will
+        // have made ifs->tellg return -1. So clear the error flags,
+        // find out the final file position, and leave this loop
+        // before trying to read anything else.
+        ifs->clear();
+        linepos = ifs->tellg();
+        finish_reading_trace_file();
+        return false;
+    }
 
-        if (in.eof()) {
-            // If getline() above returned a truncated line, then it
-            // will have set the fail flag on the stream, which will
-            // have made in.tellg return -1. So clear the error flags,
-            // find out the final file position, and leave this loop
-            // before trying to read anything else.
-            in.clear();
-            linepos = in.tellg();
-            break;
-        }
+    string line;
+    if (!getline(*ifs, line)) {
+        finish_reading_trace_file();
+        return false;
+    }
 
-        // Maintain linepos ourselves, rather than calling in.tellg() numerous
-        // times. tellg() is a somehow slow function on some platforms, and this
-        // alone allows a 2x speedup in parsing time.
-        linepos += true_lineno > 1 ? line.size() + 1 : 0;
-
-        reporter->indexing_progress(linepos);
-
-        if (!getline(in, line))
-            break;
-
-        try {
-            parser.parse(line);
-        } catch (TarmacParseError e) {
-            if (in.eof()) {
-                ostringstream oss;
-                oss << e.msg << endl << "tarmac-browser: ignoring parse error "
-                    "on partial last line (trace truncated?)";
-                reporter->indexing_warning(trace.tarmac_filename, lineno,
-                                           oss.str());
-                break;
-            } else {
-                if (trace.index_on_disk)
-                    remove(trace.index_filename.c_str());
-                reporter->indexing_error(trace.tarmac_filename, lineno, e.msg);
-            }
+    try {
+        parser.parse(line);
+    } catch (TarmacParseError e) {
+        if (ifs->eof()) {
+            ostringstream oss;
+            oss << e.msg << endl
+                << "tarmac-browser: ignoring parse error "
+                   "on partial last line (trace truncated?)";
+            reporter->indexing_warning(trace.tarmac_filename, lineno,
+                                       oss.str());
+            finish_reading_trace_file();
+            return false;
+        } else {
+            if (trace.index_on_disk)
+                remove(trace.index_filename.c_str());
+            reporter->indexing_error(trace.tarmac_filename, lineno, e.msg);
         }
     }
+
+    // Maintain linepos ourselves, rather than calling ifs->tellg() numerous
+    // times. tellg() is a somehow slow function on some platforms, and this
+    // alone allows a 2x speedup in parsing time.
+    linepos += line.size() + 1;
+    reporter->indexing_progress(linepos);
+
+    return true;
+}
+
+void Index::finish_reading_trace_file()
+{
+    if (!ifs)
+        return;
 
     reporter->indexing_done();
 
@@ -1012,6 +1036,11 @@ void Index::parse_tarmac_file()
     // that then we stop without processing an instruction).
     got_event_common(nullptr, false);
 
+    ifs = nullptr;
+}
+
+void Index::build_call_tree()
+{
     /*
      * Now we've got to the end of the trace and matched up calls to
      * returns as best we can within our own memory, postprocess the
@@ -1027,20 +1056,32 @@ void Index::parse_tarmac_file()
             seqtree->walk(seqroot, WalkOrder::Postorder, ref(visitor));
         }
     }
+}
 
-    FileHeader &hdr = *arena->getptr<FileHeader>(off_header);
-    {
-        unsigned flags = 0;
-        if (bigend)
-            flags |= FLAG_BIGEND;
-        if (aarch64_used)
-            flags |= FLAG_AARCH64_USED;
-        flags |= FLAG_COMPLETE;
-        hdr.flags = flags;
-    }
+void Index::finalise_index()
+{
+    FileHeader &hdr = *arena->getptr<FileHeader>(header_offset);
+
+    unsigned flags = 0;
+    if (bigend)
+        flags |= FLAG_BIGEND;
+    if (aarch64_used)
+        flags |= FLAG_AARCH64_USED;
+    flags |= FLAG_COMPLETE;
+    hdr.flags = flags;
+
     hdr.seqroot = seqroot;
     hdr.bypcroot = bypcroot;
     hdr.lineno_offset = lineno_offset;
+}
+
+void Index::parse_tarmac_file()
+{
+    open_index_file();
+    open_trace_file();
+    while (read_one_trace_line());
+    build_call_tree();
+    finalise_index();
 }
 
 IndexHeaderState check_index_header(const string &index_filename)
