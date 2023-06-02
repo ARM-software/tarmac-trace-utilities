@@ -39,7 +39,7 @@ jobs:
     - name: Install dependencies for apps with a GUI
       run: sudo apt-get install pkg-config libwxgtk3.0-gtk3-dev
     - name: Configure
-      run: CC=gcc CXX=gcc++ cmake -B ${{github.workspace}}/build-gcc -DCMAKE_BUILD_TYPE:STRING=${{env.CMAKE_BUILD_TYPE}} -DFORCE_BUILDING_ALL_APPS:BOOL=ON
+      run: CC=gcc CXX=g++ cmake -B ${{github.workspace}}/build-gcc -DCMAKE_BUILD_TYPE:STRING=${{env.CMAKE_BUILD_TYPE}} -DFORCE_BUILDING_ALL_APPS:BOOL=ON
     - name: Build
       run: cmake --build ${{github.workspace}}/build-gcc --config ${{env.CMAKE_BUILD_TYPE}} -- -j${{env.NUM_BUILD_JOBS}}
     - name: Test
