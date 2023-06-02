@@ -1,0 +1,47 @@
+name: "Ubuntu 20.04 (gcc + clang)"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CMAKE_BUILD_TYPE: Debug
+  NUM_BUILD_JOBS: 2
+
+jobs:
+
+  configure_build_test_with_clang:
+    name: "Install, configure, build and test with clang"
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: apt update
+      run: sudo apt-get update
+    - name: Install dependencies for apps with a GUI
+      run: sudo apt-get install pkg-config libwxgtk3.0-gtk3-dev
+    - name: Configure
+      run: CC=clang CXX=clang++ cmake -B ${{github.workspace}}/build-clang -DCMAKE_BUILD_TYPE:STRING=${{env.CMAKE_BUILD_TYPE}} -DFORCE_BUILDING_ALL_APPS:BOOL=ON
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build-clang --config ${{env.CMAKE_BUILD_TYPE}} -- -j${{NUM_BUILD_JOBS}}
+    - name: Test
+      working-directory: ${{github.workspace}}/build-clang
+      run: ctest -C ${{env.CMAKE_BUILD_TYPE}}
+
+  configure_build_test_with_gcc:
+    name: "Install, configure, build and test with gcc"
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: apt update
+      run: sudo apt-get update
+    - name: Install dependencies for apps with a GUI
+      run: sudo apt-get install pkg-config libwxgtk3.0-gtk3-dev
+    - name: Configure
+      run: CC=gcc CXX=gcc++ cmake -B ${{github.workspace}}/build-gcc -DCMAKE_BUILD_TYPE:STRING=${{env.CMAKE_BUILD_TYPE}} -DFORCE_BUILDING_ALL_APPS:BOOL=ON
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build-gcc --config ${{env.CMAKE_BUILD_TYPE}} -- -j${{NUM_BUILD_JOBS}}
+    - name: Test
+      working-directory: ${{github.workspace}}/build-gcc
+      run: ctest -C ${{env.CMAKE_BUILD_TYPE}}
