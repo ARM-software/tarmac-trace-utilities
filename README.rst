@@ -16,7 +16,7 @@
   This file is part of Tarmac Trace Utilities
 
 
-|CIUbuntu2004| |CIUbuntu2204|
+|CIUbuntu2004| |CIUbuntu2204| |CImacOS13|
 
 .. |CIUbuntu2004| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2004.yml/badge.svg
    :alt: Last build status on Ubuntu 20.04 (gcc + clang)
@@ -25,6 +25,10 @@
 .. |CIUbuntu2204| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2204.yml/badge.svg
    :alt: Last build status on Ubuntu 22.04 (gcc + clang)
    :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2204.yml
+
+.. |CImacOS13| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-13.yml/badge.svg
+   :alt: Last build status on macOS 13 (Ventura)
+   :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-13.yml
 
 Tarmac Trace Utilities
 ~~~~~~~~~~~~~~~~~~~~~~
