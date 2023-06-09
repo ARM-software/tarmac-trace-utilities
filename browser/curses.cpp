@@ -53,74 +53,78 @@ using std::vector;
 
 // Arguments for each attribute type:
 //  - name, e.g. ATTR_foo
-//  - base attributes (e.g. A_NORMAL or A_BOLD) in 8-colour mode
+//  - base attributes (e.g. A_NORMAL or A_BOLD) in no-colour mode
+//  - base attributes in 8-colour mode
 //  - fg,bg in 8-colour mode
 //  - base attributes in 256-colour mode
 //  - fg,bg in 256-colour mode
 #define ATTRLIST(X)                                                            \
-    X(STATUSLINE, A_BOLD, 7, 4, A_BOLD, 7, 4)                                  \
-    X(MINIBUF, A_NORMAL, 7, 0, A_NORMAL, 7, 0)                                 \
-    X(MINIBUF_ERROR, A_NORMAL, 3, 1, A_NORMAL, 3, 1)                           \
+    X(STATUSLINE, A_REVERSE, A_BOLD, 7, 4, A_BOLD, 7, 4)                       \
+    X(MINIBUF, A_NORMAL, A_NORMAL, 7, 0, A_NORMAL, 7, 0)                       \
+    X(MINIBUF_ERROR, A_NORMAL, A_NORMAL, 3, 1, A_NORMAL, 3, 1)                 \
     /* Each TRACEFOO_SEL should directly follow its associated TRACEFOO */     \
-    X(TRACETEXT, A_NORMAL, 7, 0, A_NORMAL, 7, 0)                               \
-    X(TRACETEXT_SEL, A_NORMAL, 7, 4, A_NORMAL, 7, 4)                           \
-    X(TRACETIME, A_NORMAL, 2, 0, A_NORMAL, 2, 0)                               \
-    X(TRACETIME_SEL, A_NORMAL, 2, 4, A_NORMAL, 2, 4)                           \
-    X(TRACEEVENT, A_BOLD, 7, 0, A_BOLD, 7, 0)                                  \
-    X(TRACEEVENT_SEL, A_BOLD, 7, 4, A_BOLD, 7, 4)                              \
-    X(TRACEPC, A_BOLD, 6, 0, A_BOLD, 6, 0)                                     \
-    X(TRACEPC_SEL, A_BOLD, 6, 4, A_BOLD, 6, 4)                                 \
-    X(TRACEMODE, A_NORMAL, 6, 0, A_NORMAL, 6, 0)                               \
-    X(TRACEMODE_SEL, A_NORMAL, 6, 4, A_NORMAL, 6, 4)                           \
-    X(TRACEINSN, A_BOLD, 5, 0, A_BOLD, 5, 0)                                   \
-    X(TRACEINSN_SEL, A_BOLD, 5, 4, A_BOLD, 5, 4)                               \
-    X(TRACEISET, A_NORMAL, 5, 0, A_NORMAL, 5, 0)                               \
-    X(TRACEISET_SEL, A_NORMAL, 5, 4, A_NORMAL, 5, 4)                           \
-    X(TRACEDISASS, A_BOLD, 2, 0, A_BOLD, 2, 0)                                 \
-    X(TRACEDISASS_SEL, A_BOLD, 2, 4, A_BOLD, 2, 4)                             \
-    X(TRACESKIP, A_NORMAL, 1, 0, A_NORMAL, 1, 0)                               \
-    X(TRACESKIP_SEL, A_NORMAL, 1, 4, A_NORMAL, 1, 4)                           \
-    X(TRACEPUNCT, A_NORMAL, 3, 0, A_NORMAL, 3, 0)                              \
-    X(TRACEPUNCT_SEL, A_NORMAL, 3, 4, A_NORMAL, 3, 4)                          \
-    X(TRACEERR, A_BOLD, 3, 1, A_BOLD, 3, 1)                                    \
-    X(TRACEERR_SEL, A_BOLD, 3, 1, A_BOLD, 3, 1)                                \
-    X(REGDISPLAY_NAME, A_NORMAL, 6, 0, A_NORMAL, 6, 0)                         \
-    X(REGDISPLAY_FIXED, A_NORMAL, 6, 0, A_NORMAL, 6, 0)                        \
-    X(REGDISPLAY_VALUE, A_NORMAL, 7, 0, A_NORMAL, 7, 0)                        \
-    X(REGDISPLAY_UNKNOWN, A_NORMAL, 1, 0, A_NORMAL, 1, 0)                      \
-    X(REGDISPLAY_VALUE_DIFF, A_NORMAL, 7, 4, A_NORMAL, 7, 4)                   \
-    X(REGDISPLAY_UNKNOWN_DIFF, A_NORMAL, 1, 4, A_NORMAL, 1, 4)                 \
-    X(MEMDISPLAY_FIXED, A_NORMAL, 6, 0, A_NORMAL, 6, 0)                        \
-    X(MEMDISPLAY_VALUE, A_NORMAL, 7, 0, A_NORMAL, 7, 0)                        \
-    X(MEMDISPLAY_CTRLCHAR, A_NORMAL, 2, 0, A_NORMAL, 2, 0)                     \
-    X(MEMDISPLAY_UNKNOWN, A_NORMAL, 1, 0, A_NORMAL, 1, 0)                      \
-    X(MEMDISPLAY_VALUE_DIFF, A_NORMAL, 7, 4, A_NORMAL, 7, 4)                   \
-    X(MEMDISPLAY_CTRLCHAR_DIFF, A_NORMAL, 2, 4, A_NORMAL, 2, 4)                \
-    X(MEMDISPLAY_UNKNOWN_DIFF, A_NORMAL, 1, 4, A_NORMAL, 1, 4)                 \
-    X(HELP_KEY, A_BOLD, 2, 0, A_BOLD, 2, 0)                                    \
-    X(HELP_DESCRIPTION, A_NORMAL, 7, 0, A_NORMAL, 7, 0)                        \
-    X(HELP_SCROLL_INDICATOR, A_NORMAL, 6, 0, A_NORMAL, 6, 0)                   \
+    X(TRACETEXT, A_NORMAL, A_NORMAL, 7, 0, A_NORMAL, 7, 0)                     \
+    X(TRACETEXT_SEL, A_NORMAL, A_NORMAL, 7, 4, A_NORMAL, 7, 4)                 \
+    X(TRACETIME, A_NORMAL, A_NORMAL, 2, 0, A_NORMAL, 2, 0)                     \
+    X(TRACETIME_SEL, A_NORMAL, A_NORMAL, 2, 4, A_NORMAL, 2, 4)                 \
+    X(TRACEEVENT, A_BOLD, A_BOLD, 7, 0, A_BOLD, 7, 0)                          \
+    X(TRACEEVENT_SEL, A_BOLD, A_BOLD, 7, 4, A_BOLD, 7, 4)                      \
+    X(TRACEPC, A_BOLD, A_BOLD, 6, 0, A_BOLD, 6, 0)                             \
+    X(TRACEPC_SEL, A_BOLD, A_BOLD, 6, 4, A_BOLD, 6, 4)                         \
+    X(TRACEMODE, A_NORMAL, A_NORMAL, 6, 0, A_NORMAL, 6, 0)                     \
+    X(TRACEMODE_SEL, A_NORMAL, A_NORMAL, 6, 4, A_NORMAL, 6, 4)                 \
+    X(TRACEINSN, A_BOLD, A_BOLD, 5, 0, A_BOLD, 5, 0)                           \
+    X(TRACEINSN_SEL, A_BOLD, A_BOLD, 5, 4, A_BOLD, 5, 4)                       \
+    X(TRACEISET, A_NORMAL, A_NORMAL, 5, 0, A_NORMAL, 5, 0)                     \
+    X(TRACEISET_SEL, A_NORMAL, A_NORMAL, 5, 4, A_NORMAL, 5, 4)                 \
+    X(TRACEDISASS, A_BOLD, A_BOLD, 2, 0, A_BOLD, 2, 0)                         \
+    X(TRACEDISASS_SEL, A_BOLD, A_BOLD, 2, 4, A_BOLD, 2, 4)                     \
+    X(TRACESKIP, A_NORMAL, A_NORMAL, 1, 0, A_NORMAL, 1, 0)                     \
+    X(TRACESKIP_SEL, A_NORMAL, A_NORMAL, 1, 4, A_NORMAL, 1, 4)                 \
+    X(TRACEPUNCT, A_NORMAL, A_NORMAL, 3, 0, A_NORMAL, 3, 0)                    \
+    X(TRACEPUNCT_SEL, A_NORMAL, A_NORMAL, 3, 4, A_NORMAL, 3, 4)                \
+    X(TRACEERR, A_BOLD, A_BOLD, 3, 1, A_BOLD, 3, 1)                            \
+    X(TRACEERR_SEL, A_BOLD, A_BOLD, 3, 1, A_BOLD, 3, 1)                        \
+    X(REGDISPLAY_NAME, A_NORMAL, A_NORMAL, 6, 0, A_NORMAL, 6, 0)               \
+    X(REGDISPLAY_FIXED, A_NORMAL, A_NORMAL, 6, 0, A_NORMAL, 6, 0)              \
+    X(REGDISPLAY_VALUE, A_NORMAL, A_NORMAL, 7, 0, A_NORMAL, 7, 0)              \
+    X(REGDISPLAY_UNKNOWN, A_NORMAL, A_NORMAL, 1, 0, A_NORMAL, 1, 0)            \
+    X(REGDISPLAY_VALUE_DIFF, A_NORMAL, A_NORMAL, 7, 4, A_NORMAL, 7, 4)         \
+    X(REGDISPLAY_UNKNOWN_DIFF, A_NORMAL, A_NORMAL, 1, 4, A_NORMAL, 1, 4)       \
+    X(MEMDISPLAY_FIXED, A_NORMAL, A_NORMAL, 6, 0, A_NORMAL, 6, 0)              \
+    X(MEMDISPLAY_VALUE, A_NORMAL, A_NORMAL, 7, 0, A_NORMAL, 7, 0)              \
+    X(MEMDISPLAY_CTRLCHAR, A_NORMAL, A_NORMAL, 2, 0, A_NORMAL, 2, 0)           \
+    X(MEMDISPLAY_UNKNOWN, A_NORMAL, A_NORMAL, 1, 0, A_NORMAL, 1, 0)            \
+    X(MEMDISPLAY_VALUE_DIFF, A_NORMAL, A_NORMAL, 7, 4, A_NORMAL, 7, 4)         \
+    X(MEMDISPLAY_CTRLCHAR_DIFF, A_NORMAL, A_NORMAL, 2, 4, A_NORMAL, 2, 4)      \
+    X(MEMDISPLAY_UNKNOWN_DIFF, A_NORMAL, A_NORMAL, 1, 4, A_NORMAL, 1, 4)       \
+    X(HELP_KEY, A_BOLD, A_BOLD, 2, 0, A_BOLD, 2, 0)                            \
+    X(HELP_DESCRIPTION, A_NORMAL, A_NORMAL, 7, 0, A_NORMAL, 7, 0)              \
+    X(HELP_SCROLL_INDICATOR, A_NORMAL, A_NORMAL, 6, 0, A_NORMAL, 6, 0)         \
     /* end of list */
 
-#define ATTR_COLOUR_PAIR_ENUM(name, base8, fg8, bg8, base256, fg256, bg256)    \
+#define ATTR_COLOUR_PAIR_ENUM(name, base, base8, fg8, bg8, base256, fg256,     \
+                              bg256)                                           \
     CP_##name,
 enum { CP_unused, ATTRLIST(ATTR_COLOUR_PAIR_ENUM) CP_dummy };
 #undef ATTR_COLOUR_PAIR_ENUM
 
-#define ATTR_BASE_ENUM(name, base8, fg8, bg8, base256, fg256, bg256)           \
-    BASE8_##name = base8, BASE256_##name = base256,
+#define ATTR_BASE_ENUM(name, base, base8, fg8, bg8, base256, fg256, bg256)     \
+    BASE_##name = base, BASE8_##name = base8, BASE256_##name = base256,
 enum { ATTRLIST(ATTR_BASE_ENUM) BASE_dummy };
 #undef ATTR_BASE_ENUM
 
-#define ATTR_COMPLETE_ARRAY(name, base8, fg8, bg8, base256, fg256, bg256)      \
-    (base8) | COLOR_PAIR(CP_##name), (base256) | COLOR_PAIR(CP_##name),
+#define ATTR_COMPLETE_ARRAY(name, base, base8, fg8, bg8, base256, fg256,       \
+                            bg256)                                             \
+    base, (base8) | COLOR_PAIR(CP_##name), (base256) | COLOR_PAIR(CP_##name),
 static int ncurses_attrs[] = {ATTRLIST(ATTR_COMPLETE_ARRAY)};
 
-#define ATTR_INDEX_ENUM(name, base8, fg8, bg8, base256, fg256, bg256)          \
+#define ATTR_INDEX_ENUM(name, base, base8, fg8, bg8, base256, fg256, bg256)    \
     ATTR_##name,
 enum { ATTRLIST(ATTR_INDEX_ENUM) ATTR_dummy };
 
-void setattr(int attr) { attrset(ncurses_attrs[2 * attr + (COLORS != 8)]); }
+static unsigned colour_mode;
+void setattr(int attr) { attrset(ncurses_attrs[3 * attr + colour_mode]); }
 
 struct HelpItem {
     string key, description;
@@ -2189,22 +2193,34 @@ void TraceBuffer::update_other_windows_diff(unsigned line)
         mdisp->diff_against_if_not_locked(line);
 }
 
-void run_browser(Browser &br)
+void run_browser(Browser &br, bool use_terminal_colours)
 {
     Screen scr(br);
     TraceBuffer tbuf(br);
     scr.set_main_window(&tbuf);
 
     initscr();
-    start_color();
+    if (!has_colors()) // override if colour isn't even available
+        use_terminal_colours = false;
+    if (use_terminal_colours)
+        start_color();
     noecho();
     keypad(stdscr, true);
 
-#define ATTR_COLOUR_PAIR_INIT(name, base8, fg8, bg8, base256, fg256, bg256)    \
-    init_pair(CP_##name, COLORS == 256 ? fg256 : fg8,                          \
-              COLORS == 256 ? bg256 : bg8);
-    ATTRLIST(ATTR_COLOUR_PAIR_INIT);
+    if (!use_terminal_colours) {
+        colour_mode = 0;
+    } else {
+        if (COLORS == 8)
+            colour_mode = 1;
+        else
+            colour_mode = 2;
+#define ATTR_COLOUR_PAIR_INIT(name, base, base8, fg8, bg8, base256, fg256,     \
+                              bg256)                                           \
+    init_pair(CP_##name, colour_mode == 2 ? fg256 : fg8,                       \
+              colour_mode == 2 ? bg256 : bg8);
+        ATTRLIST(ATTR_COLOUR_PAIR_INIT);
 #undef ATTR_COLOUR_PAIR_INIT
+    }
 
     int w, h;
     getmaxyx(stdscr, h, w);
@@ -2232,14 +2248,28 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
+    // Default to using colour if available, but permit an override by
+    // setting NO_COLOR in the environment (to any non-empty string),
+    // per https://no-color.org/ . This is done before option
+    // processing, so that the command line can override that in turn.
+    bool use_terminal_colours = true;
+    const char *envval = getenv("NO_COLOR");
+    if (envval && *envval)
+        use_terminal_colours = false;
+
     Argparse ap("tarmac-browser", argc, argv);
     TarmacUtility tu;
     tu.add_options(ap);
+    ap.optnoval({"--colour", "--color"}, "use colour in the terminal",
+                [&]() { use_terminal_colours = true; });
+    ap.optnoval({"--no-colour", "--no-color"},
+                "don't use colour in the terminal",
+                [&]() { use_terminal_colours = false; });
     ap.parse();
     tu.setup();
 
     Browser br(tu.trace, tu.image_filename);
-    run_browser(br);
+    run_browser(br, use_terminal_colours);
 
     return 0;
 }
