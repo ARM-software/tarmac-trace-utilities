@@ -24,6 +24,7 @@
 
 #include <windows.h>
 #include <shlobj.h>
+#include <stdlib.h>
 
 #include <sstream>
 
@@ -239,4 +240,20 @@ string asctime_wrapper(struct tm tm)
     char buffer[256];
     asctime_s(buffer, sizeof(buffer), &tm);
     return buffer;
+}
+
+bool get_environment_variable(const string &varname, string &out)
+{
+    if (varname.find('\0') != string::npos)
+        return false;      // NUL is legal in a std::string but not in env var
+
+    char *val;
+    size_t len;
+    errno_t err = _dupenv_s(&val, &len, varname.c_str());
+    if (err)
+        return false;
+
+    out = std::string(val, len);
+    free(val);
+    return true;
 }

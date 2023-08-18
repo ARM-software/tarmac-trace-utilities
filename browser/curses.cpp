@@ -2253,9 +2253,12 @@ int main(int argc, char **argv)
     // per https://no-color.org/ . This is done before option
     // processing, so that the command line can override that in turn.
     bool use_terminal_colours = true;
-    const char *envval = getenv("NO_COLOR");
-    if (envval && *envval)
-        use_terminal_colours = false;
+    {
+        string no_color;
+        if (get_environment_variable("NO_COLOR", no_color) &&
+            !no_color.empty())
+            use_terminal_colours = false;
+    }
 
     Argparse ap("tarmac-browser", argc, argv);
     TarmacUtility tu;

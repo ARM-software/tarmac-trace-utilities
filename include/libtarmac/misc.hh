@@ -71,6 +71,8 @@ std::string asctime_wrapper(struct tm tm);
 
 bool get_conf_path(const std::string &filename, std::string &out);
 
+bool get_environment_variable(const std::string &varname, std::string &out);
+
 #ifdef _WIN32
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp

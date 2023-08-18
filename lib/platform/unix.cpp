@@ -166,3 +166,16 @@ string asctime_wrapper(struct tm tm)
 {
     return asctime(&tm);
 }
+
+bool get_environment_variable(const string &varname, string &out)
+{
+    if (varname.find('\0') != string::npos)
+        return false;      // NUL is legal in a std::string but not in env var
+
+    const char *val = getenv(varname.c_str());
+    if (!val)
+        return false;
+
+    out = std::string(val);
+    return true;
+}
