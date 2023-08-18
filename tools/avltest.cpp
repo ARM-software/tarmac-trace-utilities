@@ -63,8 +63,8 @@ class AVLTest {
     Tree tree;
     bool verbose;
 
-    void dump(off_t root);
-    void check(vector<off_t> roots);
+    void dump(OFF_T root);
+    void check(vector<OFF_T> roots);
 
   public:
     AVLTest(bool verbose);
