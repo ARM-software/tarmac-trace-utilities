@@ -1,5 +1,5 @@
 ..
-  Copyright 2016-2021 Arm Limited. All rights reserved.
+  Copyright 2016-2021,2023 Arm Limited. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -521,6 +521,9 @@ also recognizes the following additional options:
   output file depend only on the input file, so that running the tool
   in the same way twice will produce identical output. (This option is
   useful for test suites.)
+
+``--use-tarmac-timestamps``
+  Use the instructions' timestamps from the tarmac trace.
 
 No additional arguments are recognized by this tool.
 

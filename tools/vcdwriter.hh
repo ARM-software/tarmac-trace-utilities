@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2023 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ class VCDWriter : public IndexNavigator {
   public:
     VCDWriter(const VCDWriter &) = delete;
 
-    void run(const std::string &VCDFilename, bool NoDate);
+    void run(const std::string &VCDFilename, bool NoDate,
+             bool UseTarmacTimestamp = false);
 };
 
 #endif // TARMAC_VCDWRITER_HH
