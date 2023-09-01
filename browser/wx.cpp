@@ -304,13 +304,13 @@ struct Config {
                     ostringstream oss;
                     oss << conf_path << ":" << lineno
                         << ": unable to parse colour '" << line << "'";
-                    reporter->warnx(oss.str().c_str());
+                    reporter->warnx("%s", oss.str().c_str());
                 }
             } else {
                 ostringstream oss;
                 oss << conf_path << ":" << lineno
                     << ": unrecognised config directive '" << word << "'";
-                reporter->warnx(oss.str().c_str());
+                reporter->warnx("%s", oss.str().c_str());
             }
         }
     }
