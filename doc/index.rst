@@ -812,11 +812,11 @@ Ctrl-L
   nesting.
 
 ``{``
-  Unfold the entire trace file, so that no instructions at all are
-  hidden from view.
+  Fold up the entire trace file to the maximum extent possible.
 
 ``}``
-  Fold up the entire trace file to the maximum extent possible.
+  Unfold the entire trace file, so that no instructions at all are
+  hidden from view.
 
 ``l``
   Prompt on the bottom line of the screen for a line number, and then
