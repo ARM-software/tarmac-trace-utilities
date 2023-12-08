@@ -38,6 +38,10 @@ enum ISet { ARM, THUMB, A64 };
 
 struct ParseParams {
     bool bigend = false;
+
+    // In C++17 we could replace these two fields with a std::optional<ISet>
+    bool iset_specified = false;
+    ISet iset;  // only meaningful if specified_iset is True
 };
 
 enum HighlightClass {

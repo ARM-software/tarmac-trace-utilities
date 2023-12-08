@@ -402,6 +402,7 @@ struct FileHeader {
 #define FLAG_BIGEND 0x00000001U // trace was believed big-endian at index time
 #define FLAG_AARCH64_USED 0x00000002U // trace includes AArch64 execution state
 #define FLAG_COMPLETE 0x00000004U // index generation completed successfully
+#define FLAG_THUMB_ONLY 0x00000008U // trace assumes everything is Thumb
 
 /* ----------------------------------------------------------------------
  * Payload and annotation formats for the top-level sequential order tree

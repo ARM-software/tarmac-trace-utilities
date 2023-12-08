@@ -70,6 +70,7 @@ class TarmacUtilityBase {
     // Marks whether bigend was specified via a parameter
     bool bigend_explicit = false;
     bool bigend = false;
+    bool thumbonly = false;
     bool verbose;
     bool show_progress_meter;
 

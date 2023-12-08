@@ -65,7 +65,7 @@ class IndexReader {
     const std::string tarmac_filename;
     std::shared_ptr<Arena> arena;
     mutable std::ifstream tarmac;
-    bool bigend, aarch64_used;
+    bool bigend, thumbonly, aarch64_used;
 
     std::string read_tarmac(OFF_T pos, OFF_T len) const;
 

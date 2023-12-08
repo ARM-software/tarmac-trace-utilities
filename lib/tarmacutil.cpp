@@ -63,6 +63,12 @@ void TarmacUtilityBase::add_options(Argparse &ap)
                     bigend = true;
                     bigend_explicit = true;
                 });
+    ap.optnoval({"--implicit-thumb"}, "assume trace is from a Thumb-only "
+                "platform and might omit the instruction set state from "
+                "trace records",
+                [this]() {
+                    thumbonly = true;
+                });
     ap.optnoval({"-v", "--verbose"}, "make tool more verbose",
                 [this]() { verbose = true; });
     ap.optnoval({"-q", "--quiet"}, "make tool quiet",
@@ -182,6 +188,10 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
     if (doIndexing == Troolean::Yes) {
         ParseParams pparams;
         pparams.bigend = bigend;
+        if (thumbonly) {
+            pparams.iset_specified = true;
+            pparams.iset = THUMB;
+        }
         run_indexer(trace, iparams, pparams);
     }
 }

@@ -52,11 +52,17 @@ add_test(NAME exprtest
   )
 
 # Test the Tarmac parser itself. Input is in parsertest.txt; expected
-# output is in parsertest.ref.
+# output is in parsertest.ref. Also a test with the --implicit-thumb
+# mode flag.
 add_test(NAME parsertest
   COMMAND ${test_driver_cmd}
       --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/parsertest.ref
       ${CMAKE_BINARY_DIR}/parsertest ${CMAKE_CURRENT_SOURCE_DIR}/parsertest.txt
+  )
+add_test(NAME parsertest-implicit-thumb
+  COMMAND ${test_driver_cmd}
+      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/parsertest-implicit-thumb.ref
+      ${CMAKE_BINARY_DIR}/parsertest --implicit-thumb ${CMAKE_CURRENT_SOURCE_DIR}/parsertest-implicit-thumb.txt
   )
 
 # Index a small manually written trace file and use tarmac-indextool

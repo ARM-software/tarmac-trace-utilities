@@ -511,45 +511,57 @@ class TarmacLineParserImpl {
             // Now we reconverge, because both ES and IT formats
             // look basically the same from here on.
             ISet iset;
-            if (!parse_iset_state(tok, &iset))
-                parse_error(tok, "expected instruction-set state");
-            highlight(tok, HL_ISET);
-            if (tok == "T16" || tok == "T32")
-                t16_t32_state = true;
-            tok = lex();
-
-            // Heuristically guess whether we expect to see a CPU mode token,
-            // and its following colon, in this record.
-            //
-            // Currently, I've only encountered one Tarmac producer (Cortex-M4
-            // RTL) that will omit it. That producer uses IT rather than ES
-            // style instruction lines, and also has two other features unique
-            // in my experience so far: it has a pair of colon-separated
-            // numbers in the bracketed section, and it uses "T16" and "T32"
-            // instead of plain "T" to show the instruction set state. So, for
-            // the moment, my heuristic is that if we see both of those
-            // features, we expect the CPU mode to be omitted.
-            if (!is_ES && seen_colon_in_brackets && t16_t32_state)
-                expect_cpu_mode = false;
-
-            if (expect_cpu_mode) {
-                if (!tok.isword())
-                    parse_error(tok, "expected CPU mode");
-                // We currently ignore the CPU mode. If we ever needed to
-                // support register bank switching, we would need to track
-                // it carefully.
-                highlight(tok, HL_CPUMODE);
+            if (!parse_iset_state(tok, &iset)) {
+                // We can't find an instruction set state at all. Normally this
+                // is a parse failure. But some Tarmac producers don't bother
+                // to include it because they expect that you know the answer
+                // already, because they're for CPUs that only have one state
+                // (e.g. Cortex-M0). So if we've been told what iset state we
+                // can assume, then we respond to this parse failure by
+                // treating the rest of the line as the instruction.
+                if (!params.iset_specified)
+                    parse_error(tok, "expected instruction-set state");
+                iset = params.iset;
+            } else {
+                highlight(tok, HL_ISET);
+                if (tok == "T16" || tok == "T32")
+                    t16_t32_state = true;
                 tok = lex();
 
-                if (tok != ':')
-                    parse_error(tok, "expected ':' before instruction");
-                tok = lex();
-            }
+                // Heuristically guess whether we expect to see a CPU mode
+                // token, and its following colon, in this record.
+                //
+                // Currently, I've only encountered one Tarmac producer
+                // (Cortex-M4 RTL) that will omit it. That producer uses IT
+                // rather than ES style instruction lines, and also has two
+                // other features unique in my experience so far: it has a pair
+                // of colon-separated numbers in the bracketed section, and it
+                // uses "T16" and "T32" instead of plain "T" to show the
+                // instruction set state. So, for the moment, my heuristic is
+                // that if we see both of those features, we expect the CPU
+                // mode to be omitted.
+                if (!is_ES && seen_colon_in_brackets && t16_t32_state)
+                    expect_cpu_mode = false;
 
-            if (is_ES && tok == "CCFAIL") {
-                executed = false;
-                highlight(tok, HL_CCFAIL);
-                tok = lex();
+                if (expect_cpu_mode) {
+                    if (!tok.isword())
+                        parse_error(tok, "expected CPU mode");
+                    // We currently ignore the CPU mode. If we ever needed to
+                    // support register bank switching, we would need to track
+                    // it carefully.
+                    highlight(tok, HL_CPUMODE);
+                    tok = lex();
+
+                    if (tok != ':')
+                        parse_error(tok, "expected ':' before instruction");
+                    tok = lex();
+                }
+
+                if (is_ES && tok == "CCFAIL") {
+                    executed = false;
+                    highlight(tok, HL_CCFAIL);
+                    tok = lex();
+                }
             }
 
             // Now we're done, and tok.startpos points at the

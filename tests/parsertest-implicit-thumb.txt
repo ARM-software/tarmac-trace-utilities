@@ -1,0 +1,13 @@
+# ----------------------------------------------------------------------
+
+# Trace lines seen in the output of the Tarmac RTL module from
+# Cortex-M0-AT510-r0p0-00rel0 (RTL development kit). This omits
+# multiple fields of the instruction line between the encoding and the
+# disassembly: you normally expect an instruction-set state and a CPU
+# mode, e.g. "T svc_s", then a separating colon.
+#
+# To parse this line, the parser must be told in advance what
+# instruction set state it should assume when one isn't specified.
+
+354ns IT 00000350 490d        LDR      r1,[pc,#52]  ; [0x388]
+

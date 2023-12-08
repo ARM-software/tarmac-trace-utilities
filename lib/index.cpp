@@ -1066,6 +1066,8 @@ void Index::finalise_index()
     unsigned flags = 0;
     if (pparams.bigend)
         flags |= FLAG_BIGEND;
+    if (pparams.iset_specified && pparams.iset == THUMB)
+        flags |= FLAG_THUMB_ONLY;
     if (aarch64_used)
         flags |= FLAG_AARCH64_USED;
     flags |= FLAG_COMPLETE;
@@ -1132,6 +1134,7 @@ IndexReader::IndexReader(const TracePair &trace)
     bypcroot = hdr.bypcroot;
     bigend = (hdr.flags & FLAG_BIGEND);
     aarch64_used = (hdr.flags & FLAG_AARCH64_USED);
+    thumbonly = (hdr.flags & FLAG_THUMB_ONLY);
     lineno_offset = hdr.lineno_offset;
 }
 
@@ -1139,6 +1142,10 @@ ParseParams IndexReader::parseParams() const
 {
     ParseParams params;
     params.bigend = bigend;
+    if (thumbonly) {
+        params.iset_specified = true;
+        params.iset = THUMB;
+    }
     return params;
 }
 

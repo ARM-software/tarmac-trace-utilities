@@ -228,6 +228,12 @@ int main(int argc, char **argv)
                 []() { parse_params.bigend = false; });
     ap.optnoval({"--bi"}, "put parser in big-endian mode",
                 []() { parse_params.bigend = true; });
+    ap.optnoval({"--implicit-thumb"}, "allow parser to assume Thumb if "
+                "instruction records do not specify an instruction set state",
+                []() {
+                    parse_params.iset_specified = true;
+                    parse_params.iset = THUMB;
+                });
     ap.positional("INFILE", "input file to parse (default: standard input)",
                   [&](const string &s) { infile = make_unique<string>(s); },
                   false /* not required */);
