@@ -60,17 +60,24 @@ enum HighlightClass {
     HL_ERROR,
 };
 
+enum InstructionEffect {
+    IE_EXECUTED,  // instruction was executed as normal
+    IE_CCFAIL,    // instruction was skipped because it failed its condition
+    IE_FETCHFAIL, // instruction fetch failed, so no encoding available
+};
+
 struct InstructionEvent : TarmacEvent {
-    bool executed;
+    InstructionEffect effect;
     Addr pc;
     ISet iset;
     int width; // 16 or 32
     unsigned instruction;
     std::string disassembly;
-    InstructionEvent(Time time, bool executed, Addr pc, ISet iset, int width,
-                     unsigned instruction, const std::string &disassembly)
-        : TarmacEvent(time), executed(executed), pc(pc), iset(iset),
-          width(width), instruction(instruction), disassembly(disassembly)
+    InstructionEvent(Time time, InstructionEffect effect, Addr pc, ISet iset,
+                     int width, unsigned instruction,
+                     const std::string &disassembly)
+        : TarmacEvent(time), effect(effect), pc(pc), iset(iset), width(width),
+          instruction(instruction), disassembly(disassembly)
     {
     }
     InstructionEvent() = default;

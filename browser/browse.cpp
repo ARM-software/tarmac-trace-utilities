@@ -203,7 +203,7 @@ void HighlightedLine::highlight(size_t start, size_t end, HighlightClass hc)
 void HighlightedLine::got_event(InstructionEvent &ev)
 {
     iev = make_unique<InstructionEvent>(ev);
-    if (!ev.executed)
+    if (ev.effect != IE_EXECUTED)
         non_executed_instruction = true;
 }
 

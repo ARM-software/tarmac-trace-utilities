@@ -179,6 +179,15 @@ Tarmac Text Rev 3t
 271ns R r13 20001fff (MSP)
 
 # ----------------------------------------------------------------------
+
+# Trace line seen from multiple totally different cores, in which
+# instruction fetch failed (possibly due to ECC memory fault) and the
+# instruction bit pattern was printed as --------.
+
+     307754 tic ES  (0000aaaaabaf59f0:--------) O el0t_ns:
+11519 tic ES (10000b58:--------) T thrd_s:
+
+# ----------------------------------------------------------------------
 # Manually written tests
 
 # Test LD and ST records (showing a 16-byte region of memory with

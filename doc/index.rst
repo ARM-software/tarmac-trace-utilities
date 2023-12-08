@@ -1241,6 +1241,10 @@ The fields are as follows:
   represented as ``2000``, and the 32-bit ``MOV r0,#0x101`` is
   represented as ``f2401001``.
 
+  In rare cases this integer can be replaced by a string of dashes,
+  e.g. ``--------``, indicating that the instruction fetch failed. In
+  this case, the *disassembly* field is also likely to be empty.
+
 *state*
   The instruction set state. ``A`` represents 32-bit Arm; ``T``
   represents Thumb; ``O`` represents AArch64. Some producers report

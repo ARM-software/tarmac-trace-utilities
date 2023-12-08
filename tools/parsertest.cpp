@@ -48,6 +48,15 @@ static ParseParams parse_params;
 class TestReceiver : public ParseReceiver {
     ostream &os;
 
+    static std::string tostr(InstructionEffect effect) {
+        switch (effect) {
+          case IE_EXECUTED: return "executed";
+          case IE_CCFAIL: return "ccfail";
+          case IE_FETCHFAIL: return "fetchfail";
+          default: return "<unknown>";
+        }
+    }
+
   public:
     TestReceiver(ostream &os) : os(os) {}
 
@@ -80,8 +89,9 @@ class TestReceiver : public ParseReceiver {
     {
         os << "* InstructionEvent"
            << " time=" << ev.time
-           << " executed=" << (ev.executed ? "true" : "false") << " pc=" << hex
-           << ev.pc << dec << " iset="
+           << " effect=" << tostr(ev.effect)
+           << " pc=" << hex << ev.pc << dec
+           << " iset="
            << (ev.iset == ARM
                    ? "ARM"
                    : ev.iset == THUMB ? "Thumb" : ev.iset == A64 ? "A64" : "!!")
@@ -141,7 +151,7 @@ class HighlightReceiver : public ParseReceiver {
     }
     void got_event(InstructionEvent &ev)
     {
-        if (!ev.executed)
+        if (ev.effect != IE_EXECUTED)
             non_executed_instruction = true;
     }
     string escape_sequence(HighlightClass hc)

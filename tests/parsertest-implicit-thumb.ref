@@ -1,2 +1,2 @@
 --- Tarmac line: 354ns IT 00000350 490d        LDR      r1,[pc,#52]  ; [0x388]
-* InstructionEvent time=354 executed=true pc=350 iset=Thumb width=16 instruction=490d disassembly="LDR      r1,[pc,#52]  ; [0x388]"
+* InstructionEvent time=354 effect=executed pc=350 iset=Thumb width=16 instruction=490d disassembly="LDR      r1,[pc,#52]  ; [0x388]"

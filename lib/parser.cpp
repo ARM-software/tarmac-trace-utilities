@@ -118,6 +118,10 @@ struct Token {
         assert(ishex());
         return stoull(s, NULL, 16);
     }
+    inline bool ishyphens() const
+    {
+        return isword() && contains_only(s, "-");
+    }
     inline int length() const { return isword() ? s.size() : 1; }
 
     inline bool starts_with(const char *prefix)
@@ -347,9 +351,13 @@ class TarmacLineParserImpl {
             //
             // "IF" can appear in some RTL-generated Tarmac. We treat
             // it just like IT.
-            bool executed = (tok != "IS");
+            InstructionEffect effect = IE_EXECUTED;
+            if (tok == "IS")
+                effect = IE_CCFAIL;
 
             bool is_ES = (tok == "ES");
+
+            const Token firsttok = tok;
 
             tok = lex();
             if (tok == "EXC" || tok == "Reset") {
@@ -364,7 +372,7 @@ class TarmacLineParserImpl {
             }
 
             unsigned long long address;
-            unsigned long bitpattern;
+            unsigned long bitpattern = 0;
             int width;
             bool expect_cpu_mode = true;
             bool seen_colon_in_brackets = false;
@@ -390,9 +398,21 @@ class TarmacLineParserImpl {
                                      "address and bit pattern");
                 tok = lex();
 
-                if (!tok.ishex())
-                    parse_error(tok, "expected a hex instruction bit pattern");
-                bitpattern = tok.hexvalue();
+                if (!tok.ishex()) {
+                    if (tok.ishyphens()) {
+                        // If the instruction bit pattern is given as a row of
+                        // hyphens, that's an indication that the instruction
+                        // fetch completely failed. At least one case where
+                        // this can arise is if ECC memory reported a fault; it
+                        // may later correct the error and retry the fetch.
+                        effect = IE_FETCHFAIL;
+                    } else {
+                        parse_error(tok,
+                                    "expected a hex instruction bit pattern");
+                    }
+                } else {
+                    bitpattern = tok.hexvalue();
+                }
                 highlight(tok, HL_INSTRUCTION);
                 width = tok.length() * 4;
                 tok = lex();
@@ -558,7 +578,7 @@ class TarmacLineParserImpl {
                 }
 
                 if (is_ES && tok == "CCFAIL") {
-                    executed = false;
+                    effect = IE_CCFAIL;
                     highlight(tok, HL_CCFAIL);
                     tok = lex();
                 }
@@ -573,7 +593,7 @@ class TarmacLineParserImpl {
             highlight(tok.startpos, disass_end, HL_DISASSEMBLY);
             if (disass_end < line.size())
                 highlight(disass_end, line.size(), HL_SPACE);
-            InstructionEvent ev(time, executed, address, iset, width,
+            InstructionEvent ev(time, effect, address, iset, width,
                                 bitpattern, line.substr(tok.startpos));
             receiver->got_event(ev);
         } else if (tok == "R") {

@@ -283,9 +283,10 @@ class VCDVisitor : public ParseReceiver {
 
     virtual void got_event(InstructionEvent &ev) override
     {
-        if (PrevInstExecuted != ev.executed) {
-            VCD.writeValueChange(InstExecuted, ev.executed);
-            PrevInstExecuted = ev.executed;
+        bool executed = (ev.effect == IE_EXECUTED);
+        if (PrevInstExecuted != executed) {
+            VCD.writeValueChange(InstExecuted, executed);
+            PrevInstExecuted = executed;
         }
 
         if (PrevInstPC != ev.pc) {

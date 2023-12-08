@@ -335,7 +335,7 @@ void Index::got_event(InstructionEvent &ev)
 
     Addr adjusted_pc = ev.pc | (ev.iset == THUMB ? 1 : 0);
 
-    if (ev.executed &&
+    if (ev.effect == IE_EXECUTED &&
         ((ev.iset == THUMB && ev.instruction == 0xbeab /* BKPT #0xab */) ||
          (ev.iset == THUMB && ev.instruction == 0xdfab /* SVC #0xab */) ||
          (ev.iset == THUMB && ev.instruction == 0xbabc /* HLT #0x3f */) ||
