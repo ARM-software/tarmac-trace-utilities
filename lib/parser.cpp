@@ -156,7 +156,7 @@ class TarmacLineParserImpl {
     string line;
     size_t pos, size;
     Time last_timestamp;
-    bool bigend;
+    ParseParams params;
     set<string> unrecognised_registers_already_reported;
     set<string> unrecognised_system_operations_reported;
     set<string> unrecognised_tarmac_events_reported;
@@ -907,7 +907,7 @@ class TarmacLineParserImpl {
                 parse_error(tok, "expected memory contents in hex");
             uint64_t contents = tok.hexvalue();
 
-            if (expect_memory_order && !bigend) {
+            if (expect_memory_order && !params.bigend) {
                 // If we're looking at a memory access we believe to be in
                 // memory order (i.e. byte at lowest address is written first),
                 // and we believe it's a trace of a little-endian system, then
@@ -1001,7 +1001,7 @@ class TarmacLineParserImpl {
                     // represented in system endianness, so we have to
                     // do the conversion here.
                     uint64_t value = 0;
-                    if (bigend)
+                    if (params.bigend)
                         for (size_t k = j; k-- > i;)
                             value = (value << 8) | bytes[k];
                     else
@@ -1060,10 +1060,10 @@ class TarmacLineParserImpl {
     }
 };
 
-TarmacLineParser::TarmacLineParser(bool bigend, ParseReceiver &rec)
+TarmacLineParser::TarmacLineParser(ParseParams params, ParseReceiver &rec)
     : pImpl(new TarmacLineParserImpl)
 {
-    pImpl->bigend = bigend;
+    pImpl->params = params;
     pImpl->receiver = &rec;
 
     /*

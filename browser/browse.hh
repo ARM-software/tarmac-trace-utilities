@@ -228,7 +228,7 @@ class DecodedTraceLine : public ParseReceiver {
     std::unique_ptr<InstructionEvent> iev;
     std::unique_ptr<RegisterEvent> rev;
     std::unique_ptr<MemoryEvent> mev;
-    DecodedTraceLine(bool bigend, const std::string &line);
+    DecodedTraceLine(const ParseParams &pparams, const std::string &line);
 
   private:
     virtual void got_event(MemoryEvent &ev) override;
@@ -245,8 +245,10 @@ class HighlightedLine : public ParseReceiver {
     std::unique_ptr<InstructionEvent> iev;
     bool non_executed_instruction;
 
-    HighlightedLine(const std::string &text, size_t display_len);
-    explicit HighlightedLine(const std::string &text);
+    HighlightedLine(const std::string &text, const ParseParams &pparams,
+                    size_t display_len);
+    explicit HighlightedLine(const std::string &text,
+                             const ParseParams &pparams);
     void replace_instruction(Browser &br);
 
     HighlightClass highlight_at(size_t i, bool enable_highlighting = true) const

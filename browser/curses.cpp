@@ -820,7 +820,7 @@ class TraceBuffer : public Window {
             for (unsigned i = lineoffset; i < tracelines.size(); i++) {
                 string &line = tracelines[i];
 
-                HighlightedLine hl(line, w);
+                HighlightedLine hl(line, br.index.parseParams(), w);
                 if (br.has_image() && substitute_branch_targets)
                     hl.replace_instruction(br);
 
@@ -946,7 +946,7 @@ class TraceBuffer : public Window {
                 ref_node = vu.curr_visible_node;
 
             DecodedTraceLine dtl(
-                br.index.isBigEndian(),
+                br.index.parseParams(),
                 br.index.get_trace_line(vu.curr_visible_node, selected_event));
             unsigned line = 0;
             if (dtl.mev) {

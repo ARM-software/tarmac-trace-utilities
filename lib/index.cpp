@@ -91,6 +91,7 @@ struct CallReturn {
 class Index : ParseReceiver {
     TracePair trace;
     IndexerParams iparams;
+    ParseParams pparams;
     OFF_T last_memroot, memroot, seqroot;
     unsigned long long last_sp, curr_sp, curr_pc, insns_since_lr_update;
     unsigned long long expected_next_pc, expected_next_lr;
@@ -102,7 +103,6 @@ class Index : ParseReceiver {
     bool seen_instruction_at_current_time;
     set<PendingCall> pending_calls;
     set<CallReturn> found_callrets;
-    bool bigend;
     bool aarch64_used;
     ISet last_iset;
     unsigned curr_iflags;
@@ -131,11 +131,12 @@ class Index : ParseReceiver {
     }
 
   public:
-    Index(const TracePair &trace, const IndexerParams &iparams, bool bigend)
-        : trace(trace), iparams(iparams), expected_next_pc(KNOWN_INVALID_PC),
-          arena(nullptr), memtree(nullptr), memsubtree(nullptr),
-          seqtree(nullptr), bigend(bigend), aarch64_used(false), last_iset(ARM),
-          parser(bigend, *this)
+    Index(const TracePair &trace, const IndexerParams &iparams,
+          const ParseParams &pparams)
+        : trace(trace), iparams(iparams), pparams(pparams),
+          expected_next_pc(KNOWN_INVALID_PC), arena(nullptr), memtree(nullptr),
+          memsubtree(nullptr), seqtree(nullptr), aarch64_used(false),
+          last_iset(ARM), parser(pparams, *this)
     {
     }
 
@@ -169,7 +170,7 @@ class Index : ParseReceiver {
     void update_pc(unsigned long long pc, unsigned long long next_pc,
                    ISet iset);
     void update_iflags(unsigned iflags);
-    bool is_bigendian() const { return bigend; }
+    bool is_bigendian() const { return pparams.bigend; }
     void got_event(RegisterEvent &ev);
     void got_event(MemoryEvent &ev);
     void got_event(InstructionEvent &ev);
@@ -481,7 +482,7 @@ void Index::update_memtree(char type, Addr addr, size_t size,
         return;
 
     unsigned char *contents_ptr = make_memtree_update(type, addr, size);
-    if (type == 'm' && bigend) {
+    if (type == 'm' && pparams.bigend) {
         for (size_t i = 0; i < size; i++)
             contents_ptr[i] = contents >> (8 * (size - 1 - i));
     } else {
@@ -536,7 +537,7 @@ void Index::update_memtree_from_read(char type, Addr addr, size_t size,
 
     auto data_ptr = make_unique<unsigned char[]>(size);
     unsigned char *data = data_ptr.get();
-    if (bigend) {
+    if (pparams.bigend) {
         for (size_t i = 0; i < size; i++)
             data[i] = contents >> (8 * (size - 1 - i));
     } else {
@@ -676,7 +677,7 @@ bool Index::read_memtree_value(char type, Addr addr, size_t size,
 
     if (output) {
         unsigned long long outval = 0;
-        if (type == 'm' && bigend) {
+        if (type == 'm' && pparams.bigend) {
             for (size_t i = 0; i < size; i++)
                 outval = (outval << 8) | data[i];
         } else {
@@ -1063,7 +1064,7 @@ void Index::finalise_index()
     FileHeader &hdr = *arena->getptr<FileHeader>(header_offset);
 
     unsigned flags = 0;
-    if (bigend)
+    if (pparams.bigend)
         flags |= FLAG_BIGEND;
     if (aarch64_used)
         flags |= FLAG_AARCH64_USED;
@@ -1100,9 +1101,9 @@ IndexHeaderState check_index_header(const string &index_filename)
 }
 
 void run_indexer(const TracePair &trace, const IndexerParams &iparams,
-                 bool bigend)
+                 const ParseParams &pparams)
 {
-    Index index(trace, iparams, bigend);
+    Index index(trace, iparams, pparams);
     index.parse_tarmac_file();
 }
 
@@ -1132,6 +1133,13 @@ IndexReader::IndexReader(const TracePair &trace)
     bigend = (hdr.flags & FLAG_BIGEND);
     aarch64_used = (hdr.flags & FLAG_AARCH64_USED);
     lineno_offset = hdr.lineno_offset;
+}
+
+ParseParams IndexReader::parseParams() const
+{
+    ParseParams params;
+    params.bigend = bigend;
+    return params;
 }
 
 string IndexReader::read_tarmac(OFF_T pos, OFF_T len) const

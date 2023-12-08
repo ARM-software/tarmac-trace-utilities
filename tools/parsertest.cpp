@@ -43,7 +43,7 @@ using std::string;
 using std::unique_ptr;
 using std::vector;
 
-static bool bigend = false;
+static ParseParams parse_params;
 
 class TestReceiver : public ParseReceiver {
     ostream &os;
@@ -107,7 +107,7 @@ void run_tests(istream &is, ostream &os)
 {
     string line;
     TestReceiver testrecv(os);
-    TarmacLineParser parser(bigend, testrecv);
+    TarmacLineParser parser(parse_params, testrecv);
 
     while (getline(is, line)) {
         if (line.size() == 0 || line[0] == '#')
@@ -198,7 +198,7 @@ void syntax_highlight(istream &is, ostream &os)
 {
     string line;
     HighlightReceiver recv;
-    TarmacLineParser parser(bigend, recv);
+    TarmacLineParser parser(parse_params, recv);
 
     while (getline(is, line)) {
         recv.init(line);
@@ -225,9 +225,9 @@ int main(int argc, char **argv)
               "(default: standard output)",
               [&](const string &s) { outfile = make_unique<string>(s); });
     ap.optnoval({"--li"}, "put parser in little-endian mode",
-                []() { bigend = false; });
+                []() { parse_params.bigend = false; });
     ap.optnoval({"--bi"}, "put parser in big-endian mode",
-                []() { bigend = true; });
+                []() { parse_params.bigend = true; });
     ap.positional("INFILE", "input file to parse (default: standard input)",
                   [&](const string &s) { infile = make_unique<string>(s); },
                   false /* not required */);

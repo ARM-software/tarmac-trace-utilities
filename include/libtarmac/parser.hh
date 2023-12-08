@@ -36,6 +36,10 @@ struct TarmacEvent {
 
 enum ISet { ARM, THUMB, A64 };
 
+struct ParseParams {
+    bool bigend = false;
+};
+
 enum HighlightClass {
     HL_NONE,
     HL_SPACE,
@@ -132,7 +136,7 @@ class TarmacLineParser {
     TarmacLineParserImpl *pImpl;
 
   public:
-    TarmacLineParser(bool bigend, ParseReceiver &);
+    TarmacLineParser(ParseParams params, ParseReceiver &);
     ~TarmacLineParser();
     void parse(const std::string &s) const;
 };

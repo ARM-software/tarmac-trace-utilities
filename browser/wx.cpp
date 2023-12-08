@@ -2073,7 +2073,7 @@ void TraceWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
 
         unsigned lineofnode_old = lineofnode;
 
-        HighlightedLine hl(node_lines[lineofnode++]);
+        HighlightedLine hl(node_lines[lineofnode++], br.index.parseParams());
         if (br.has_image() && substitute_branch_targets)
             hl.replace_instruction(br);
 
@@ -2174,7 +2174,7 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
             context_menu_memroot = prev_node.memory_root;
         else
             context_menu_memroot = 0;
-        DecodedTraceLine dtl(br.index.isBigEndian(),
+        DecodedTraceLine dtl(br.index.parseParams(),
                              br.index.get_trace_line(node, logpos.y1));
         if (dtl.mev) {
             ostringstream oss;

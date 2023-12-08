@@ -145,9 +145,10 @@ struct FoldStateEndOfListSearcher {
     }
 };
 
-DecodedTraceLine::DecodedTraceLine(bool bigend, const string &line)
+DecodedTraceLine::DecodedTraceLine(const ParseParams &pparams,
+                                   const string &line)
 {
-    TarmacLineParser parser(bigend, *this);
+    TarmacLineParser parser(pparams, *this);
     try {
         parser.parse(line);
     } catch (TarmacParseError err) {
@@ -171,14 +172,13 @@ void DecodedTraceLine::got_event(InstructionEvent &ev)
     iev = make_unique<InstructionEvent>(ev);
 }
 
-HighlightedLine::HighlightedLine(const string &text, size_t display_len)
+HighlightedLine::HighlightedLine(const string &text, const ParseParams &pparams,
+                                 size_t display_len)
     : text(text), display_len(display_len), disassembly_start(display_len),
       highlights(display_len, HL_NONE), iev(nullptr),
       non_executed_instruction(false)
 {
-    // We don't need to bother getting endianness right for this
-    // application
-    TarmacLineParser parser(false, *this);
+    TarmacLineParser parser(pparams, *this);
     try {
         parser.parse(text);
     } catch (TarmacParseError err) {
@@ -187,8 +187,8 @@ HighlightedLine::HighlightedLine(const string &text, size_t display_len)
     }
 }
 
-HighlightedLine::HighlightedLine(const string &text)
-    : HighlightedLine(text, text.size())
+HighlightedLine::HighlightedLine(const string &text, const ParseParams &pparams)
+    : HighlightedLine(text, pparams, text.size())
 {
 }
 

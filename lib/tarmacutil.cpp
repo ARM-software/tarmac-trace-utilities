@@ -179,8 +179,11 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
         reporter->indexing_status(trace, IndexUpdateCheck::Forced);
     }
 
-    if (doIndexing == Troolean::Yes)
-        run_indexer(trace, iparams, bigend);
+    if (doIndexing == Troolean::Yes) {
+        ParseParams pparams;
+        pparams.bigend = bigend;
+        run_indexer(trace, iparams, pparams);
+    }
 }
 
 void TarmacUtilityBase::setup_noexit()

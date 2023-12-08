@@ -28,6 +28,7 @@
 #include "libtarmac/image.hh"
 #include "libtarmac/index_ds.hh"
 #include "libtarmac/misc.hh"
+#include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
 
 #include <fstream>
@@ -54,7 +55,7 @@ struct IndexerParams {
 };
 
 void run_indexer(const TracePair &trace, const IndexerParams &iparams,
-                 bool big_endian);
+                 const ParseParams &pparams);
 
 enum class IndexHeaderState { OK, WrongMagic, Incomplete };
 IndexHeaderState check_index_header(const std::string &index_filename);
@@ -96,6 +97,7 @@ class IndexReader {
 
     bool isBigEndian() const { return bigend; }
     bool isAArch64() const { return aarch64_used; }
+    ParseParams parseParams() const;
 };
 
 class IndexNavigator {

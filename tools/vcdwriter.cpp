@@ -202,7 +202,7 @@ class VCDVisitor : public ParseReceiver {
 
   public:
     VCDVisitor(VCD::VCDFile &VCD, IndexNavigator &IN, bool UseTarmacTimestamp)
-        : TLP(IN.index.isBigEndian(), *this), VCD(VCD), IN(IN),
+        : TLP(IN.index.parseParams(), *this), VCD(VCD), IN(IN),
           CPU(IN.index.isAArch64() ? CPUDescription::getV8A(VCD)
                                    : CPUDescription::getV7M(VCD)),
           Functions(), Cycle(VCD.addIntSignal("Cycle", 32)),
