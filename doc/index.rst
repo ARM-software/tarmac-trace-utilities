@@ -1108,6 +1108,9 @@ where the fields are as follows:
   No processing performed by Tarmac Trace Utilities attaches any
   semantic significance to the choice of unit.
 
+  The space between *timestamp* and *unit* is sometimes omitted, but
+  much more typically present.
+
 *type*
   This is a mandatory word that indicates what type of event is
   described by this trace line. The types recognized by Tarmac Trace

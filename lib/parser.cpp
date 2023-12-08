@@ -31,6 +31,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 using std::back_inserter;
@@ -40,6 +41,7 @@ using std::end;
 using std::endl;
 using std::max;
 using std::ostringstream;
+using std::pair;
 using std::set;
 using std::string;
 using std::vector;
@@ -148,6 +150,16 @@ struct Token {
     {
         return !(*this == rhs);
     }
+
+    pair<Token, Token> split(size_t pos) const {
+        assert(isword());
+
+        pair<Token, Token> p{ Token(s.substr(0, pos)), Token(s.substr(pos)) };
+
+        p.first.setpos(startpos, startpos + pos);
+        p.second.setpos(startpos + pos, endpos);
+        return p;
+    }
 };
 
 class TarmacLineParserImpl {
@@ -161,6 +173,8 @@ class TarmacLineParserImpl {
     set<string> unrecognised_system_operations_reported;
     set<string> unrecognised_tarmac_events_reported;
     ParseReceiver *receiver;
+
+    static set<string> known_timestamp_units;
 
     inline bool iswordchr(char c)
     {
@@ -281,24 +295,35 @@ class TarmacLineParserImpl {
         Token tok = lex();
 
         // Tarmac lines often, but not always, start with a timestamp.
-        Time time;
+        // If they don't, we default to the previous timestamp.
+        Time time = last_timestamp;
         if (tok.isdecimal()) {
             time = tok.decimalvalue();
             highlight(tok, HL_TIMESTAMP);
             tok = lex();
 
-            if (tok == "clk" || tok == "ns" || tok == "cs" || tok == "cyc" ||
-                tok == "tic" || tok == "ps") {
-                // Any of these is something we recognise as a unit of
-                // time, so skip over it.
+            if (tok.isword() && (known_timestamp_units.find(tok.s) !=
+                                 known_timestamp_units.end()))
                 tok = lex();
-            }
 
             last_timestamp = time;
         } else {
-            // If no timestamp, that means the event is simultaneous
-            // with the previous one.
-            time = last_timestamp;
+            // Another possibility is that the timestamp and its unit
+            // are smushed together in a single token, with no
+            // intervening space.
+            if (tok.isword()) {
+                size_t end_of_digits = tok.s.find_first_not_of(
+                    Token::decimal_digits);
+                if (end_of_digits > 0 && end_of_digits != string::npos &&
+                    (known_timestamp_units.find(tok.s.substr(end_of_digits)) !=
+                     known_timestamp_units.end())) {
+                    auto pair = tok.split(end_of_digits);
+                    time = pair.first.decimalvalue();
+                    highlight(pair.first, HL_TIMESTAMP);
+                    last_timestamp = time;
+                    tok = lex();
+                }
+            }
         }
 
         // Now we can have a trace source identifier (cpu or other component)
@@ -1079,3 +1104,7 @@ TarmacLineParser::TarmacLineParser(ParseParams params, ParseReceiver &rec)
 TarmacLineParser::~TarmacLineParser() { delete pImpl; }
 
 void TarmacLineParser::parse(const string &s) const { pImpl->parse(s); }
+
+set<string> TarmacLineParserImpl::known_timestamp_units = {
+    "clk", "ns", "cs", "cyc", "tic", "ps",
+};

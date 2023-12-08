@@ -171,6 +171,14 @@ Tarmac Text Rev 3t
       3037 cyc MNR4O__I 00022ae4 f7ffffcb
 
 # ----------------------------------------------------------------------
+
+# Trace lines seen in the output of the Tarmac RTL module from
+# Cortex-M0-AT510-r0p0-00rel0 (RTL development kit). These don't have
+# a space between the timestamp and the unit ("271ns", not "271 ns").
+
+271ns R r13 20001fff (MSP)
+
+# ----------------------------------------------------------------------
 # Manually written tests
 
 # Test LD and ST records (showing a 16-byte region of memory with
