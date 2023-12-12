@@ -30,7 +30,6 @@ using std::deque;
 using std::endl;
 using std::exit;
 using std::make_unique;
-using std::move;
 using std::ostream;
 using std::ostringstream;
 using std::queue;
@@ -67,7 +66,7 @@ Argparse::Argparse(const string &programname, int argc, char **argv)
 void Argparse::add_opt(unique_ptr<Opt> opt)
 {
     auto optraw = opt.get();
-    options.push_back(move(opt));
+    options.push_back(std::move(opt));
     for (char shortname : optraw->shortnames)
         shortopts[shortname] = optraw;
     for (const string &longname : optraw->longnames)
@@ -80,7 +79,7 @@ void Argparse::optnoval(const vector<string> &optnames, const string &help,
     assert(optnames.size() > 0);
     auto opt = make_unique<Opt>(false, optnames, help);
     opt->novalresponder = responder;
-    add_opt(move(opt));
+    add_opt(std::move(opt));
 }
 
 void Argparse::optval(const vector<string> &optnames, const string &metavar,
@@ -90,7 +89,7 @@ void Argparse::optval(const vector<string> &optnames, const string &metavar,
     auto opt = make_unique<Opt>(true, optnames, help);
     opt->metavar = metavar;
     opt->valresponder = responder;
-    add_opt(move(opt));
+    add_opt(std::move(opt));
 }
 
 void Argparse::positional(const string &metavar, const string &help,
@@ -103,7 +102,7 @@ void Argparse::positional(const string &metavar, const string &help,
     opt->valresponder = responder;
     opt->required = required;
     single_positionals.push_back(opt.get());
-    add_opt(move(opt));
+    add_opt(std::move(opt));
 }
 
 void Argparse::positional_multiple(const string &metavar, const string &help,
@@ -117,7 +116,7 @@ void Argparse::positional_multiple(const string &metavar, const string &help,
     opt->multiple = true;
     opt->required = required;
     multiple_positional = opt.get();
-    add_opt(move(opt));
+    add_opt(std::move(opt));
 }
 
 void Argparse::parse_or_throw()

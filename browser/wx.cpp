@@ -69,7 +69,6 @@ using std::map;
 using std::max;
 using std::mem_fn;
 using std::min;
-using std::move;
 using std::ostream;
 using std::ostringstream;
 using std::out_of_range;
@@ -2103,14 +2102,14 @@ void TraceWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
                     ctrl.callback = [this, fnrange]() {
                         fold_ui_action(fnrange, ContainerFoldType::Fold);
                     };
-                    controls.push_back(move(ctrl));
+                    controls.push_back(std::move(ctrl));
                 }
                 if (foldstate == Browser::TraceView::NodeFoldState::Folded &&
                     fnrange.set_to_callee(node)) {
                     ctrl.callback = [this, fnrange]() {
                         unfold_ui_action(fnrange, false);
                     };
-                    controls.push_back(move(ctrl));
+                    controls.push_back(std::move(ctrl));
                 }
             } else {
                 drawing_area->add_leaf_node_marker(x, y);
