@@ -20,6 +20,7 @@
 #define LIBTARMAC_MISC_HH
 
 #include <cstddef>
+#include <stdint.h>
 #include <stdio.h>
 #include <string>
 #include <time.h>
