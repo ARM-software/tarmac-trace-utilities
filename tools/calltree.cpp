@@ -25,12 +25,12 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
-    TraceParams params;
-    params.record_memory = false;
+    IndexerParams iparams;
+    iparams.record_memory = false;
 
     Argparse ap("tarmac-calltree", argc, argv);
     TarmacUtility tu;
-    tu.set_params(params);
+    tu.set_indexer_params(iparams);
     tu.add_options(ap);
     ap.parse();
     tu.setup();

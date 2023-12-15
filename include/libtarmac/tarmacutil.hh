@@ -54,7 +54,9 @@ class TarmacUtilityBase {
     // which functionality is present and/or relevant in this tool, so
     // as to control its command-line options and behaviour.
     void cannot_use_image() { can_use_image = false; }
-    void set_params(const TraceParams &params_) { params = params_; }
+    void set_indexer_params(const IndexerParams &iparams_) {
+        iparams = iparams_;
+    }
 
     std::string image_filename;
 
@@ -71,7 +73,7 @@ class TarmacUtilityBase {
     bool verbose;
     bool show_progress_meter;
 
-    TraceParams params;
+    IndexerParams iparams;
 
     void updateIndexIfNeeded(const TracePair &trace) const;
 

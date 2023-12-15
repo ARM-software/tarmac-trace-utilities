@@ -34,12 +34,12 @@ int main(int argc, char **argv)
 {
     vector<string> functions;
 
-    TraceParams params;
-    params.record_memory = false;
+    IndexerParams iparams;
+    iparams.record_memory = false;
 
     Argparse ap("tarmac-callinfo", argc, argv);
     TarmacUtility tu;
-    tu.set_params(params);
+    tu.set_indexer_params(iparams);
     tu.add_options(ap);
 
     ap.positional_multiple("FUNCTION",

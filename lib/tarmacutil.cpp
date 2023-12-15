@@ -34,7 +34,7 @@ TarmacUtilityBase::TarmacUtilityBase()
 
 void TarmacUtilityBase::add_options(Argparse &ap)
 {
-    if (!params.can_store_on_disk())
+    if (!iparams.can_store_on_disk())
         index_on_disk = false;
 
     if (can_use_image)
@@ -180,7 +180,7 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
     }
 
     if (doIndexing == Troolean::Yes)
-        run_indexer(trace, params, bigend);
+        run_indexer(trace, iparams, bigend);
 }
 
 void TarmacUtilityBase::setup_noexit()

@@ -90,7 +90,7 @@ struct CallReturn {
 
 class Index : ParseReceiver {
     TracePair trace;
-    TraceParams params;
+    IndexerParams iparams;
     OFF_T last_memroot, memroot, seqroot;
     unsigned long long last_sp, curr_sp, curr_pc, insns_since_lr_update;
     unsigned long long expected_next_pc, expected_next_lr;
@@ -131,8 +131,8 @@ class Index : ParseReceiver {
     }
 
   public:
-    Index(const TracePair &trace, const TraceParams &params, bool bigend)
-        : trace(trace), params(params), expected_next_pc(KNOWN_INVALID_PC),
+    Index(const TracePair &trace, const IndexerParams &iparams, bool bigend)
+        : trace(trace), iparams(iparams), expected_next_pc(KNOWN_INVALID_PC),
           arena(nullptr), memtree(nullptr), memsubtree(nullptr),
           seqtree(nullptr), bigend(bigend), aarch64_used(false), last_iset(ARM),
           parser(bigend, *this)
@@ -187,7 +187,7 @@ void Index::update_sp(unsigned long long sp)
 {
     curr_sp = sp;
 
-    if (params.record_calls) {
+    if (iparams.record_calls) {
         for (auto it = pending_calls.begin(); it != pending_calls.end();) {
             if (it->sp >= sp)
                 break;
@@ -205,7 +205,7 @@ void Index::update_pc(unsigned long long pc, unsigned long long next_pc,
     if (iset == A64)
         aarch64_used = true;
 
-    if (params.record_calls && ((pc ^ expected_next_pc) & ~1ULL) != 0) {
+    if (iparams.record_calls && ((pc ^ expected_next_pc) & ~1ULL) != 0) {
         // The last instruction transferred control to somewhere other
         // than the obvious next memory location. See if the obvious
         // next location - or something near it - was also left in lr.
@@ -477,7 +477,7 @@ unsigned char *Index::make_memtree_update(char type, Addr addr, size_t size)
 void Index::update_memtree(char type, Addr addr, size_t size,
                            unsigned long long contents)
 {
-    if (type == 'm' && !params.record_memory)
+    if (type == 'm' && !iparams.record_memory)
         return;
 
     unsigned char *contents_ptr = make_memtree_update(type, addr, size);
@@ -493,7 +493,7 @@ void Index::update_memtree(char type, Addr addr, size_t size,
 void Index::update_memtree_if_necessary(char type, Addr addr, size_t size,
                                         unsigned long long contents)
 {
-    if (type == 'm' && !params.record_memory)
+    if (type == 'm' && !iparams.record_memory)
         return;
 
     /*
@@ -531,7 +531,7 @@ OFF_T Index::make_sub_memtree(char type, Addr addr, size_t size)
 void Index::update_memtree_from_read(char type, Addr addr, size_t size,
                                      unsigned long long contents)
 {
-    if (type == 'm' && !params.record_memory)
+    if (type == 'm' && !iparams.record_memory)
         return;
 
     auto data_ptr = make_unique<unsigned char[]>(size);
@@ -1046,7 +1046,7 @@ void Index::build_call_tree()
      * returns as best we can within our own memory, postprocess the
      * main seqtree to fill in the call depth fields.
      */
-    if (params.record_calls) {
+    if (iparams.record_calls) {
         {
             CallDepthCountingTreeWalker visitor(found_callrets);
             seqtree->walk(seqroot, WalkOrder::Inorder, ref(visitor));
@@ -1099,9 +1099,10 @@ IndexHeaderState check_index_header(const string &index_filename)
     return IndexHeaderState::OK;
 }
 
-void run_indexer(const TracePair &trace, const TraceParams &params, bool bigend)
+void run_indexer(const TracePair &trace, const IndexerParams &iparams,
+                 bool bigend)
 {
-    Index index(trace, params, bigend);
+    Index index(trace, iparams, bigend);
     index.parse_tarmac_file();
 }
 

@@ -394,12 +394,12 @@ int main(int argc, char **argv)
     bool no_date = false;
     bool use_tarmac_timestamp = false;
 
-    TraceParams params;
-    params.record_memory = false;
+    IndexerParams iparams;
+    iparams.record_memory = false;
 
     Argparse ap("tarmac-vcd", argc, argv);
     TarmacUtility tu;
-    tu.set_params(params);
+    tu.set_indexer_params(iparams);
     tu.add_options(ap);
 
     ap.optval({"-o", "--output"}, "VCDFILE",

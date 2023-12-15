@@ -37,7 +37,7 @@
 
 // Parameters that tell run_indexer which features it can leave out of
 // its index to save disk space
-struct TraceParams {
+struct IndexerParams {
     bool record_memory = true;
     bool record_calls = true;
 
@@ -53,7 +53,7 @@ struct TraceParams {
     }
 };
 
-void run_indexer(const TracePair &trace, const TraceParams &params,
+void run_indexer(const TracePair &trace, const IndexerParams &iparams,
                  bool big_endian);
 
 enum class IndexHeaderState { OK, WrongMagic, Incomplete };
