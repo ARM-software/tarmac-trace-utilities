@@ -1201,7 +1201,7 @@ bool IndexNavigator::lookup_symbol(const string &name, uint64_t &addr,
         return false;
 
     if (const Symbol *sym = image->find_symbol(name)) {
-        addr = sym->addr;
+        addr = sym->addr + load_offset;
         size = sym->size;
 
         /*
@@ -1221,25 +1221,17 @@ bool IndexNavigator::lookup_symbol(const string &name, uint64_t &addr) const
 {
     size_t size;
     return lookup_symbol(name, addr, size);
-    ;
 }
 
 string IndexNavigator::get_symbolic_address(Addr addr, bool fallback) const
 {
     ostringstream res;
 
-    /*
-     * FIXME: if the program under test is position-independent, then
-     * it may have been loaded somewhere other than the base address
-     * in the ELF file. It would be useful to have an option to
-     * account for that here, by adjusting the address passed to
-     * image->find_symbol.
-     */
-
-    const Symbol *sym = image ? image->find_symbol(addr) : nullptr;
+    const Symbol *sym =
+        image ? image->find_symbol(addr - load_offset) : nullptr;
     if (sym) {
         res << sym->getName();
-        addr -= sym->addr;
+        addr -= (sym->addr + load_offset);
         if (addr)
             res << " + " << hex << showbase << addr;
     } else if (fallback) {

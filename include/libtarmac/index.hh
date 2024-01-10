@@ -102,20 +102,25 @@ class IndexReader {
 
 class IndexNavigator {
     std::shared_ptr<Image> image;
+    uint64_t load_offset; // (loaded address) - (address in image file)
 
   public:
     IndexReader index;
 
     IndexNavigator(const TracePair &trace,
-                   std::shared_ptr<Image> image = nullptr)
-        : image(image), index(trace)
+                   std::shared_ptr<Image> image = nullptr,
+                   uint64_t load_offset = 0)
+        : image(image), load_offset(load_offset), index(trace)
     {
     }
 
-    IndexNavigator(const TracePair &trace, const std::string &image_filename)
-        : IndexNavigator(trace, image_filename.empty()
-                                    ? nullptr
-                                    : std::make_shared<Image>(image_filename))
+    IndexNavigator(const TracePair &trace, const std::string &image_filename,
+                   uint64_t load_offset = 0)
+        : IndexNavigator(trace,
+                         image_filename.empty()
+                             ? nullptr
+                             : std::make_shared<Image>(image_filename),
+                         load_offset)
     {
     }
 

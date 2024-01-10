@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     });
     tu.setup();
 
-    CallInfo CI(tu.trace, tu.image_filename);
+    CallInfo CI(tu.trace, tu.image_filename, tu.load_offset);
     CI.run(functions);
 
     return 0;

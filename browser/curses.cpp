@@ -2271,7 +2271,7 @@ int main(int argc, char **argv)
     ap.parse();
     tu.setup();
 
-    Browser br(tu.trace, tu.image_filename);
+    Browser br(tu.trace, tu.image_filename, tu.load_offset);
     run_browser(br, use_terminal_colours);
 
     return 0;

@@ -59,6 +59,7 @@ class TarmacUtilityBase {
     }
 
     std::string image_filename;
+    uint64_t load_offset = 0;
 
   protected:
     enum class Troolean { No, Auto, Yes };

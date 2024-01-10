@@ -37,9 +37,15 @@ void TarmacUtilityBase::add_options(Argparse &ap)
     if (!iparams.can_store_on_disk())
         index_on_disk = false;
 
-    if (can_use_image)
+    if (can_use_image) {
         ap.optval({"--image"}, "IMAGEFILE", "image file name",
                   [this](const string &s) { image_filename = s; });
+        ap.optval({"--load-offset"}, "OFFSET", "offset from addresses in the "
+                  "image file to addresses in the trace",
+                  [this](const string &s) {
+                      load_offset = stoull(s, nullptr, 0);
+                  });
+    }
     if (index_on_disk) {
         ap.optnoval({"--only-index"}, "generate index and do nothing else",
                     [this]() {

@@ -112,7 +112,7 @@ int main(int argc, char **argv)
     ap.parse();
     tu.setup();
 
-    ProfileInfo PI(tu.trace, tu.image_filename);
+    ProfileInfo PI(tu.trace, tu.image_filename, tu.load_offset);
     PI.run();
 
     return 0;

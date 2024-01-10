@@ -3718,7 +3718,7 @@ bool GuiTarmacBrowserApp::OnInit()
 
     config.read();
 
-    br = make_unique<Browser>(tu.trace, tu.image_filename);
+    br = make_unique<Browser>(tu.trace, tu.image_filename, tu.load_offset);
 
     if (config.font.empty()) {
         TextViewWindow::font = wxFont(12, wxFONTFAMILY_TELETYPE,

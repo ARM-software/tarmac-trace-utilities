@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     ap.parse();
     tu.setup();
 
-    IndexNavigator IN(tu.trace, tu.image_filename);
+    IndexNavigator IN(tu.trace, tu.image_filename, tu.load_offset);
     CallTree CT(IN);
     CT.dump();
 }

@@ -418,7 +418,7 @@ int main(int argc, char **argv)
     if (vcd_filename.size() == 0)
         vcd_filename = tu.trace.tarmac_filename + ".vcd";
 
-    VCDWriter VW(tu.trace, tu.image_filename);
+    VCDWriter VW(tu.trace, tu.image_filename, tu.load_offset);
     VW.run(vcd_filename, no_date, use_tarmac_timestamp);
 
     return 0;
