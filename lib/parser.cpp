@@ -170,8 +170,18 @@ class TarmacLineParserImpl {
     friend class TarmacLineParser;
 
     // State remembered between lines of the input. We keep this as
-    // small as possible, but just occasionally it has to be used.
+    // small as possible, but a few things have to be remembered.
     struct InterLineState {
+        // Timestamp from the previous line, which is often not
+        // repeated on the next line.
+        //
+        // If any un-timestamped lines are seen at the start of the
+        // trace before any timestamped line, this is the timestamp
+        // they'll receive. 0 seems reasonable, since timestamps are
+        // non-negative integers, so this is the only value that
+        // guarantees to preserve monotonicity.
+        Time timestamp = 0;
+
         // True if the event type is one of a small set for which the
         // next line might implicitly continue the same event type.
         bool event_type_is_continuable = false;
@@ -192,7 +202,6 @@ class TarmacLineParserImpl {
 
     string line;
     size_t pos, size;
-    Time last_timestamp;
     ParseParams params;
     set<string> unrecognised_registers_already_reported;
     set<string> unrecognised_system_operations_reported;
@@ -329,7 +338,7 @@ class TarmacLineParserImpl {
 
         // Tarmac lines often, but not always, start with a timestamp.
         // If they don't, we default to the previous timestamp.
-        Time time = last_timestamp;
+        Time time = prev_line.timestamp;
         if (tok.isdecimal()) {
             time = tok.decimalvalue();
             highlight(tok, HL_TIMESTAMP);
@@ -338,8 +347,6 @@ class TarmacLineParserImpl {
             if (tok.isword() && (known_timestamp_units.find(tok.s) !=
                                  known_timestamp_units.end()))
                 tok = lex();
-
-            last_timestamp = time;
         } else {
             // Another possibility is that the timestamp and its unit
             // are smushed together in a single token, with no
@@ -353,11 +360,11 @@ class TarmacLineParserImpl {
                     auto pair = tok.split(end_of_digits);
                     time = pair.first.decimalvalue();
                     highlight(pair.first, HL_TIMESTAMP);
-                    last_timestamp = time;
                     tok = lex();
                 }
             }
         }
+        next_line.timestamp = time;
 
         // Now we can have a trace source identifier (cpu or other component)
         // If we want multiple streams recongized, this is it.
@@ -1162,15 +1169,6 @@ TarmacLineParser::TarmacLineParser(ParseParams params, ParseReceiver &rec)
 {
     pImpl->params = params;
     pImpl->receiver = &rec;
-
-    /*
-     * If any un-timestamped lines are seen at the start of the trace
-     * before any timestamped line, this is the timestamp they'll
-     * receive. 0 seems reasonable, since timestamps are non-negative
-     * integers, so this is the only value that guarantees to preserve
-     * monotonicity.
-     */
-    pImpl->last_timestamp = 0;
 }
 
 TarmacLineParser::~TarmacLineParser() { delete pImpl; }
