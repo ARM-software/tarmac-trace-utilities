@@ -169,6 +169,27 @@ struct Token {
 class TarmacLineParserImpl {
     friend class TarmacLineParser;
 
+    // State remembered between lines of the input. We keep this as
+    // small as possible, but just occasionally it has to be used.
+    struct InterLineState {
+        // True if the event type is one of a small set for which the
+        // next line might implicitly continue the same event type.
+        bool event_type_is_continuable = false;
+
+        // If event_type_is_continuable is true, this stores the
+        // event-type token from the previous line. The startpos and
+        // endpos values will therefore be indices into a string that
+        // has already been thrown away, so don't use them.
+        Token event_type_token;
+
+        // We recognise continuations of LD and ST lines by leading
+        // whitespace: the address token on the continuation line is
+        // aligned under the address token from the previous line. So
+        // this variable stores the starting position of the token
+        // after the LD or ST, i.e. the address.
+        size_t post_event_type_start = 0;
+    };
+
     string line;
     size_t pos, size;
     Time last_timestamp;
@@ -177,6 +198,7 @@ class TarmacLineParserImpl {
     set<string> unrecognised_system_operations_reported;
     set<string> unrecognised_tarmac_events_reported;
     ParseReceiver *receiver;
+    InterLineState next_line;
 
     static set<string> known_timestamp_units;
 
@@ -281,6 +303,13 @@ class TarmacLineParserImpl {
 
     void parse(const string &line_)
     {
+        // Get the inter-line state referring to the previous line,
+        // and replace it with a default-constructed InterLineState
+        // which we can update if we need to remember anything from
+        // _this_ line until the next.
+        InterLineState prev_line;
+        std::swap(prev_line, next_line);
+
         // Constants used in 'byte' arrays for register and memory updates, to
         // represent special values that aren't ordinary bytes.
         constexpr uint16_t UNUSED = 0x100, UNKNOWN = 0x101;
@@ -335,6 +364,12 @@ class TarmacLineParserImpl {
         // But for now, we just drop the cpu* identifiers.
         if (tok.starts_with("cpu")) {
             tok = lex();
+        }
+
+        if (prev_line.event_type_is_continuable &&
+            tok.startpos == prev_line.post_event_type_start) {
+            pos = tok.startpos;        // rewind past the next token
+            tok = prev_line.event_type_token;
         }
 
         // Now we definitely expect an event type, and we diverge
@@ -983,8 +1018,13 @@ class TarmacLineParserImpl {
         } else if (tok == "LD" || tok == "ST") {
             // Diagrammatic memory access event.
 
+            next_line.event_type_is_continuable = true;
+            next_line.event_type_token = tok;
+
             bool read = (tok == "LD");
             tok = lex();
+
+            next_line.post_event_type_start = tok.startpos;
 
             // Expect a hex address.
             if (!tok.ishex())

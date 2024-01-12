@@ -188,6 +188,17 @@ Tarmac Text Rev 3t
 11519 tic ES (10000b58:--------) T thrd_s:
 
 # ----------------------------------------------------------------------
+
+# Trace snippet seen from an unnamed Neoverse core, in which the
+# second of a pair of consecutive ST records is missing the initial
+# record type, so that the parser has to infer from context that it
+# must be intended to represent the same type as the previous line.
+
+  947020259 ps  ES  (000000008000d1fc:a90d8be1) O el3t_rt:        STP      x1,x2,[sp,#0xd8] 
+                    ST 000000009884cfb0  ........ ........ 00000000 000000fe  NS:000000009884cfb0   NM ISH IWBRWA
+                       000000009884cfa0  00000000 00000007 ........ ........  NS:000000009884cfa0   NM ISH IWBRWA
+
+# ----------------------------------------------------------------------
 # Manually written tests
 
 # Test LD and ST records (showing a 16-byte region of memory with
@@ -224,3 +235,13 @@ R SP 0123456789abcdef
                     R MSP_S 00000000
                     R XPSR f9000000
                     BR (00000000) A
+
+# An even more extended version of the Neoverse phenomenon where the
+# "ST" token is not repeated on the next line. With _two_ continuation
+# lines, we force the parser to propagate the type token from
+# prev_line into next_line.
+  947020259 ps  ES  (000000008000d1fc:a90d8be1) O el3t_rt:        STP      x1,x2,[sp,#0xd8] 
+                    ST 000000009884cfb0  ........ ........ 00000000 000000fe  NS:000000009884cfb0   NM ISH IWBRWA
+                       000000009884cfa0  00000000 00000007 ........ ........  NS:000000009884cfa0   NM ISH IWBRWA
+                       000000009884cf90  ........ 11111111 22222222 ........  NS:000000009884cf90   NM ISH IWBRWA
+

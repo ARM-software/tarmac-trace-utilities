@@ -215,6 +215,12 @@ Parse warning: unsupported system operation 'AT'
 * InstructionEvent time=307754 effect=fetchfail pc=aaaaabaf59f0 iset=A64 width=32 instruction=0 disassembly=""
 --- Tarmac line: 11519 tic ES (10000b58:--------) T thrd_s:
 * InstructionEvent time=11519 effect=fetchfail pc=10000b58 iset=Thumb width=32 instruction=0 disassembly=""
+--- Tarmac line:   947020259 ps  ES  (000000008000d1fc:a90d8be1) O el3t_rt:        STP      x1,x2,[sp,#0xd8] 
+* InstructionEvent time=947020259 effect=executed pc=8000d1fc iset=A64 width=32 instruction=a90d8be1 disassembly="STP      x1,x2,[sp,#0xd8] "
+--- Tarmac line:                     ST 000000009884cfb0  ........ ........ 00000000 000000fe  NS:000000009884cfb0   NM ISH IWBRWA
+* MemoryEvent time=947020259 read=false known=true addr=9884cfb0 size=8 contents=fe
+--- Tarmac line:                        000000009884cfa0  00000000 00000007 ........ ........  NS:000000009884cfa0   NM ISH IWBRWA
+* MemoryEvent time=947020259 read=false known=true addr=9884cfa8 size=8 contents=7
 --- Tarmac line:     1234567 cs E dummy header line to reset timestamp for next two lines
 * TextOnlyEvent time=1234567 type="E" text="dummy header line to reset timestamp for next two lines"
 --- Tarmac line:                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH
@@ -249,3 +255,11 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line:                     R XPSR f9000000
 --- Tarmac line:                     BR (00000000) A
 * TextOnlyEvent time=15000 type="BR" text="(00000000) A"
+--- Tarmac line:   947020259 ps  ES  (000000008000d1fc:a90d8be1) O el3t_rt:        STP      x1,x2,[sp,#0xd8] 
+* InstructionEvent time=947020259 effect=executed pc=8000d1fc iset=A64 width=32 instruction=a90d8be1 disassembly="STP      x1,x2,[sp,#0xd8] "
+--- Tarmac line:                     ST 000000009884cfb0  ........ ........ 00000000 000000fe  NS:000000009884cfb0   NM ISH IWBRWA
+* MemoryEvent time=947020259 read=false known=true addr=9884cfb0 size=8 contents=fe
+--- Tarmac line:                        000000009884cfa0  00000000 00000007 ........ ........  NS:000000009884cfa0   NM ISH IWBRWA
+* MemoryEvent time=947020259 read=false known=true addr=9884cfa8 size=8 contents=7
+--- Tarmac line:                        000000009884cf90  ........ 11111111 22222222 ........  NS:000000009884cf90   NM ISH IWBRWA
+* MemoryEvent time=947020259 read=false known=true addr=9884cf94 size=8 contents=1111111122222222

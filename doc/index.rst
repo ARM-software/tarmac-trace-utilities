@@ -1105,8 +1105,9 @@ large-scale structure spanning multiple lines.
 
 Lexically, a line of Tarmac trace is considered to consist of
 multi-character 'words' made up of alphanumeric characters and
-``_-.#``, and individual punctuation characters. Whitespace is ignored
-except that it separates words.
+``_-.#``, and individual punctuation characters. With very few
+exceptions (documented below), whitespace is ignored except that it
+separates words.
 
 The overall structure of a Tarmac trace line is as follows:
   [ *timestamp* [ *unit* ] ] *type* [ *line-specific-fields* ]
@@ -1495,7 +1496,7 @@ memory accesses in Tarmac, involving a diagram of 16 bytes of memory
 indicating which ones are accessed.
 
 A memory access line of this type looks like this:
-  [ *timestamp* [ *unit* ] ] *type* *virtual-address* *memory-diagram* *extra-info*
+  [ *timestamp* [ *unit* ] ] [ *type* ] *virtual-address* *memory-diagram* *extra-info*
 
 *timestamp*, *unit*, *type*
   As described in `Basic structure`_.
@@ -1506,6 +1507,13 @@ A memory access line of this type looks like this:
 
   *type* is either ``LD`` to indicate a memory read (load), or ``ST``
   to indicate a write (store).
+
+  Normally, *type* must be specified. However at least one Tarmac
+  producer will omit it if the record type is the same as the previous
+  line. In this situation, the two lines' *virtual-address* fields are
+  expected to be vertically aligned, so that it's possible to spot a
+  missing *type* field by the amount of whitespace at the start of the
+  line.
 
 *virtual-address*
   The virtual address at which the *memory-diagram* is based. This is
