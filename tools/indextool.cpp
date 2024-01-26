@@ -68,9 +68,9 @@ template <typename Payload, typename Annotation> class TreeDumper {
     {
         cout << prefix;
         if (!omit_index_offsets)
-            cout << format("Node at file offset {}", offset);
+            cout << format(_("Node at file offset {}"), offset);
         else
-            cout << "Node";
+            cout << _("Node");
         cout << ":" << endl;
     }
 
@@ -100,14 +100,14 @@ template <typename Payload, typename Annotation> class TreeDumper {
                 prefix += "    ";
             }
             node_type =
-                pop.right_child ? "Right child node" : "Left child node";
+                pop.right_child ? _("Right child node") : _("Left child node");
             stk.pop();
         } else {
-            node_type = "Root node";
+            node_type = _("Root node");
             firstlineprefix = finalprefix = prefix;
         }
 
-        cout << firstlineprefix << format("{:#x} at file offset {}:",
+        cout << firstlineprefix << format(_("{:#x} at file offset {}:"),
                                           node_type, offset) << endl;
 
         if (rightoff) {
@@ -123,16 +123,16 @@ template <typename Payload, typename Annotation> class TreeDumper {
         else
             prefix += "    ";
 
-        cout << prefix << "Child offsets = { ";
+        cout << prefix << _("Child offsets") << " = { ";
         if (leftoff)
             cout << leftoff;
         else
-            cout << "null";
+            cout << _("null");
         cout << ", ";
         if (rightoff)
             cout << rightoff;
         else
-            cout << "null";
+            cout << _("null");
         cout << " }" << endl << dec;
 
         dump_payload(prefix, payload);
@@ -188,25 +188,25 @@ class SeqTreeDumper : public TreeDumper<SeqOrderPayload, SeqOrderAnnotation> {
                               const SeqOrderPayload &node) override
     {
         cout << prefix
-             << format("Line range: start {}, extent {}",
+             << format(_("Line range: start {}, extent {}"),
                        node.trace_file_firstline, node.trace_file_lines)
              << endl;
         cout << prefix
-             << format("Byte range: start {:#x}, extent {:#x}",
+             << format(_("Byte range: start {:#x}, extent {:#x}"),
                        node.trace_file_pos, node.trace_file_len)
              << endl;
-        cout << prefix << "Modification time: " << node.mod_time << endl;
+        cout << prefix << _("Modification time: ") << node.mod_time << endl;
         cout << prefix << "PC: ";
         if (node.pc == KNOWN_INVALID_PC)
-            cout << "invalid";
+            cout << _("invalid");
         else
             cout << hex << node.pc << dec;
         cout << endl;
         if (!omit_index_offsets) {
-            cout << prefix << "Root of memory tree: " << hex << node.memory_root
-                 << dec << endl;
+            cout << prefix << _("Root of memory tree: ") << hex
+                 << node.memory_root << dec << endl;
         }
-        cout << prefix << "Call depth: " << node.call_depth << endl;
+        cout << prefix << _("Call depth: ") << node.call_depth << endl;
         if (dump_memory) {
             dump_memory_at_line(IN, node.trace_file_firstline, prefix + "  ");
         }
@@ -223,12 +223,12 @@ class SeqTreeDumper : public TreeDumper<SeqOrderPayload, SeqOrderAnnotation> {
             const CallDepthArrayEntry &ent = array[i];
             cout << prefix << "LRT[" << i << "] = { ";
             if (ent.call_depth == SENTINEL_DEPTH)
-                cout << "sentinel";
+                cout << _("sentinel");
             else
                 cout << format("depth {}", ent.call_depth);
             cout << ", "
-                 << format("{} lines, {} insns, left-crosslink {}, "
-                           "right-crosslink {}}}",
+                 << format(_("{} lines, {} insns, left-crosslink {}, "
+                             "right-crosslink {}}}"),
                            ent.cumulative_lines, ent.cumulative_insns,
                            ent.leftlink, ent.rightlink)
                  << endl;
@@ -245,16 +245,16 @@ class MemTreeDumper : public TreeDumper<MemoryPayload, MemoryAnnotation> {
     virtual void dump_payload(const string &prefix,
                               const MemoryPayload &node) override
     {
-        cout << prefix << "Range: ";
+        cout << prefix << _("Range: ");
         // FIXME: to make diagnostic dumps less opaque, it would be
         // nice here to translate reg addresses back into some
         // meaningful identification involving a register number.
         if (node.type == 'r')
-            cout << "register-space";
+            cout << _("register-space");
         else
-            cout << "memory";
+            cout << _("memory");
         cout << " [" << hex << node.lo << "-" << node.hi << dec << "]" << endl;
-        cout << prefix << "Contents: ";
+        cout << prefix << _("Contents: ");
         if (node.raw) {
             if (omit_index_offsets)
                 cout << format("{} bytes", node.hi + 1 - node.lo);
@@ -263,19 +263,19 @@ class MemTreeDumper : public TreeDumper<MemoryPayload, MemoryAnnotation> {
                                node.hi + 1 - node.lo, node.contents);
         } else {
             if (omit_index_offsets)
-                cout << "memory subtree";
+                cout << _("memory subtree");
             else
-                cout << format("memory subtree with root pointer at {:#x}, "
-                               "actual root is {:#x}",
+                cout << format(_("memory subtree with root pointer at {:#x}, "
+                                 "actual root is {:#x}"),
                                node.contents,
                                IN.index.index_subtree_root(node.contents));
         }
         cout << endl;
-        cout << prefix << "Last modification: ";
+        cout << prefix << _("Last modification: ");
         if (node.trace_file_firstline == 0)
-            cout << "never";
+            cout << _("never");
         else
-            cout << format("line {}", node.trace_file_firstline);
+            cout << format(_("line {}"), node.trace_file_firstline);
         cout << endl;
     }
 
@@ -283,7 +283,7 @@ class MemTreeDumper : public TreeDumper<MemoryPayload, MemoryAnnotation> {
                                  const MemoryPayload &node,
                                  const MemoryAnnotation &annotation) override
     {
-        cout << prefix << "Latest modification time in whole subtree: "
+        cout << prefix << _("Latest modification time in whole subtree: ")
              << annotation.latest << endl;
     }
 };
@@ -299,13 +299,13 @@ class MemSubtreeDumper
         // into registers, even if we wanted to, because we haven't
         // been told whether this subtree even refers to register or
         // memory space.
-        cout << prefix << "Range: [" << hex << node.lo << "-" << node.hi << dec
+        cout << prefix << _("Range: ") << "[" << hex << node.lo << "-" << node.hi << dec
              << "]" << endl;
         cout << prefix;
         if (omit_index_offsets)
-            cout << format("Contents: {} bytes", node.hi + 1 - node.lo);
+            cout << format(_("Contents: {} bytes"), node.hi + 1 - node.lo);
         else
-            cout << format("Contents: {} bytes at file offset {:#x}",
+            cout << format(_("Contents: {} bytes at file offset {:#x}"),
                            node.hi + 1 - node.lo, node.contents);
         cout << endl;
     }
@@ -319,7 +319,7 @@ class ByPCTreeDumper
                               const ByPCPayload &node) override
     {
         cout << prefix << "PC: " << hex << node.pc << dec << endl;
-        cout << prefix << "Line: " << node.trace_file_firstline << endl;
+        cout << prefix << _("Line: ") << node.trace_file_firstline << endl;
     }
 };
 
@@ -343,7 +343,7 @@ static void dump_registers(bool got_iflags, unsigned iflags)
                 continue;              // it's a dummy register
             cout << reg_name(r);
             if (!got_iflags && reg_needs_iflags(r)) {
-                cout << " - dependent on iflags\n";
+                cout << _(" - dependent on iflags\n");
             } else {
                 cout << " offset=" << hex << reg_offset(r, iflags)
                      << " size=" << hex << reg_size(r) << "\n";
@@ -359,12 +359,13 @@ static unsigned long long parseint(const string &s)
         unsigned long long toret = stoull(s, &pos, 0);
         if (pos < s.size())
             throw ArgparseError(
-                format("'{}': unable to parse numeric value", s));
+                format(_("'{}': unable to parse numeric value"), s));
         return toret;
     } catch (std::invalid_argument) {
-        throw ArgparseError(format("'{}': unable to parse numeric value", s));
+        throw ArgparseError(
+            format(_("'{}': unable to parse numeric value"), s));
     } catch (std::out_of_range) {
-        throw ArgparseError(format("'{}': numeric value out of range", s));
+        throw ArgparseError(format(_("'{}': numeric value out of range"), s));
     }
 }
 
@@ -427,7 +428,7 @@ static void dump_memory_at_line(const IndexNavigator &IN, unsigned trace_line,
 {
     SeqOrderPayload node;
     if (!IN.node_at_line(trace_line, &node)) {
-        cerr << format("Unable to find a node at line {}\n", trace_line);
+        cerr << format(_("Unable to find a node at line {}\n"), trace_line);
         exit(1);
     }
     OFF_T memroot = node.memory_root;
@@ -442,7 +443,7 @@ static void dump_memory_at_line(const IndexNavigator &IN, unsigned trace_line,
     size_t readsize = 0;
     while (IN.getmem_next(memroot, 'm', readaddr, readsize, &outdata, &outaddr,
                           &outsize, &outline)) {
-        cout << prefix << format("Memory last modified at line {}:", outline)
+        cout << prefix << format(_("Memory last modified at line {}:"), outline)
              << endl;
         hexdump(outdata, outsize, outaddr, prefix);
         readsize -= outaddr + outsize - readaddr;
@@ -471,7 +472,7 @@ static void dump_memory_at_line(const IndexNavigator &IN, unsigned trace_line,
             }
 
             if (print) {
-                cout << prefix << format("{}, last modified at line {}: ",
+                cout << prefix << format(_("{}, last modified at line {}: "),
                                          reg_name(reg), mod_line);
                 regdump(val, def);
                 cout << endl;
@@ -512,66 +513,62 @@ int main(int argc, char **argv)
     tu.trace_argument_optional();
     tu.add_options(ap);
 
-    ap.optnoval({"--header"}, "dump file header",
+    ap.optnoval({"--header"}, _("dump file header"),
                 [&]() { mode = Mode::Header; });
-    ap.optnoval({"--seq"}, "dump logical content of the sequential order tree",
+    ap.optnoval({"--seq"},
+                _("dump logical content of the sequential order tree"),
                 [&]() { mode = Mode::SeqVisit; });
     ap.optnoval({"--seq-with-mem"},
-                "dump logical content of the sequential "
-                "order tree, and memory contents at each node",
+                _("dump logical content of the sequential "
+                  "order tree, and memory contents at each node"),
                 [&]() { mode = Mode::SeqVisitWithMem; });
     ap.optnoval({"--seqtree"},
-                "dump physical structure of the sequential "
-                "order tree",
+                _("dump physical structure of the sequential order tree"),
                 [&]() { mode = Mode::SeqWalk; });
-    ap.optval({"--mem"}, "OFFSET",
-              "dump logical content of memory tree with "
-              "root at OFFSET",
+    ap.optval({"--mem"}, _("OFFSET"),
+              _("dump logical content of memory tree with root at OFFSET"),
               [&](const string &s) {
                   mode = Mode::MemVisit;
                   root = parseint(s);
               });
-    ap.optval({"--memtree"}, "OFFSET",
-              "dump physical structure of a memory "
-              "tree with root at OFFSET",
+    ap.optval({"--memtree"}, _("OFFSET"),
+              _("dump physical structure of a memory tree with root at OFFSET"),
               [&](const string &s) {
                   mode = Mode::MemWalk;
                   root = parseint(s);
               });
-    ap.optval({"--memsub"}, "OFFSET",
-              "dump logical content of a memory "
-              "subtree with root at OFFSET",
+    ap.optval({"--memsub"}, _("OFFSET"),
+              _("dump logical content of a memory subtree with root at OFFSET"),
               [&](const string &s) {
                   mode = Mode::MemSubVisit;
                   root = parseint(s);
               });
-    ap.optval({"--memsubtree"}, "OFFSET",
-              "dump physical structure of a memory"
-              " subtree with root at OFFSET",
-              [&](const string &s) {
-                  mode = Mode::MemSubWalk;
-                  root = parseint(s);
-              });
-    ap.optnoval({"--bypc"}, "dump logical content of the by-PC tree",
+    ap.optval(
+        {"--memsubtree"}, _("OFFSET"),
+        _("dump physical structure of a memory subtree with root at OFFSET"),
+        [&](const string &s) {
+            mode = Mode::MemSubWalk;
+            root = parseint(s);
+        });
+    ap.optnoval({"--bypc"}, _("dump logical content of the by-PC tree"),
                 [&]() { mode = Mode::ByPCVisit; });
-    ap.optnoval({"--bypctree"}, "dump physical structure of the by-PC tree",
+    ap.optnoval({"--bypctree"}, _("dump physical structure of the by-PC tree"),
                 [&]() { mode = Mode::ByPCWalk; });
-    ap.optnoval({"--regmap"}, "write a memory map of the register space",
+    ap.optnoval({"--regmap"}, _("write a memory map of the register space"),
                 [&]() { mode = Mode::RegMap; });
-    ap.optval({"--iflags"}, "FLAGS",
-              "(for --regmap) specify iflags context "
-              "to retrieve registers",
+    ap.optval({"--iflags"}, _("FLAGS"),
+              _("(for --regmap) specify iflags context to retrieve registers"),
               [&](const string &s) {
                   got_iflags = true;
                   iflags = parseint(s);
               });
     ap.optnoval({"--omit-index-offsets"},
-                "do not dump offsets in index file "
-                "(so that output is more stable when index format changes)",
+                _("do not dump offsets in index file (so that output is more "
+                  "stable when index format changes)"),
                 [&]() { omit_index_offsets = true; });
-    ap.optval({"--full-mem-at-line"}, "OFFSET",
-              "dump full content of memory "
-              "tree corresponding to a particular line of the trace file",
+    ap.optval({"--full-mem-at-line"}, _("OFFSET"),
+              _("dump full content of memory tree corresponding to a "
+                "particular line of the trace file"),
               [&](const string &s) {
                   mode = Mode::FullMemByLine;
                   trace_line = parseint(s);
@@ -579,9 +576,9 @@ int main(int argc, char **argv)
 
     ap.parse([&]() {
         if (mode == Mode::None && !tu.only_index())
-            throw ArgparseError("expected an option describing a query");
+            throw ArgparseError(_("expected an option describing a query"));
         if (mode != Mode::RegMap && tu.trace.tarmac_filename.empty())
-            throw ArgparseError("expected a trace file name");
+            throw ArgparseError(_("expected a trace file name"));
     });
 
     cout << showbase; // ensure all hex values have a leading 0x
@@ -607,13 +604,14 @@ int main(int argc, char **argv)
         assert(false && "This should have been ruled out above");
 
     case Mode::Header: {
-        cout << "Endianness: " << (IN.index.isBigEndian() ? "big" : "little")
-             << endl;
-        cout << "Architecture: "
+        cout << _("Endianness: ")
+             << (IN.index.isBigEndian() ? _("big") : _("little")) << endl;
+        cout << _("Architecture: ")
              << (IN.index.isAArch64() ? "AArch64" : "AArch32") << endl;
-        cout << "Root of sequential order tree: " << IN.index.seqroot << endl;
-        cout << "Root of by-PC tree: " << IN.index.bypcroot << endl;
-        cout << "Line number adjustment for file header: "
+        cout << _("Root of sequential order tree: ") << IN.index.seqroot
+             << endl;
+        cout << _("Root of by-PC tree: ") << IN.index.bypcroot << endl;
+        cout << _("Line number adjustment for file header: ")
              << IN.index.lineno_offset << endl;
         break;
     }

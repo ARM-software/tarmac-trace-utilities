@@ -20,6 +20,7 @@
  * Tarmac parser that is as general as I can make it.
  */
 
+#include "libtarmac/intl.hh"
 #include "libtarmac/parser.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/registers.hh"
@@ -425,19 +426,19 @@ class TarmacLineParserImpl {
                 // After "ES", expect an address and an instruction bit
                 // pattern, in parentheses and separated by a colon.
                 if (tok != '(')
-                    parse_error(tok, "expected '(' to introduce "
-                                     "instruction address and bit pattern");
+                    parse_error(tok, _("expected '(' to introduce "
+                                       "instruction address and bit pattern"));
                 tok = lex();
 
                 if (!tok.ishex())
-                    parse_error(tok, "expected a hex instruction address");
+                    parse_error(tok, _("expected a hex instruction address"));
                 address = tok.hexvalue();
                 highlight(tok, HL_PC);
                 tok = lex();
 
                 if (tok != ':')
-                    parse_error(tok, "expected ':' between instruction "
-                                     "address and bit pattern");
+                    parse_error(tok, _("expected ':' between instruction "
+                                       "address and bit pattern"));
                 tok = lex();
 
                 if (!tok.ishex()) {
@@ -449,8 +450,8 @@ class TarmacLineParserImpl {
                         // may later correct the error and retry the fetch.
                         effect = IE_FETCHFAIL;
                     } else {
-                        parse_error(tok,
-                                    "expected a hex instruction bit pattern");
+                        parse_error(
+                            tok, _("expected a hex instruction bit pattern"));
                     }
                 } else {
                     bitpattern = tok.hexvalue();
@@ -460,8 +461,8 @@ class TarmacLineParserImpl {
                 tok = lex();
 
                 if (tok != ')')
-                    parse_error(tok, "expected ')' after instruction "
-                                     "address and bit pattern");
+                    parse_error(tok, _("expected ')' after instruction "
+                                       "address and bit pattern"));
                 tok = lex();
             } else {
                 // After "IT" or "IS", expect a Fast Models-style line.
@@ -493,7 +494,7 @@ class TarmacLineParserImpl {
                     // Bracketed value
                     tok = lex();
                     if (!tok.isdecimal() && !tok.ishex())
-                        parse_error(tok, "expected a hex or decimal number");
+                        parse_error(tok, _("expected a hex or decimal number"));
                     bracketed = tok;
 
                     tok = lex();
@@ -504,18 +505,19 @@ class TarmacLineParserImpl {
                         tok = lex();
                         if (!tok.isdecimal() && !tok.ishex())
                             parse_error(tok,
-                                        "expected a hex or decimal number");
+                                        _("expected a hex or decimal number"));
                         bracketed = tok;
                         tok = lex();
                         seen_colon_in_brackets = true;
                     }
                     if (tok != ')')
-                        parse_error(tok, "expected ')' after bracketed value");
+                        parse_error(tok,
+                                    _("expected ')' after bracketed value"));
                     tok = lex();
                 }
 
                 if (!tok.ishex())
-                    parse_error(tok, "expected a hex value");
+                    parse_error(tok, _("expected a hex value"));
                 Token postbracket = tok;
                 address = tok.hexvalue();
                 highlight(tok, HL_PC);
@@ -530,7 +532,7 @@ class TarmacLineParserImpl {
                     // Model.
                     tok = lex();
                     if (!tok.ishexwithoptionalnamespace())
-                        parse_error(tok, "expected a hex address after ':'");
+                        parse_error(tok, _("expected a hex address after ':'"));
                     tok = lex();
                     if (tok == ',') {
                         // Optionally, a comma with _another_ hex
@@ -541,7 +543,7 @@ class TarmacLineParserImpl {
                         tok = lex();
                         if (!tok.ishexwithoptionalnamespace())
                             parse_error(tok,
-                                        "expected a hex address after ','");
+                                        _("expected a hex address after ','"));
                         tok = lex();
                     }
                 }
@@ -560,8 +562,8 @@ class TarmacLineParserImpl {
                     instruction = postbracket;
                 } else {
                     if (!tok.ishex())
-                        parse_error(tok,
-                                    "expected a hex instruction bit pattern");
+                        parse_error(
+                            tok, _("expected a hex instruction bit pattern"));
                     instruction = tok;
                     tok = lex();
                 }
@@ -582,7 +584,7 @@ class TarmacLineParserImpl {
                 // can assume, then we respond to this parse failure by
                 // treating the rest of the line as the instruction.
                 if (!params.iset_specified)
-                    parse_error(tok, "expected instruction-set state");
+                    parse_error(tok, _("expected instruction-set state"));
                 iset = params.iset;
             } else {
                 highlight(tok, HL_ISET);
@@ -607,7 +609,7 @@ class TarmacLineParserImpl {
 
                 if (expect_cpu_mode) {
                     if (!tok.isword())
-                        parse_error(tok, "expected CPU mode");
+                        parse_error(tok, _("expected CPU mode"));
                     // We currently ignore the CPU mode. If we ever needed to
                     // support register bank switching, we would need to track
                     // it carefully.
@@ -615,7 +617,7 @@ class TarmacLineParserImpl {
                     tok = lex();
 
                     if (tok != ':')
-                        parse_error(tok, "expected ':' before instruction");
+                        parse_error(tok, _("expected ':' before instruction"));
                     tok = lex();
                 }
 
@@ -642,7 +644,7 @@ class TarmacLineParserImpl {
             // Register update.
             tok = lex();
             if (!tok.isword())
-                parse_error(tok, "expected register name");
+                parse_error(tok, _("expected register name"));
             Token regnametok = tok; // save for later error reporting
             string regname = tok.s;
             tok = lex();
@@ -651,7 +653,7 @@ class TarmacLineParserImpl {
                 regname == "AT") {
                 if (!unrecognised_system_operations_reported.count(regname)) {
                     unrecognised_system_operations_reported.insert(regname);
-                    warning(format("unsupported system operation '{}'",
+                    warning(format(_("unsupported system operation '{}'"),
                                    regnametok.s));
                 }
                 return;
@@ -666,14 +668,14 @@ class TarmacLineParserImpl {
                 tok = lex();
 
                 if (!tok.isword())
-                    parse_error(tok, "expected extra register "
-                                     "identification details");
+                    parse_error(tok, _("expected extra register "
+                                       "identification details"));
                 extrainfo = tok.s;
                 tok = lex();
 
                 if (tok != ')')
-                    parse_error(tok, "expected ')' after extra register "
-                                     "identification details");
+                    parse_error(tok, _("expected ')' after extra register "
+                                       "identification details"));
                 tok = lex();
             }
 
@@ -721,43 +723,45 @@ class TarmacLineParserImpl {
                     // If the register name is also one which we can't identify
                     // until we see the size of data, this is too confusing to
                     // work out what's going on. Refuse to handle this case.
-                    parse_error(tok, "cannot handle register bit range for "
-                                "this register");
+                    parse_error(tok, _("cannot handle register bit range for "
+                                       "this register"));
                 }
 
                 tok = lex();
 
                 if (!tok.isdecimal())
-                    parse_error(tok, "expected bit offset within register");
+                    parse_error(tok, _("expected bit offset within register"));
                 unsigned top_bit = tok.decimalvalue();
                 if ((top_bit & 7) != 7)
-                    parse_error(tok, "expected high bit offset within register "
-                                "to be at the top of a byte");
+                    parse_error(tok, _("expected high bit offset within "
+                                       "register to be at the top of a byte"));
                 unsigned top_byte = top_bit >> 3;
                 if (top_byte >= reg_size(reg))
-                    parse_error(tok, "high bit offset is larger than "
-                                "containing register");
+                    parse_error(tok, _("high bit offset is larger than "
+                                       "containing register"));
                 tok = lex();
 
                 if (tok != ':')
-                    parse_error(tok, "expected ':' separating bit offsets "
-                                "in register bit range");
+                    parse_error(tok, _("expected ':' separating bit offsets "
+                                       "in register bit range"));
                 tok = lex();
 
                 if (!tok.isdecimal())
-                    parse_error(tok, "expected bit offset within register");
+                    parse_error(tok, _("expected bit offset within register"));
                 unsigned bot_bit = tok.decimalvalue();
                 if ((bot_bit & 7) != 0)
-                    parse_error(tok, "expected low bit offset within register "
-                                "to be at the bottom of a byte");
+                    parse_error(tok,
+                                _("expected low bit offset within register to "
+                                  "be at the bottom of a byte"));
                 unsigned bot_byte = bot_bit >> 3;
                 if (bot_byte > top_byte)
-                    parse_error(tok, "low bit offset is higher than "
-                                "high bit offset");
+                    parse_error(tok, _("low bit offset is higher than "
+                                       "high bit offset"));
                 tok = lex();
 
                 if (tok != '>')
-                    parse_error(tok, "expected '>' after register bit range");
+                    parse_error(tok,
+                                _("expected '>' after register bit range"));
                 tok = lex();
 
                 reg_subrange_skip_lo = bot_byte;
@@ -778,7 +782,7 @@ class TarmacLineParserImpl {
                 }
                 while (contents.size() < hex_digits_expected) {
                     if (!tok.isregvalue())
-                        parse_error(tok, "expected register contents");
+                        parse_error(tok, _("expected register contents"));
                     consume_register_contents(tok);
                     tok = lex();
 
@@ -796,15 +800,15 @@ class TarmacLineParserImpl {
                 // a single contiguous token of register contents, plus a
                 // second one if a ':' follows it.
                 if (!tok.isregvalue())
-                    parse_error(tok, "expected register contents");
+                    parse_error(tok, _("expected register contents"));
                 consume_register_contents(tok);
                 tok = lex();
 
                 if (tok == ':') {
                     tok = lex();
                     if (!tok.isregvalue())
-                        parse_error(tok, "expected additional register "
-                                    "contents after ':'");
+                        parse_error(tok, _("expected additional register "
+                                           "contents after ':'"));
                     consume_register_contents(tok);
                 }
 
@@ -831,8 +835,8 @@ class TarmacLineParserImpl {
 
             vector<uint16_t> bytes;
             if (bits % 8 != 0)
-                parse_error(tok, "expected register contents to be an integer"
-                                 " number of bytes");
+                parse_error(tok, _("expected register contents to be an integer"
+                                   " number of bytes"));
             for (unsigned pos = 0; pos < bits / 4; pos += 2) {
                 string hex = contents.substr(pos, 2);
                 if (hex == "--") {
@@ -860,7 +864,7 @@ class TarmacLineParserImpl {
                      * --verbose flag if necessary, by setting a
                      * verbosity field in the Parser object.
                      */
-                    warning(format("unrecognised {0}-bit register '{1}'",
+                    warning(format(_("unrecognised {0}-bit register '{1}'"),
                                    bits, regname));
 #endif
                 }
@@ -953,7 +957,7 @@ class TarmacLineParserImpl {
             }
 
             if (!tok.ishex())
-                parse_error(tok, "expected memory address");
+                parse_error(tok, _("expected memory address"));
             uint64_t addr = tok.hexvalue();
             tok = lex();
 
@@ -966,8 +970,8 @@ class TarmacLineParserImpl {
                  */
                 tok = lex();
                 if (!tok.ishex())
-                    parse_error(tok, "expected physical memory address "
-                                     "after ':'");
+                    parse_error(tok, _("expected physical memory address "
+                                       "after ':'"));
                 tok = lex();
             }
 
@@ -982,14 +986,14 @@ class TarmacLineParserImpl {
                 if (tok == "ABORTED") {
                     Token tok2 = lex();
                     if (tok2 != ')')
-                        parse_error(tok2, "expected closing parenthesis");
+                        parse_error(tok2, _("expected closing parenthesis"));
                     highlight(tok.startpos, line.size(), HL_TEXT_EVENT);
                     TextOnlyEvent ev(time, tok.s,
                                      line.substr(firsttok.startpos));
                     receiver->got_event(ev);
                     return;
                 } else {
-                    parse_error(tok, "unrecognised parenthesised keyword");
+                    parse_error(tok, _("unrecognised parenthesised keyword"));
                 }
             }
 
@@ -999,7 +1003,7 @@ class TarmacLineParserImpl {
             // those out.
             tok.remove_chars("_");
             if (!tok.ishex())
-                parse_error(tok, "expected memory contents in hex");
+                parse_error(tok, _("expected memory contents in hex"));
             uint64_t contents = tok.hexvalue();
 
             if (expect_memory_order && !params.bigend) {
@@ -1031,7 +1035,7 @@ class TarmacLineParserImpl {
 
             // Expect a hex address.
             if (!tok.ishex())
-                parse_error(tok, "expected load/store memory address");
+                parse_error(tok, _("expected load/store memory address"));
             uint64_t baseaddr = tok.hexvalue();
             tok = lex();
 
@@ -1044,18 +1048,19 @@ class TarmacLineParserImpl {
 
             while (true) {
                 if (!tok.isword("0123456789ABCDEFabcdef.#"))
-                    parse_error(tok, "expected a word of data bytes, "
-                                     "'.' and '#'");
+                    parse_error(tok, _("expected a word of data bytes, "
+                                       "'.' and '#'"));
                 if (tok.s.size() % 2)
-                    parse_error(tok, "expected data word to cover a "
-                                     "whole number of bytes");
+                    parse_error(tok, _("expected data word to cover a "
+                                       "whole number of bytes"));
                 for (size_t i = 0; i < tok.s.size(); i += 2) {
                     Token bytetok(tok.s.substr(i, 2));
                     bytetok.startpos += i;
                     bytetok.endpos = bytetok.startpos + 2;
 
                     if (bytepos >= 16)
-                        parse_error(bytetok, "expected exactly 16 data bytes");
+                        parse_error(bytetok,
+                                    _("expected exactly 16 data bytes"));
 
                     if (bytetok == "..")
                         bytes[bytepos] = UNUSED;
@@ -1064,8 +1069,8 @@ class TarmacLineParserImpl {
                     else if (bytetok.ishex())
                         bytes[bytepos] = bytetok.hexvalue();
                     else
-                        parse_error(bytetok, "expected each byte to be "
-                                             "only one of '.', '#' and hex");
+                        parse_error(bytetok, _("expected each byte to be only "
+                                               "one of '.', '#' and hex"));
 
                     bytepos++;
                 }
@@ -1147,7 +1152,7 @@ class TarmacLineParserImpl {
             } else {
                 if (!unrecognised_tarmac_events_reported.count(type)) {
                     unrecognised_tarmac_events_reported.insert(type);
-                    warning(format("unknown Tarmac event type '{}'", type));
+                    warning(format(_("unknown Tarmac event type '{}'"), type));
                 }
             }
 

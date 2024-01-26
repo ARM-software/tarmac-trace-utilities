@@ -22,8 +22,14 @@
 
 #include "browse.hh"
 #include "libtarmac/argparse.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/reporter.hh"
 #include "libtarmac/tarmacutil.hh"
+
+// wxWidgets will define the gettext _ wrapper macro itself, in a way that
+// causes it to return a wxString, which isn't what all the call sites here
+// want. Inhibit that, so that we keep our own definition of _.
+#define WXINTL_NO_GETTEXT_MACRO
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -300,13 +306,13 @@ struct Config {
                 font = line;
             } else if ((it = colour_kws.find(word)) != colour_kws.end()) {
                 if (!colours[it->second].parse(line)) {
-                    string msg = format("{}: {}: unable to parse colour '{}'",
+                    string msg = format(_("{}: {}: unable to parse colour '{}'"),
                                         conf_path, lineno, line);
                     reporter->warnx("%s", msg.c_str());
                 }
             } else {
                 string msg =
-                    format("{}: {}: unrecognised config directive '{}'",
+                    format(_("{}: {}: unrecognised config directive '{}'"),
                            conf_path, lineno, word);
                 reporter->warnx("%s", msg.c_str());
             }
@@ -1743,7 +1749,7 @@ SubsidiaryView::SubsidiaryView(GuiTarmacBrowserApp *app,
                                Browser &br, TraceWindow *tw)
     : TextViewWindow(app, wh.first, wh.second, sb), br(br), tw(tw)
 {
-    toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, "Locked to: "));
+    toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _("Locked to: ")));
     linkcombo = new wxChoice(toolbar, wxID_ANY, wxDefaultPosition,
                              edit_size("1234567890"), 0, nullptr);
     toolbar->AddControl(linkcombo);
@@ -1815,7 +1821,7 @@ void SubsidiaryView::linkcombo_changed(wxCommandEvent &event)
 void SubsidiaryView::update_trace_window_list()
 {
     linkcombo->Clear();
-    linkcombo->Append("None", reinterpret_cast<void *>(-1));
+    linkcombo->Append(_("None"), reinterpret_cast<void *>(-1));
     int curr_id = 0;
     int id = curr_id++;
     for (auto *tw : TraceWindow::all_trace_windows) {
@@ -1852,35 +1858,35 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
     size_t pos = 0;
     {
         wxAcceleratorEntry accel(wxACCEL_CTRL, (int)'N', wxID_CLOSE);
-        filemenu->Insert(pos++, mi_newtrace, "New trace view")
+        filemenu->Insert(pos++, mi_newtrace, _("New trace view"))
             ->SetAccel(&accel);
     }
     wxMenu *newmenu = new wxMenu;
-    filemenu->Insert(pos++, wxID_ANY, "New...", newmenu);
+    filemenu->Insert(pos++, wxID_ANY, _("New..."), newmenu);
     {
         wxAcceleratorEntry accel(wxACCEL_CTRL, (int)'M', wxID_CLOSE);
-        newmenu->Append(mi_newmem, "Memory view")->SetAccel(&accel);
+        newmenu->Append(mi_newmem, _("Memory view"))->SetAccel(&accel);
     }
-    newmenu->Append(mi_newstk, "Stack view");
-    newmenu->Append(mi_newcorereg, "Core register view");
-    newmenu->Append(mi_newspreg, "Single-precision FP reg view");
-    newmenu->Append(mi_newdpreg, "Double-precision FP reg view");
-    newmenu->Append(mi_newneonreg, "Neon vector reg view");
-    newmenu->Append(mi_newmvereg, "MVE vector reg view");
+    newmenu->Append(mi_newstk, _("Stack view"));
+    newmenu->Append(mi_newcorereg, _("Core register view"));
+    newmenu->Append(mi_newspreg, _("Single-precision FP reg view"));
+    newmenu->Append(mi_newdpreg, _("Double-precision FP reg view"));
+    newmenu->Append(mi_newneonreg, _("Neon vector reg view"));
+    newmenu->Append(mi_newmvereg, _("MVE vector reg view"));
     filemenu->InsertSeparator(pos++);
 
     wxMenu *viewmenu = new wxMenu;
-    menubar->Append(viewmenu, "&View");
+    menubar->Append(viewmenu, _("&View"));
     {
         wxAcceleratorEntry accel(wxACCEL_CTRL, (int)'L', wxID_CLOSE);
-        viewmenu->Append(mi_recentre, "Re-centre")->SetAccel(&accel);
+        viewmenu->Append(mi_recentre, _("Re-centre"))->SetAccel(&accel);
     }
     viewmenu->AppendSeparator();
-    viewmenu->AppendCheckItem(mi_calldepth, "Call-depth indentation");
-    viewmenu->AppendCheckItem(mi_highlight, "Syntax highlighting");
+    viewmenu->AppendCheckItem(mi_calldepth, _("Call-depth indentation"));
+    viewmenu->AppendCheckItem(mi_highlight, _("Syntax highlighting"));
     if (br.has_image()) {
         mi_branchtarget = NewControlId();
-        viewmenu->AppendCheckItem(mi_branchtarget, "Symbolic branch targets");
+        viewmenu->AppendCheckItem(mi_branchtarget, _("Symbolic branch targets"));
     }
 
     Bind(wxEVT_MENU, &TraceWindow::newtrace_menuaction, this, mi_newtrace);
@@ -1903,7 +1909,7 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
     if (mi_branchtarget != wxID_NONE)
         menubar->Check(mi_branchtarget, substitute_branch_targets);
 
-    toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, "Time: "));
+    toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _("Time: ")));
     timeedit =
         new wxTextCtrl(toolbar, wxID_ANY, wxEmptyString, wxDefaultPosition,
                        edit_size("1234567890123"), wxTE_PROCESS_ENTER);
@@ -1913,9 +1919,9 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
                             edit_size("0x12345678 = longish_symbol_name"),
                             wxTE_PROCESS_ENTER);
     toolbar->AddControl(pcedit);
-    auto pcprev_button = new wxButton(toolbar, wxID_ANY, "Prev");
+    auto pcprev_button = new wxButton(toolbar, wxID_ANY, _("Prev"));
     toolbar->AddControl(pcprev_button);
-    auto pcnext_button = new wxButton(toolbar, wxID_ANY, "Next");
+    auto pcnext_button = new wxButton(toolbar, wxID_ANY, _("Next"));
     toolbar->AddControl(pcnext_button);
     toolbar->Realize();
 
@@ -2125,8 +2131,8 @@ void TraceWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
 bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
 {
     clear_menu(contextmenu);
-    contextmenu->Append(mi_fold_all, "Fold all");
-    contextmenu->Append(mi_unfold_all, "Unfold all");
+    contextmenu->Append(mi_fold_all, _("Fold all"));
+    contextmenu->Append(mi_unfold_all, _("Unfold all"));
 
     // Find out as much as we can about the context in question.
     SeqOrderPayload node;
@@ -2134,7 +2140,7 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
         if (container_fnrange.set_to_container(node)) {
             ostringstream oss;
             oss << format(
-                "Containing call (lines {}\xe2\x80\x93{}) to {}",
+                _("Containing call (lines {}\xe2\x80\x93{} to {})"),
                 container_fnrange.callnode.trace_file_firstline,
                 container_fnrange.lastnode.trace_file_firstline,
                 br.get_symbolic_address(container_fnrange.firstnode.pc, true));
@@ -2144,15 +2150,15 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
                 wxID_ANY, wxString::FromUTF8(oss.str().c_str()));
             label->Enable(false);
 
-            contextmenu->Append(mi_fold, "Fold up");
-            contextmenu->Append(mi_fold_subrs, "Fold all subroutines");
-            contextmenu->Append(mi_unfold_container, "Unfold completely");
+            contextmenu->Append(mi_fold, _("Fold up"));
+            contextmenu->Append(mi_fold_subrs, _("Fold all subroutines"));
+            contextmenu->Append(mi_unfold_container, _("Unfold completely"));
         }
 
         if (callee_fnrange.set_to_callee(node)) {
             ostringstream oss;
             oss << format(
-                "Folded call (lines {}\xe2\x80\x93{} to {})",
+                _("Folded call (lines {}\xe2\x80\x93{} to {})"),
                 callee_fnrange.callnode.trace_file_firstline,
                 callee_fnrange.lastnode.trace_file_firstline,
                 br.get_symbolic_address(callee_fnrange.firstnode.pc, true));
@@ -2162,8 +2168,8 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
                 wxID_ANY, wxString::FromUTF8(oss.str().c_str()));
             label->Enable(false);
 
-            contextmenu->Append(mi_unfold, "Unfold one level");
-            contextmenu->Append(mi_unfold_full, "Unfold completely");
+            contextmenu->Append(mi_unfold, _("Unfold one level"));
+            contextmenu->Append(mi_unfold_full, _("Unfold completely"));
         }
 
         SeqOrderPayload prev_node;
@@ -2176,7 +2182,7 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
         if (dtl.mev) {
             contextmenu->AppendSeparator();
             wxMenuItem *label = contextmenu->Append(
-                wxID_ANY, format("Memory access: {0} bytes at 0x{1:x}",
+                wxID_ANY, format(_("Memory access: {0} bytes at 0x{1:x}"),
                                  dtl.mev->size, dtl.mev->addr));
             label->Enable(false);
 
@@ -2184,12 +2190,12 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
             context_menu_start = dtl.mev->addr;
             context_menu_size = dtl.mev->size;
 
-            contextmenu->Append(mi_provenance, "Go to previous write");
-            contextmenu->Append(mi_contextmem, "Open a memory window here");
+            contextmenu->Append(mi_provenance, _("Go to previous write"));
+            contextmenu->Append(mi_contextmem, _("Open a memory window here"));
         } else if (dtl.rev) {
             contextmenu->AppendSeparator();
             wxMenuItem *label =
-                contextmenu->Append(wxID_ANY, format("Register access: {}",
+                contextmenu->Append(wxID_ANY, format(_("Register access: {}"),
                                                      reg_name(dtl.rev->reg)));
             label->Enable(false);
 
@@ -2198,7 +2204,7 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
             context_menu_start = reg_offset(dtl.rev->reg, iflags);
             context_menu_size = reg_size(dtl.rev->reg);
 
-            contextmenu->Append(mi_provenance, "Go to previous write");
+            contextmenu->Append(mi_provenance, _("Go to previous write"));
         }
     }
     return true;
@@ -2369,13 +2375,13 @@ class MemPromptDialog : public wxDialog {
 
   public:
     MemPromptDialog(wxWindow *parent)
-        : wxDialog(parent, wxID_ANY, wxT("Open memory window"))
+        : wxDialog(parent, wxID_ANY, _("Open memory window"))
     {
         auto *sizer = new wxBoxSizer(wxVERTICAL);
 
-        sizer->Add(
-            new wxStaticText(this, wxID_ANY, "Enter memory address to display"),
-            wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
+        sizer->Add(new wxStaticText(this, wxID_ANY,
+                                    _("Enter memory address to display")),
+                   wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
         addredit =
             new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
                            edit_size("1234567890123"));
@@ -2421,7 +2427,7 @@ void TraceWindow::mem_prompt_dialog_ended(bool ok)
     MemoryWindow::StartAddr addr;
     ostringstream error;
     if (!addr.parse(value, br, error)) {
-        wxMessageBox(format("Error parsing expression: {}", error.str()));
+        wxMessageBox(format(_("Error parsing expression: {}"), error.str()));
         return;
     }
 
@@ -2762,9 +2768,10 @@ bool RegisterWindow::prepare_context_menu(const LogicalPos &logpos)
 
     clear_menu(contextmenu);
     wxMenuItem *label = contextmenu->Append(
-        wxID_ANY, format("Register {}", reg_name(context_menu_reg)));
+        wxID_ANY, format(_("Register {}"), reg_name(context_menu_reg)));
     label->Enable(false);
-    contextmenu->Append(mi_ctx_provenance, "Go to last write to this register");
+    contextmenu->Append(mi_ctx_provenance,
+                        _("Go to last write to this register"));
 
     return true;
 }
@@ -2838,7 +2845,7 @@ RegisterWindow32::RegisterWindow32(GuiTarmacBrowserApp *app, Browser &br,
                                    TraceWindow *tw)
     : RegisterWindow(app, core_regs_32(), br, tw)
 {
-    set_title("Core regs");
+    set_title(_("Core regs"));
 }
 
 static vector<RegisterId> core_regs_64()
@@ -2855,7 +2862,7 @@ RegisterWindow64::RegisterWindow64(GuiTarmacBrowserApp *app, Browser &br,
                                    TraceWindow *tw)
     : RegisterWindow(app, core_regs_64(), br, tw)
 {
-    set_title("Core regs");
+    set_title(_("Core regs"));
 }
 
 static vector<RegisterId> float_regs_sp()
@@ -2870,7 +2877,7 @@ RegisterWindowSP::RegisterWindowSP(GuiTarmacBrowserApp *app, Browser &br,
                                    TraceWindow *tw)
     : RegisterWindow(app, float_regs_sp(), br, tw)
 {
-    set_title("FP regs (single precision)");
+    set_title(_("FP regs (single precision)"));
 }
 
 static vector<RegisterId> float_regs_dp()
@@ -2885,7 +2892,7 @@ RegisterWindowDP::RegisterWindowDP(GuiTarmacBrowserApp *app, Browser &br,
                                    TraceWindow *tw)
     : RegisterWindow(app, float_regs_dp(), br, tw)
 {
-    set_title("FP regs (double precision)");
+    set_title(_("FP regs (double precision)"));
 }
 
 static vector<RegisterId> vector_regs_neon(unsigned limit)
@@ -2900,7 +2907,7 @@ RegisterWindowNeon::RegisterWindowNeon(GuiTarmacBrowserApp *app, Browser &br,
                                        TraceWindow *tw, bool aarch64)
     : RegisterWindow(app, vector_regs_neon(aarch64 ? 32 : 16), br, tw)
 {
-    set_title("Vector regs (Neon)");
+    set_title(_("Vector regs (Neon)"));
 }
 
 static vector<RegisterId> vector_regs_mve()
@@ -2916,7 +2923,7 @@ RegisterWindowMVE::RegisterWindowMVE(GuiTarmacBrowserApp *app, Browser &br,
                                      TraceWindow *tw)
     : RegisterWindow(app, vector_regs_mve(), br, tw)
 {
-    set_title("Vector regs (MVE)");
+    set_title(_("Vector regs (MVE)"));
 }
 
 pair<unsigned, unsigned> MemoryWindow::compute_size(int bpl, bool sfb)
@@ -2935,7 +2942,7 @@ MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, StartAddr addr,
     : SubsidiaryView(app, compute_size(bpl, sfb), false, br, tw),
       addr_chars(sfb ? 16 : 8), bytes_per_line(bpl)
 {
-    set_title("Memory");
+    set_title(_("Memory"));
 
     // In MemoryWindow, the 'wintop' field seen by the parent class is
     // ignored; we manage our own start address.
@@ -2954,7 +2961,7 @@ MemoryWindow::MemoryWindow(GuiTarmacBrowserApp *app, StartAddr addr,
     Bind(wxEVT_MENU, &MemoryWindow::provenance_menuaction, this,
          mi_ctx_provenance);
 
-    toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, "Address: "));
+    toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _("Address: ")));
     addredit =
         new wxTextCtrl(toolbar, wxID_ANY, wxEmptyString, wxDefaultPosition,
                        edit_size("0x1234567890123456"), wxTE_PROCESS_ENTER);
@@ -3126,9 +3133,10 @@ bool MemoryWindow::prepare_context_menu(const LogicalPos &logpos)
     context_menu_size = size;
     clear_menu(contextmenu);
     wxMenuItem *label = contextmenu->Append(
-        wxID_ANY, format("{0}-byte region at address 0x{1:x}", size, start));
+        wxID_ANY, format(_("{0}-byte region at address 0x{1:x}"), size, start));
     label->Enable(false);
-    contextmenu->Append(mi_ctx_provenance, "Go to last write to this region");
+    contextmenu->Append(mi_ctx_provenance,
+                        _("Go to last write to this region"));
     return true;
 }
 
@@ -3244,7 +3252,7 @@ void MemoryWindow::addredit_activated(wxCommandEvent &event)
         ostringstream error;
         expr = br.parse_expression(value, error);
         if (!expr) {
-            wxMessageBox(format("Error parsing expression: {}", error.str()));
+            wxMessageBox(format(_("Error parsing expression: {}"), error.str()));
             return;
         }
 
@@ -3394,7 +3402,7 @@ string vcxxsprintf(const char *fmt, va_list ap)
     string msg = vcxxsprintf(fmt, ap);
     va_end(ap);
     msg = msg + ": " + get_error_message();
-    wxMessageDialog dlg(nullptr, msg, "tarmac-gui-browser fatal error",
+    wxMessageDialog dlg(nullptr, msg, _("tarmac-gui-browser fatal error"),
                         wxOK | wxCENTRE | wxICON_ERROR);
     dlg.ShowModal();
     exit(exitstatus);
@@ -3406,7 +3414,7 @@ string vcxxsprintf(const char *fmt, va_list ap)
     va_start(ap, fmt);
     string msg = vcxxsprintf(fmt, ap);
     va_end(ap);
-    wxMessageDialog dlg(nullptr, msg, "tarmac-gui-browser fatal error",
+    wxMessageDialog dlg(nullptr, msg, _("tarmac-gui-browser fatal error"),
                         wxOK | wxCENTRE | wxICON_ERROR);
     dlg.ShowModal();
     exit(exitstatus);
@@ -3419,7 +3427,7 @@ void WXGUIReporter::warn(const char *fmt, ...)
     string msg = vcxxsprintf(fmt, ap);
     va_end(ap);
     msg = msg + ": " + get_error_message();
-    wxMessageDialog dlg(nullptr, msg, "tarmac-gui-browser warning",
+    wxMessageDialog dlg(nullptr, msg, _("tarmac-gui-browser warning"),
                         wxOK | wxCENTRE | wxICON_EXCLAMATION);
     dlg.ShowModal();
 }
@@ -3430,7 +3438,7 @@ void WXGUIReporter::warnx(const char *fmt, ...)
     va_start(ap, fmt);
     string msg = vcxxsprintf(fmt, ap);
     va_end(ap);
-    wxMessageDialog dlg(nullptr, msg, "tarmac-gui-browser warning",
+    wxMessageDialog dlg(nullptr, msg, _("tarmac-gui-browser warning"),
                         wxOK | wxCENTRE | wxICON_EXCLAMATION);
     dlg.ShowModal();
 }
@@ -3440,30 +3448,30 @@ void WXGUIReporter::indexing_status(const TracePair &trace,
 {
     ostringstream oss;
     if (trace.index_on_disk)
-        oss << format("Indexing trace file {0} to index file {1}",
+        oss << format(_("Indexing trace file {0} to index file {1}"),
                       trace.tarmac_filename, trace.index_filename);
     else
-        oss << format("Indexing trace file {0}", trace.tarmac_filename);
+        oss << format(_("Indexing trace file {0}"), trace.tarmac_filename);
 
     switch (status) {
       case IndexUpdateCheck::InMemory:
         // If the index is in memory, no need to print a message at all
         break;
       case IndexUpdateCheck::Missing:
-        oss << endl << "(new index file)";
+        oss << endl << _("(new index file)");
         break;
       case IndexUpdateCheck::TooOld:
-        oss << endl << "(index file was older than trace file)";
+        oss << endl << _("(index file was older than trace file)");
         break;
       case IndexUpdateCheck::WrongFormat:
         oss << endl
-            << "(index file was not generated by this version of the tool)";
+            << _("(index file was not generated by this version of the tool)");
         break;
       case IndexUpdateCheck::Incomplete:
-        oss << endl << "(previous index file generation was not completed)";
+        oss << endl << _("(previous index file generation was not completed)");
         break;
       case IndexUpdateCheck::OK:
-        oss << endl << "(not actually indexing)";
+        oss << endl << _("(not actually indexing)");
         break;
       case IndexUpdateCheck::Forced:
         // If the user asked explicitly for a reindex, we don't need
@@ -3504,7 +3512,7 @@ void WXGUIReporter::indexing_start(streampos total)
      * delete the partial index file on the way out.
      */
     progress_dlg = make_unique<wxProgressDialog>(
-        "tarmac-gui-browser indexing", progress_title, 10, nullptr,
+        _("tarmac-gui-browser indexing"), progress_title, 10, nullptr,
         wxPD_APP_MODAL | wxPD_AUTO_HIDE);
 
     // The obvious thing to do here would be to set progress_max to
@@ -3562,40 +3570,40 @@ class SetupDialog : public wxDialog {
 
   public:
     SetupDialog(wxWindow *parent = nullptr, wxWindowID id = wxID_ANY) :
-        wxDialog(parent, id, wxT("tarmac-gui-browser setup")) {
+        wxDialog(parent, id, _("tarmac-gui-browser setup")) {
         auto *sizer = new wxBoxSizer(wxVERTICAL);
 
         sizer->Add(
-            new wxStaticText(this, wxID_ANY, "Trace file to view (required)"),
+            new wxStaticText(this, wxID_ANY, _("Trace file to view (required)")),
             wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
         trace_file_picker = new wxFilePickerCtrl(
-            this, wxID_ANY, wxEmptyString, "Select a trace file to view");
+            this, wxID_ANY, wxEmptyString, _("Select a trace file to view"));
         sizer->Add(trace_file_picker, wxSizerFlags().Expand().Border(
                        wxLEFT | wxRIGHT | wxBOTTOM));
 
         sizer->Add(
-            new wxStaticText(this, wxID_ANY, "ELF image matching the trace"),
+            new wxStaticText(this, wxID_ANY, _("ELF image matching the trace")),
             wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
         image_file_picker = new wxFilePickerCtrl(
-            this, wxID_ANY, wxEmptyString, "Select an ELF image to use");
+            this, wxID_ANY, wxEmptyString, _("Select an ELF image to use"));
         sizer->Add(image_file_picker, wxSizerFlags().Expand().Border(
                        wxLEFT | wxRIGHT | wxBOTTOM));
 
         sizer->Add(
-            new wxStaticText(this, wxID_ANY, "Re-index the trace file?"),
+            new wxStaticText(this, wxID_ANY, _("Re-index the trace file?")),
             wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
         reindex_choice = new wxChoice(
             this, wxID_ANY, wxDefaultPosition,
-            edit_size("If necessary"), 0, nullptr);
+            edit_size(_("If necessary")), 0, nullptr);
         sizer->Add(reindex_choice, wxSizerFlags().Expand().Border(
                        wxLEFT | wxRIGHT | wxBOTTOM));
-        reindex_choice->Append("If necessary", reinterpret_cast<void *>(0));
-        reindex_choice->Append("Always", reinterpret_cast<void *>(1));
-        reindex_choice->Append("Never", reinterpret_cast<void *>(2));
+        reindex_choice->Append(_("If necessary"), reinterpret_cast<void *>(0));
+        reindex_choice->Append(_("Always"), reinterpret_cast<void *>(1));
+        reindex_choice->Append(_("Never"), reinterpret_cast<void *>(2));
         reindex_choice->SetSelection(0);
 
         bigendian_checkbox = new wxCheckBox(
-            this, wxID_ANY, "Trace is from a big-endian system");
+            this, wxID_ANY, _("Trace is from a big-endian system"));
         sizer->Add(bigendian_checkbox, wxSizerFlags().Expand().Border());
 
         sizer->Add(CreateButtonSizer(wxOK | wxCANCEL),
@@ -3719,8 +3727,8 @@ bool GuiTarmacBrowserApp::OnInit()
         TextViewWindow::font = wxFont(config.font);
         if (!TextViewWindow::font.IsOk()) {
             wxMessageBox(
-                wxString("Unable to parse font description:\n" + config.font),
-                "Setup error", wxOK | wxICON_ERROR);
+                wxString(_("Unable to parse font description:\n") + config.font),
+                _("Setup error"), wxOK | wxICON_ERROR);
             return false;
         }
     }

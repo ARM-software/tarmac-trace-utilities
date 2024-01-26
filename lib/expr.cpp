@@ -17,6 +17,7 @@
  */
 
 #include "libtarmac/expr.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/registers.hh"
 
 #include <ctype.h>
@@ -131,7 +132,7 @@ struct RegisterExpression : Expression {
         if (ec.lookup_register(reg, toret))
             return toret;
 
-        throw EvaluationError(format("register name '{}'", name));
+        throw EvaluationError(format(_("register name '{}'"), name));
     }
     virtual void dump(ostream &os) { os << "(register " << name << ")"; }
 };
@@ -269,20 +270,20 @@ ExprPtr Parser::parse_unary()
         if (lexer.token == SCOPE) {
             lexer.advance();
             if (lexer.token != ID)
-                throw ParseError("expected an identifier after '::'");
+                throw ParseError(_("expected an identifier after '::'"));
 
             if (id1 == "reg") {
                 toret = parse_register_name(lexer.idvalue);
                 if (!toret)
-                    throw ParseError(format("unrecognised register name '{}'",
-                                            lexer.idvalue));
+                    throw ParseError(format(
+                        _("unrecognised register name '{}'"), lexer.idvalue));
             } else if (id1 == "sym") {
                 toret = parse_symbol_name(lexer.idvalue);
                 if (!toret)
-                    throw ParseError(format("unrecognised symbol name '{}'",
+                    throw ParseError(format(_("unrecognised symbol name '{}'"),
                                             lexer.idvalue));
             } else
-                throw ParseError(format("unrecognised identifier scope '{}'",
+                throw ParseError(format(_("unrecognised identifier scope '{}'"),
                                         id1));
 
             lexer.advance();
@@ -291,7 +292,7 @@ ExprPtr Parser::parse_unary()
             if (!toret)
                 toret = parse_symbol_name(lexer.idvalue);
             if (!toret)
-                throw ParseError(format("unrecognised identifier name '{}'",
+                throw ParseError(format(_("unrecognised identifier name '{}'"),
                                         lexer.idvalue));
         }
         break;
@@ -301,7 +302,7 @@ ExprPtr Parser::parse_unary()
         lexer.advance();
         toret = parse_expr();
         if (lexer.token != ')')
-            throw ParseError("expected closing ')'");
+            throw ParseError(_("expected closing ')'"));
         lexer.advance();
         break;
 
@@ -311,10 +312,10 @@ ExprPtr Parser::parse_unary()
         break;
 
     case TOK_EOF:
-        throw ParseError("unexpected end of expression");
+        throw ParseError(_("unexpected end of expression"));
 
     default:
-        throw ParseError("unexpected token");
+        throw ParseError(_("unexpected token"));
     }
 
     return toret;
@@ -399,7 +400,7 @@ ExprPtr parse_expression(const std::string &input, const ParseContext &pc,
     try {
         ExprPtr toret = parser.parse_expr();
         if (lexer.token != TOK_EOF)
-            throw ParseError("unexpected tokens after expression");
+            throw ParseError(_("unexpected tokens after expression"));
         return toret;
     } catch (ParseError err) {
         error << err.msg;

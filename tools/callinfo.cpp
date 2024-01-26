@@ -45,14 +45,13 @@ int main(int argc, char **argv)
     tu.set_indexer_params(iparams);
     tu.add_options(ap);
 
-    ap.positional_multiple("FUNCTION",
-                           "name or hex address of function to "
-                           "find calls to",
-                           [&](const string &s) { functions.push_back(s); });
+    ap.positional_multiple(
+        _("FUNCTION"), _("name or hex address of function to find calls to"),
+        [&](const string &s) { functions.push_back(s); });
 
     ap.parse([&]() {
         if (functions.empty())
-            throw ArgparseError("expected at least one function name");
+            throw ArgparseError(_("expected at least one function name"));
     });
     tu.setup();
 

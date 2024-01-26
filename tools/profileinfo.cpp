@@ -68,10 +68,10 @@ class Profiler : public CallTreeVisitor {
 
     void dump() const
     {
-        cout << left << setw(12) << "Address";
-        cout << left << setw(12) << "Count";
-        cout << left << setw(12) << "Time";
-        cout << left << "Function name";
+        cout << left << setw(12) << _("Address");
+        cout << left << setw(12) << _("Count");
+        cout << left << setw(12) << _("Time");
+        cout << left << _("Function name");
         cout << '\n';
 
         for (const auto &p : Prof) {

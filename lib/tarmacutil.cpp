@@ -19,6 +19,7 @@
 #include "libtarmac/disktree.hh"
 #include "libtarmac/tarmacutil.hh"
 #include "libtarmac/index.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/reporter.hh"
 
@@ -38,49 +39,50 @@ void TarmacUtilityBase::add_options(Argparse &ap)
         index_on_disk = false;
 
     if (can_use_image) {
-        ap.optval({"--image"}, "IMAGEFILE", "image file name",
+        ap.optval({"--image"}, _("IMAGEFILE"), _("image file name"),
                   [this](const string &s) { image_filename = s; });
-        ap.optval({"--load-offset"}, "OFFSET", "offset from addresses in the "
-                  "image file to addresses in the trace",
+        ap.optval({"--load-offset"}, _("OFFSET"), _("offset from addresses in "
+                  "the image file to addresses in the trace"),
                   [this](const string &s) {
                       load_offset = stoull(s, nullptr, 0);
                   });
     }
     if (index_on_disk) {
-        ap.optnoval({"--only-index"}, "generate index and do nothing else",
+        ap.optnoval({"--only-index"}, _("generate index and do nothing else"),
                     [this]() {
                         indexing = Troolean::Yes;
                         onlyIndex = true;
                     });
-        ap.optnoval({"--force-index"}, "regenerate index unconditionally",
+        ap.optnoval({"--force-index"}, _("regenerate index unconditionally"),
                     [this]() { indexing = Troolean::Yes; });
-        ap.optnoval({"--no-index"}, "do not regenerate index",
+        ap.optnoval({"--no-index"}, _("do not regenerate index"),
                     [this]() { indexing = Troolean::No; });
-        ap.optnoval({"--memory-index"}, "keep index in memory instead of on "
-                    "disk", [this]() { index_on_disk = false; });
+        ap.optnoval({"--memory-index"},
+                    _("keep index in memory instead of on disk"),
+                    [this]() { index_on_disk = false; });
     }
-    ap.optnoval({"--li"}, "assume trace is from a little-endian platform",
+    ap.optnoval({"--li"}, _("assume trace is from a little-endian platform"),
                 [this]() {
                     bigend = false;
                     bigend_explicit = true;
                 });
-    ap.optnoval({"--bi"}, "assume trace is from a big-endian platform",
+    ap.optnoval({"--bi"}, _("assume trace is from a big-endian platform"),
                 [this]() {
                     bigend = true;
                     bigend_explicit = true;
                 });
-    ap.optnoval({"--implicit-thumb"}, "assume trace is from a Thumb-only "
+    ap.optnoval({"--implicit-thumb"}, _("assume trace is from a Thumb-only "
                 "platform and might omit the instruction set state from "
-                "trace records",
+                "trace records"),
                 [this]() {
                     thumbonly = true;
                 });
-    ap.optnoval({"-v", "--verbose"}, "make tool more verbose",
+    ap.optnoval({"-v", "--verbose"}, _("make tool more verbose"),
                 [this]() { verbose = true; });
-    ap.optnoval({"-q", "--quiet"}, "make tool quiet",
+    ap.optnoval({"-q", "--quiet"}, _("make tool quiet"),
                 [this]() { verbose = show_progress_meter = false; });
     ap.optnoval({"--show-progress-meter"},
-                "force display of the progress meter",
+                _("force display of the progress meter"),
                 [this]() { show_progress_meter = true; });
 }
 
@@ -88,9 +90,9 @@ void TarmacUtility::add_options(Argparse &ap)
 {
     TarmacUtilityBase::add_options(ap);
 
-    ap.optval({"--index"}, "INDEXFILE", "index file name",
+    ap.optval({"--index"}, _("INDEXFILE"), _("index file name"),
               [this](const string &s) { trace.index_filename = s; });
-    ap.positional("TRACEFILE", "Tarmac trace file to read",
+    ap.positional(_("TRACEFILE"), _("Tarmac trace file to read"),
                   [this](const string &s) { trace.tarmac_filename = s; },
                   trace_required);
 }
@@ -108,10 +110,10 @@ void TarmacUtility::postProcessOptions()
             trace.index_filename = defaultIndexFilename(trace.tarmac_filename);
     } else {
         if (indexing == Troolean::No)
-            reporter->warnx("Ignoring --no-index since index is in memory");
+            reporter->warnx(_("Ignoring --no-index since index is in memory"));
         if (!trace.index_filename.empty())
-            reporter->warnx("Ignoring index file name since index is "
-                            "in memory");
+            reporter->warnx(_("Ignoring index file name since index is "
+                              "in memory"));
         indexing = Troolean::Yes;
         trace.memory_index = make_shared<MemArena>();
     }
@@ -124,8 +126,8 @@ void TarmacUtility::postProcessOptions()
         bool is_big_endian = image->is_big_endian();
         if (bigend_explicit) {
             if (bigend != is_big_endian) {
-                reporter->warnx("Endianness mismatch between image and "
-                                "provided endianness");
+                reporter->warnx(_("Endianness mismatch between image and "
+                                  "provided endianness"));
             }
         } else {
             bigend = is_big_endian;
@@ -145,7 +147,8 @@ void TarmacUtilityMT::add_options(Argparse &ap)
             pair.index_filename = defaultIndexFilename(s);
         traces.push_back(pair);
     };
-    ap.positional_multiple("TRACEFILE", "Tarmac trace files to read", add_pair);
+    ap.positional_multiple(_("TRACEFILE"), _("Tarmac trace files to read"),
+                           add_pair);
 }
 
 void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const

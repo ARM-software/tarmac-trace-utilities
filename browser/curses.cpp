@@ -246,11 +246,11 @@ class HelpWindow : public Window {
             if (i == 0 && whichline > 0) {
                 prefixattr = ATTR_HELP_SCROLL_INDICATOR;
                 prefixlen = w;
-                line = "(scroll up for more)";
+                line = _("(scroll up for more)");
             } else if (i == h - 1 && whichline < lines.size() - 1) {
                 prefixattr = ATTR_HELP_SCROLL_INDICATOR;
                 prefixlen = w;
-                line = "(scroll down for more)";
+                line = _("(scroll down for more)");
             }
 
             line = rpad(line, w);
@@ -453,11 +453,11 @@ class Screen : public Window {
 
             if (minibuf_active) {
                 help = {
-                    {"Backspace", "Erase the last character"},
-                    {"^W", "Erase the last word of the input line"},
-                    {"^U", "Erase the whole input line"},
-                    {"ESC, ^G", "Cancel the minibuffer input operation"},
-                    {"Return", "Accept the current minibuffer contents"},
+                    {"Backspace", _("Erase the last character")},
+                    {"^W", _("Erase the last word of the input line")},
+                    {"^U", _("Erase the whole input line")},
+                    {"ESC, ^G", _("Cancel the minibuffer input operation")},
+                    {"Return", _("Accept the current minibuffer contents")},
                 };
             } else if (win_selected) {
                 help = win_selected->help_text();
@@ -783,9 +783,9 @@ class TraceBuffer : public Window {
 
         {
             ostringstream statusline;
-            statusline << "Tarmac file: " << br.get_tarmac_filename();
-            statusline << "   Time:" << vu.curr_logical_node.mod_time;
-            statusline << "   Line:"
+            statusline << _("Tarmac file: ") << br.get_tarmac_filename();
+            statusline << _("   Time:") << vu.curr_logical_node.mod_time;
+            statusline << _("   Line:")
                        << (vu.curr_visible_node.trace_file_firstline +
                            vu.curr_visible_node.trace_file_lines +
                            br.index.lineno_offset);
@@ -855,33 +855,33 @@ class TraceBuffer : public Window {
     vector<HelpItem> help_text()
     {
         return {
-            {"Up, Down", "Step by one visible instruction"},
-            {"PgUp, PgDn", "Move by a screenful of visible trace"},
-            {"Home, End", "Jump to the start or end of the trace"},
-            {"^L", "Scroll to cycle the current location between middle, top "
-                   "and bottom"},
-            {"t", "Jump to a specified time position"},
-            {"l", "Jump to a specified line number of the trace file"},
-            {"p, P", "Jump to the next / previous visit to a PC location"},
+            {"Up, Down", _("Step by one visible instruction")},
+            {"PgUp, PgDn", _("Move by a screenful of visible trace")},
+            {"Home, End", _("Jump to the start or end of the trace")},
+            {"^L", _("Scroll to cycle the current location between middle, top "
+                     "and bottom")},
+            {"t", _("Jump to a specified time position")},
+            {"l", _("Jump to a specified line number of the trace file")},
+            {"p, P", _("Jump to the next / previous visit to a PC location")},
             {"", ""},
-            {"r", "Toggle display of the core registers"},
-            {"S, D", "Toggle display of the single / double FP registers"},
-            {"m", "Open a memory view at a specified address"},
+            {"r", _("Toggle display of the core registers")},
+            {"S, D", _("Toggle display of the single / double FP registers")},
+            {"m", _("Open a memory view at a specified address")},
             {"", ""},
-            {"a", "Highlight a single event within the current time"},
-            {"Return", "Jump to the previous change to the memory accessed by "
-                       "the highlighted event"},
+            {"a", _("Highlight a single event within the current time")},
+            {"Return", _("Jump to the previous change to the memory accessed by "
+                         "the highlighted event")},
             {"", ""},
             {"-, _",
-             "Fold the innermost unfolded function call at this position"},
+             _("Fold the innermost unfolded function call at this _position")},
             {"+, =",
-             "Unfold the outermost folded function call at this position"},
-            {"[, ]", "Fold / unfold everything nested inside the innermost "
-                     "unfolded function call at this position"},
-            {"{, }", "Maximally fold / unfold the entire trace buffer"},
+             _("Unfold the outermost folded function call at this position")},
+            {"[, ]", _("Fold / unfold everything nested inside the innermost "
+                       "unfolded function call at this position")},
+            {"{, }", _("Maximally fold / unfold the entire trace buffer")},
             {"", ""},
-            {"F6", "Toggle syntax highlighting"},
-            {"F7", "Toggle symbolic display of branch targets"},
+            {"F6", _("Toggle syntax highlighting")},
+            {"F7", _("Toggle symbolic display of branch targets")},
         };
     }
 
@@ -977,7 +977,7 @@ class TraceBuffer : public Window {
             unsigned firstline, lastline, depth;
             if (!vu.physline_range_for_containing_function(
                     vu.curr_visible_node, &firstline, &lastline, &depth)) {
-                screen->minibuf_error("No function call to fold up here");
+                screen->minibuf_error(_("No function call to fold up here"));
                 return true;
             }
 
@@ -1003,7 +1003,7 @@ class TraceBuffer : public Window {
             unsigned firstline, lastline, depth;
             if (!vu.physline_range_for_folded_function_after(
                     vu.curr_visible_node, &firstline, &lastline, &depth)) {
-                screen->minibuf_error("No function call to unfold here");
+                screen->minibuf_error(_("No function call to unfold here"));
             } else {
                 bool position_was_hidden = vu.position_hidden();
 
@@ -1063,12 +1063,12 @@ class TraceBuffer : public Window {
         } else if (c == 'p' || c == 'P') {
             screen->minibuf_ask(
                 (c == 'p' ?
-                 "Go to previous visit to PC: " :
-                 "Go to next visit to PC: "), this);
+                 _("Go to previous visit to PC: ") :
+                 _("Go to next visit to PC: ")), this);
             minibuf_reqtype = c;
             return true;
         } else if (c == 'm') {
-            screen->minibuf_ask("Show memory at address: ", this);
+            screen->minibuf_ask(_("Show memory at address: "), this);
             minibuf_reqtype = 'm';
             return true;
         } else if (c == 'n' || c == 'N') {
@@ -1111,19 +1111,19 @@ class TraceBuffer : public Window {
         } else if (c == KEY_F(6)) {
             syntax_highlighting = !syntax_highlighting;
             screen->minibuf_info(syntax_highlighting
-                                     ? "Syntax highlighting on"
-                                     : "Syntax highlighting off");
+                                     ? _("Syntax highlighting on")
+                                     : _("Syntax highlighting off"));
             return true;
         } else if (c == KEY_F(7)) {
             if (!br.has_image()) {
                 screen->minibuf_error(
-                    "No image to look up symbolic branch targets");
+                    _("No image to look up symbolic branch targets"));
             } else {
                 substitute_branch_targets = !substitute_branch_targets;
                 screen->minibuf_info(
                     substitute_branch_targets
-                        ? "Symbolic branch-target display on"
-                        : "Symbolic branch-target display off");
+                        ? _("Symbolic branch-target display on")
+                        : _("Symbolic branch-target display off"));
             }
             return true;
         } else {
@@ -1155,13 +1155,13 @@ class TraceBuffer : public Window {
                     add_mdisp(addr);
                 else
                     screen->minibuf_error(
-                        format("Error parsing expression: {}", error.str()));
+                        format(_("Error parsing expression: {}"), error.str()));
                 break;
             }
             }
         } catch (invalid_argument) {
             if (text.size() > 0)
-                screen->minibuf_error("Invalid format for parameter");
+                screen->minibuf_error(_("Invalid format for parameter"));
         }
     }
 
@@ -2267,10 +2267,10 @@ int main(int argc, char **argv)
     Argparse ap("tarmac-browser", argc, argv);
     TarmacUtility tu;
     tu.add_options(ap);
-    ap.optnoval({"--colour", "--color"}, "use colour in the terminal",
+    ap.optnoval({"--colour", "--color"}, _("use colour in the terminal"),
                 [&]() { use_terminal_colours = true; });
     ap.optnoval({"--no-colour", "--no-color"},
-                "don't use colour in the terminal",
+                _("don't use colour in the terminal"),
                 [&]() { use_terminal_colours = false; });
     ap.parse();
     tu.setup();

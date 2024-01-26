@@ -17,6 +17,7 @@
  */
 
 #include "libtarmac/index.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
@@ -1002,8 +1003,8 @@ bool Index::read_one_trace_line()
         if (ifs->eof()) {
             ostringstream oss;
             oss << e.msg << endl
-                << "tarmac-browser: ignoring parse error "
-                   "on partial last line (trace truncated?)";
+                << _("tarmac-browser: ignoring parse error "
+                     "on partial last line (trace truncated?)");
             reporter->indexing_warning(trace.tarmac_filename, lineno,
                                        oss.str());
             finish_reading_trace_file();
@@ -1127,7 +1128,7 @@ IndexReader::IndexReader(const TracePair &trace)
 {
     MagicNumber &magic = *arena->getptr<MagicNumber>(0);
     if (!magic.check())
-        reporter->errx(1, "%s: magic number did not match",
+        reporter->errx(1, _("%s: magic number did not match"),
                        index_filename.c_str());
     FileHeader &hdr = *arena->getptr<FileHeader>(sizeof(MagicNumber));
     seqroot = hdr.seqroot;

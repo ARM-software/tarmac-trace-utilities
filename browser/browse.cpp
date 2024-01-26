@@ -21,6 +21,7 @@
 #include "libtarmac/expr.hh"
 #include "libtarmac/index.hh"
 #include "libtarmac/index_ds.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/memtree.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/parser.hh"
@@ -596,7 +597,7 @@ bool Browser::TraceView::lookup_register(const RegisterId &r, uint64_t &out)
     out = 0;
     for (size_t j = rsize; j-- > 0;) {
         if (!def[j])
-            throw invalid_argument(format("register {} is not defined",
+            throw invalid_argument(format(_("register {} is not defined"),
                                           reg_name(r)));
 
         out = (out << 8) | val[j];

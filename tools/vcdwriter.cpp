@@ -338,8 +338,8 @@ class VCDVisitor : public ParseReceiver {
     {
         if (UseTarmacTimestamp) {
             if (Tick > mod_time)
-                reporter->errx(1, "Error when using the instruction timestamp "
-                                  "from the tarmac trace");
+                reporter->errx(1, _("Error when using the instruction "
+                                    "timestamp from the tarmac trace"));
             VCD.writeTime(mod_time);
             Tick = mod_time;
             return;
@@ -406,13 +406,13 @@ int main(int argc, char **argv)
     tu.set_indexer_params(iparams);
     tu.add_options(ap);
 
-    ap.optval({"-o", "--output"}, "VCDFILE",
-              "VCD file name (default: tarmac_filename.vcd)",
+    ap.optval({"-o", "--output"}, _("VCDFILE"),
+              _("VCD file name (default: tarmac_filename.vcd)"),
               [&](const string &s) { vcd_filename = s; });
-    ap.optnoval({"--no-date"}, "Do not emit the date field in the vcd file",
+    ap.optnoval({"--no-date"}, _("Do not emit the date field in the vcd file"),
                 [&]() { no_date = true; });
     ap.optnoval({"--use-tarmac-timestamps"},
-                "Use the instructions' timestamps from the tarmac trace.",
+                _("Use the instructions' timestamps from the tarmac trace."),
                 [&]() { use_tarmac_timestamp = true; });
 
     ap.parse();

@@ -17,6 +17,7 @@
  */
 
 #include "libtarmac/image.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/elf.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/reporter.hh"
@@ -201,7 +202,7 @@ Image::Image(const string &image_filename) : image_filename(image_filename)
 {
     elf_file = elf_open(image_filename);
     if (!elf_file)
-        reporter->errx(1, "Cannot open ELF file \"%s\"",
+        reporter->errx(1, _("Cannot open ELF file \"%s\""),
                        image_filename.c_str());
     load_headers();
     load_symboltable();
@@ -211,9 +212,9 @@ Image::~Image() {}
 
 void Image::dump()
 {
-    printf("Image '%s':\n", image_filename.c_str());
+    printf(_("Image '%s':\n"), image_filename.c_str());
     for (const auto &sym : symbols) {
-        printf("symbol '%s#%d' [0x%llx, 0x%llx)\n", sym.name.c_str(),
+        printf(_("symbol '%s#%d' [0x%llx, 0x%llx)\n"), sym.name.c_str(),
                sym.duplicateNr, sym.addr, sym.addr + sym.size);
     }
 }

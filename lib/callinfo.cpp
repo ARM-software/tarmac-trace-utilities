@@ -19,6 +19,7 @@
 #include "libtarmac/callinfo.hh"
 #include "libtarmac/calltree.hh"
 #include "libtarmac/image.hh"
+#include "libtarmac/intl.hh"
 
 #include <iostream>
 
@@ -102,7 +103,7 @@ void CallInfo::run(Addr symb_addr)
 void CallInfo::run(const string &symb_name)
 {
     if (!has_image()) {
-        cout << format("No image, symbol '{}' can not be looked up !\n",
+        cout << format(_("No image, symbol '{}' can not be looked up !\n"),
                        symb_name);
         return;
     }
@@ -110,11 +111,11 @@ void CallInfo::run(const string &symb_name)
     uint64_t symb_addr;
     size_t symb_size;
     if (!lookup_symbol(symb_name, symb_addr, symb_size)) {
-        cout << format("Symbol '{}' not found !\n", symb_name);
+        cout << format(_("Symbol '{}' not found !\n"), symb_name);
         return;
     }
 
-    cout << format("Symbol '{0}' at 0x{1:x} ({2} bytes) called from :\n",
+    cout << format(_("Symbol '{0}' at 0x{1:x} ({2} bytes) called from :\n"),
                    symb_name, symb_addr, symb_size);
 
     run(symb_addr);
