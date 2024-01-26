@@ -47,7 +47,7 @@ set(test_driver_cmd ${python_exe} ${CMAKE_CURRENT_SOURCE_DIR}/test-driver.py
 # exprtest.ref.
 add_test(NAME exprtest
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/exprtest.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/exprtest.ref stdout
       ${CMAKE_BINARY_DIR}/exprtest --infile ${CMAKE_CURRENT_SOURCE_DIR}/exprtest.txt
   )
 
@@ -56,12 +56,12 @@ add_test(NAME exprtest
 # mode flag.
 add_test(NAME parsertest
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/parsertest.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/parsertest.ref stdout
       ${CMAKE_BINARY_DIR}/parsertest ${CMAKE_CURRENT_SOURCE_DIR}/parsertest.txt
   )
 add_test(NAME parsertest-implicit-thumb
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/parsertest-implicit-thumb.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/parsertest-implicit-thumb.ref stdout
       ${CMAKE_BINARY_DIR}/parsertest --implicit-thumb ${CMAKE_CURRENT_SOURCE_DIR}/parsertest-implicit-thumb.txt
   )
 
@@ -72,13 +72,13 @@ add_test(NAME parsertest-implicit-thumb
 add_test(NAME indextest-li
   COMMAND ${test_driver_cmd}
       --tempfile indextest.tarmac.index
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/indextest-li.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/indextest-li.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-indextool --index indextest.tarmac.index --omit-index-offsets --seq-with-mem ${CMAKE_CURRENT_SOURCE_DIR}/indextest.tarmac --li
   )
 add_test(NAME indextest-bi
   COMMAND ${test_driver_cmd}
       --tempfile indextest.tarmac.index
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/indextest-bi.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/indextest-bi.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-indextool --index indextest.tarmac.index --omit-index-offsets --seq-with-mem ${CMAKE_CURRENT_SOURCE_DIR}/indextest.tarmac --bi
   )
 
@@ -121,13 +121,13 @@ add_test(NAME callinfo-endianness-mismatch
 add_test(NAME calltree-no-symbols
   COMMAND ${test_driver_cmd}
       --tempfile quicksort.tarmac.index
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-addr.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-addr.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-calltree --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 add_test(NAME calltree-symbols
   COMMAND ${test_driver_cmd}
       --tempfile quicksort.tarmac.index
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-symbols.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-symbols.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-calltree --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 
@@ -140,13 +140,13 @@ add_test(NAME calltree-symbols
 add_test(NAME flamegraph-no-symbols
   COMMAND ${test_driver_cmd}
       --tempfile quicksort.tarmac.index
-      --compare outfile:flamegraph-quicksort-addr.txt reffile:${CMAKE_CURRENT_SOURCE_DIR}/flamegraph-quicksort-addr.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/flamegraph-quicksort-addr.ref outfile:flamegraph-quicksort-addr.txt
       ${CMAKE_BINARY_DIR}/tarmac-flamegraph --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac -o flamegraph-quicksort-addr.txt
   )
 add_test(NAME flamegraph-symbols
   COMMAND ${test_driver_cmd}
       --tempfile quicksort.tarmac.index
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/flamegraph-quicksort-symbols.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/flamegraph-quicksort-symbols.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-flamegraph --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 
@@ -156,13 +156,13 @@ add_test(NAME flamegraph-symbols
 add_test(NAME profile-no-symbols
   COMMAND ${test_driver_cmd}
       --tempfile quicksort.tarmac.index
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/profile-quicksort-addr.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/profile-quicksort-addr.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-profile --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 add_test(NAME profile-symbols
   COMMAND ${test_driver_cmd}
       --tempfile quicksort.tarmac.index
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/profile-quicksort-symbols.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/profile-quicksort-symbols.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-profile --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 
@@ -173,7 +173,7 @@ add_test(NAME profile-symbols
 add_test(NAME vcd-no-date
   COMMAND ${test_driver_cmd}
       --tempfile quicksort.tarmac.index
-      --compare outfile:quicksort-nodate.vcd reffile:${CMAKE_CURRENT_SOURCE_DIR}/vcd-quicksort-nodate.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/vcd-quicksort-nodate.ref outfile:quicksort-nodate.vcd
       ${CMAKE_BINARY_DIR}/tarmac-vcd --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac --no-date -o quicksort-nodate.vcd
   )
 
@@ -189,34 +189,34 @@ add_test(NAME vcd-date
 # Test class Argparse.
 add_test(NAME Argparse-help
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse-help.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse-help.ref stdout
       ${CMAKE_BINARY_DIR}/argparsetest --help
   )
 add_test(NAME Argparse-short
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref stdout
       ${CMAKE_BINARY_DIR}/argparsetest -s -v 2 arg1 multi1 multi2
   )
 add_test(NAME Argparse-long
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref stdout
       ${CMAKE_BINARY_DIR}/argparsetest --switch --value 2 arg1 multi1 multi2
   )
 add_test(NAME Argparse-via
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse.ref stdout
       ${CMAKE_BINARY_DIR}/argparsetest --via-file ${CMAKE_CURRENT_SOURCE_DIR}/argparse-via.txt
   )
 add_test(NAME Argparse-via-override
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse-via-override.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/argparse-via-override.ref stdout
       ${CMAKE_BINARY_DIR}/argparsetest --via-file ${CMAKE_CURRENT_SOURCE_DIR}/argparse-via.txt --value 10
   )
 
 # Test btod.
 add_test(NAME btod
   COMMAND ${test_driver_cmd}
-      --compare stdout reffile:${CMAKE_CURRENT_SOURCE_DIR}/btod.ref
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/btod.ref stdout
       ${CMAKE_BINARY_DIR}/btodtest
   )
 
