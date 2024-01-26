@@ -300,16 +300,15 @@ struct Config {
                 font = line;
             } else if ((it = colour_kws.find(word)) != colour_kws.end()) {
                 if (!colours[it->second].parse(line)) {
-                    ostringstream oss;
-                    oss << conf_path << ":" << lineno
-                        << ": unable to parse colour '" << line << "'";
-                    reporter->warnx("%s", oss.str().c_str());
+                    string msg = format("{}: {}: unable to parse colour '{}'",
+                                        conf_path, lineno, line);
+                    reporter->warnx("%s", msg.c_str());
                 }
             } else {
-                ostringstream oss;
-                oss << conf_path << ":" << lineno
-                    << ": unrecognised config directive '" << word << "'";
-                reporter->warnx("%s", oss.str().c_str());
+                string msg =
+                    format("{}: {}: unrecognised config directive '{}'",
+                           conf_path, lineno, word);
+                reporter->warnx("%s", msg.c_str());
             }
         }
     }
@@ -2134,12 +2133,11 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
     if (vu.br.get_node_by_physline(logpos.y0, &node, nullptr)) {
         if (container_fnrange.set_to_container(node)) {
             ostringstream oss;
-            oss << "Containing call (lines "
-                << container_fnrange.callnode.trace_file_firstline
-                << "\xe2\x80\x93"
-                << container_fnrange.lastnode.trace_file_firstline << " to "
-                << br.get_symbolic_address(container_fnrange.firstnode.pc, true)
-                << ")";
+            oss << format(
+                "Containing call (lines {}\xe2\x80\x93{}) to {}",
+                container_fnrange.callnode.trace_file_firstline,
+                container_fnrange.lastnode.trace_file_firstline,
+                br.get_symbolic_address(container_fnrange.firstnode.pc, true));
 
             contextmenu->AppendSeparator();
             wxMenuItem *label = contextmenu->Append(
@@ -2153,12 +2151,11 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
 
         if (callee_fnrange.set_to_callee(node)) {
             ostringstream oss;
-            oss << "Folded call (lines "
-                << callee_fnrange.callnode.trace_file_firstline
-                << "\xe2\x80\x93"
-                << callee_fnrange.lastnode.trace_file_firstline << " to "
-                << br.get_symbolic_address(callee_fnrange.firstnode.pc, true)
-                << ")";
+            oss << format(
+                "Folded call (lines {}\xe2\x80\x93{} to {})",
+                callee_fnrange.callnode.trace_file_firstline,
+                callee_fnrange.lastnode.trace_file_firstline,
+                br.get_symbolic_address(callee_fnrange.firstnode.pc, true));
 
             contextmenu->AppendSeparator();
             wxMenuItem *label = contextmenu->Append(
@@ -2177,12 +2174,10 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
         DecodedTraceLine dtl(br.index.parseParams(),
                              br.index.get_trace_line(node, logpos.y1));
         if (dtl.mev) {
-            ostringstream oss;
-            oss << "Memory access: " << dtl.mev->size << " bytes at 0x" << hex
-                << dtl.mev->addr;
-
             contextmenu->AppendSeparator();
-            wxMenuItem *label = contextmenu->Append(wxID_ANY, oss.str());
+            wxMenuItem *label = contextmenu->Append(
+                wxID_ANY, format("Memory access: {0} bytes at 0x{1:x}",
+                                 dtl.mev->size, dtl.mev->addr));
             label->Enable(false);
 
             context_menu_memtype = 'm';
@@ -2192,11 +2187,10 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
             contextmenu->Append(mi_provenance, "Go to previous write");
             contextmenu->Append(mi_contextmem, "Open a memory window here");
         } else if (dtl.rev) {
-            ostringstream oss;
-            oss << "Register access: " << reg_name(dtl.rev->reg);
-
             contextmenu->AppendSeparator();
-            wxMenuItem *label = contextmenu->Append(wxID_ANY, oss.str());
+            wxMenuItem *label =
+                contextmenu->Append(wxID_ANY, format("Register access: {}",
+                                                     reg_name(dtl.rev->reg)));
             label->Enable(false);
 
             context_menu_memtype = 'r';
@@ -2427,7 +2421,7 @@ void TraceWindow::mem_prompt_dialog_ended(bool ok)
     MemoryWindow::StartAddr addr;
     ostringstream error;
     if (!addr.parse(value, br, error)) {
-        wxMessageBox(wxT("Error parsing expression: " + error.str()));
+        wxMessageBox(format("Error parsing expression: {}", error.str()));
         return;
     }
 
@@ -2767,12 +2761,9 @@ bool RegisterWindow::prepare_context_menu(const LogicalPos &logpos)
     context_menu_reg = regs[reg_index];
 
     clear_menu(contextmenu);
-    {
-        ostringstream oss;
-        oss << "Register " << reg_name(context_menu_reg);
-        wxMenuItem *label = contextmenu->Append(wxID_ANY, oss.str());
-        label->Enable(false);
-    }
+    wxMenuItem *label = contextmenu->Append(
+        wxID_ANY, format("Register {}", reg_name(context_menu_reg)));
+    label->Enable(false);
     contextmenu->Append(mi_ctx_provenance, "Go to last write to this register");
 
     return true;
@@ -3134,12 +3125,9 @@ bool MemoryWindow::prepare_context_menu(const LogicalPos &logpos)
     context_menu_addr = start;
     context_menu_size = size;
     clear_menu(contextmenu);
-    {
-        ostringstream oss;
-        oss << size << "-byte region at address 0x" << hex << start;
-        wxMenuItem *label = contextmenu->Append(wxID_ANY, oss.str());
-        label->Enable(false);
-    }
+    wxMenuItem *label = contextmenu->Append(
+        wxID_ANY, format("{0}-byte region at address 0x{1:x}", size, start));
+    label->Enable(false);
     contextmenu->Append(mi_ctx_provenance, "Go to last write to this region");
     return true;
 }
@@ -3256,7 +3244,7 @@ void MemoryWindow::addredit_activated(wxCommandEvent &event)
         ostringstream error;
         expr = br.parse_expression(value, error);
         if (!expr) {
-            wxMessageBox(wxT("Error parsing expression: " + error.str()));
+            wxMessageBox(format("Error parsing expression: {}", error.str()));
             return;
         }
 
@@ -3451,9 +3439,11 @@ void WXGUIReporter::indexing_status(const TracePair &trace,
                                     IndexUpdateCheck status)
 {
     ostringstream oss;
-    oss << "Indexing trace file " << trace.tarmac_filename;
     if (trace.index_on_disk)
-        oss << endl << "to index file " << trace.index_filename;
+        oss << format("Indexing trace file {0} to index file {1}",
+                      trace.tarmac_filename, trace.index_filename);
+    else
+        oss << format("Indexing trace file {0}", trace.tarmac_filename);
 
     switch (status) {
       case IndexUpdateCheck::InMemory:

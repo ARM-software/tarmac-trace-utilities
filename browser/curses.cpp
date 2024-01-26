@@ -1053,18 +1053,18 @@ class TraceBuffer : public Window {
             selected_event = UINT_MAX;
             return true;
         } else if (c == 't') {
-            screen->minibuf_ask("Go to time: ", this);
+            screen->minibuf_ask(_("Go to time: "), this);
             minibuf_reqtype = 't';
             return true;
         } else if (c == 'l') {
-            screen->minibuf_ask("Go to line: ", this);
+            screen->minibuf_ask(_("Go to line: "), this);
             minibuf_reqtype = 'l';
             return true;
         } else if (c == 'p' || c == 'P') {
-            screen->minibuf_ask(string("Go to ") +
-                                    (c == 'p' ? "next" : "previous") +
-                                    " visit to PC: ",
-                                this);
+            screen->minibuf_ask(
+                (c == 'p' ?
+                 "Go to previous visit to PC: " :
+                 "Go to next visit to PC: "), this);
             minibuf_reqtype = c;
             return true;
         } else if (c == 'm') {
@@ -1110,8 +1110,9 @@ class TraceBuffer : public Window {
             return true;
         } else if (c == KEY_F(6)) {
             syntax_highlighting = !syntax_highlighting;
-            screen->minibuf_info(string("Syntax highlighting ") +
-                                 (syntax_highlighting ? "on" : "off"));
+            screen->minibuf_info(syntax_highlighting
+                                     ? "Syntax highlighting on"
+                                     : "Syntax highlighting off");
             return true;
         } else if (c == KEY_F(7)) {
             if (!br.has_image()) {
@@ -1120,8 +1121,9 @@ class TraceBuffer : public Window {
             } else {
                 substitute_branch_targets = !substitute_branch_targets;
                 screen->minibuf_info(
-                    string("Symbolic branch-target display ") +
-                    (substitute_branch_targets ? "on" : "off"));
+                    substitute_branch_targets
+                        ? "Symbolic branch-target display on"
+                        : "Symbolic branch-target display off");
             }
             return true;
         } else {
@@ -1152,8 +1154,8 @@ class TraceBuffer : public Window {
                 if (addr.parse(text, br, error))
                     add_mdisp(addr);
                 else
-                    screen->minibuf_error("Error parsing expression: " +
-                                          error.str());
+                    screen->minibuf_error(
+                        format("Error parsing expression: {}", error.str()));
                 break;
             }
             }
@@ -1191,7 +1193,7 @@ class RegisterDisplay : public Window {
   protected:
     vector<RegisterId> regs;
     int desired_visible_regs;
-    string regtype_titlecase, regtype_lowercase;
+    string status_prefix, time_prompt, line_prompt;
 
   public:
     RegisterDisplay(Browser &br, TraceBuffer *tbuf)
@@ -1382,7 +1384,7 @@ class RegisterDisplay : public Window {
 
         {
             ostringstream statusline;
-            statusline << regtype_titlecase << " regs at line: " << line;
+            statusline << status_prefix << line;
             if (locked)
                 statusline << " (LOCKED)";
 
@@ -1395,7 +1397,7 @@ class RegisterDisplay : public Window {
                 if (r_content.first) {
                     string addr = br.get_symbolic_address(r_content.second);
                     if (!addr.empty())
-                        statusline << "   " << r_name << " at " << addr;
+                        statusline << "   " << r_name << " = " << addr;
                 }
             }
             string statusstr = rpad(statusline.str(), w);
@@ -1490,17 +1492,11 @@ class RegisterDisplay : public Window {
             screen->resize_wins();
             return true;
         } else if (c == 'l') {
-            string prompt = "Show ";
-            prompt += regtype_lowercase;
-            prompt += " registers at line number: ";
-            screen->minibuf_ask(prompt, this);
+            screen->minibuf_ask(line_prompt, this);
             minibuf_reqtype = 'l';
             return true;
         } else if (c == 't') {
-            string prompt = "Show ";
-            prompt += regtype_lowercase;
-            prompt += " registers at time: ";
-            screen->minibuf_ask(prompt, this);
+            screen->minibuf_ask(time_prompt, this);
             minibuf_reqtype = 't';
             return true;
         } else if (c == '\r' || c == '\n') {
@@ -1545,8 +1541,9 @@ class CoreRegisterDisplay : public RegisterDisplay {
         // Subclass constructor will fill this in, and 'regs' too
         desired_visible_regs = 0;
 
-        regtype_titlecase = "Core";
-        regtype_lowercase = "core";
+        status_prefix = "Core regs at line: ";
+        time_prompt = "Show core registers at time: ";
+        line_prompt = "Show core registers at line number: ";
     }
 };
 
@@ -1587,8 +1584,9 @@ class DoubleRegisterDisplay : public FPRegisterDisplay {
         for (unsigned i = 0; i < 32; i++)
             regs.push_back(RegisterId{RegPrefix::d, i});
         desired_visible_regs = 4;
-        regtype_titlecase = "FP double";
-        regtype_lowercase = "FP double";
+        status_prefix = "FP double regs at line: ";
+        time_prompt = "Show FP double registers at time: ";
+        line_prompt = "Show FP double registers at line number: ";
     }
 };
 
@@ -1600,8 +1598,9 @@ class SingleRegisterDisplay : public FPRegisterDisplay {
         for (unsigned i = 0; i < 32; i++)
             regs.push_back(RegisterId{RegPrefix::s, i});
         desired_visible_regs = 8;
-        regtype_titlecase = "FP single";
-        regtype_lowercase = "FP single";
+        status_prefix = "FP single regs at line: ";
+        time_prompt = "Show FP single registers at time: ";
+        line_prompt = "Show FP single registers at line number: ";
     }
 };
 
@@ -1618,8 +1617,9 @@ class NeonRegisterDisplay : public VectorRegisterDisplay {
         for (unsigned i = 0; i < n_q_regs; i++)
             regs.push_back(RegisterId{RegPrefix::q, i});
         desired_visible_regs = 8;
-        regtype_titlecase = "NEON vector";
-        regtype_lowercase = "NEON vector";
+        status_prefix = "NEON vector regs at line ";
+        time_prompt = "Show NEON vector registers at time: ";
+        line_prompt = "Show NEON vector registers at line number: ";
     }
 };
 
@@ -1632,8 +1632,9 @@ class MVERegisterDisplay : public VectorRegisterDisplay {
             regs.push_back(RegisterId{RegPrefix::q, i});
         regs.push_back(RegisterId{RegPrefix::vpr, 0});
         desired_visible_regs = 9;
-        regtype_titlecase = "MVE vector";
-        regtype_lowercase = "MVE vector";
+        status_prefix = "MVE vector regs at line: ";
+        time_prompt = "Show MVE vector registers at time: ";
+        line_prompt = "Show MVE vector registers at line number: ";
     }
 };
 

@@ -17,6 +17,7 @@
  */
 
 #include "libtarmac/argparse.hh"
+#include "libtarmac/misc.hh"
 #include "libtarmac/reporter.hh"
 
 #include <cassert>
@@ -150,9 +151,8 @@ void Argparse::parse_or_throw()
 
                 auto opt_it = longopts.find(name);
                 if (opt_it == longopts.end())
-                    throw ArgparseError("'--" + name +
-                                        "': "
-                                        "unrecognised option name");
+                    throw ArgparseError(
+                        format("'--{}': unrecognised option name", name));
                 const Opt *opt = opt_it->second;
 
                 if (opt->has_val) {
@@ -164,17 +164,15 @@ void Argparse::parse_or_throw()
                         val = arguments.front();
                         arguments.pop_front();
                     } else {
-                        throw ArgparseError("'--" + name +
-                                            "': "
-                                            "option expects a value");
+                        throw ArgparseError(
+                            format("'--{}': option expects a value", name));
                     }
 
                     opt->valresponder(val);
                 } else {
                     if (equals != string::npos)
-                        throw ArgparseError("'--" + name +
-                                            "': "
-                                            "option expects no value");
+                        throw ArgparseError(
+                            format("'--{}': option expects no value", name));
 
                     opt->novalresponder();
                 }
@@ -185,9 +183,8 @@ void Argparse::parse_or_throw()
 
                     auto opt_it = shortopts.find(chr);
                     if (opt_it == shortopts.end())
-                        throw ArgparseError("'-" + string(1, chr) +
-                                            "': "
-                                            "unrecognised option name");
+                        throw ArgparseError(
+                            format("'-{}': unrecognised option name", chr));
                     const Opt *opt = opt_it->second;
 
                     if (opt->has_val) {
@@ -200,9 +197,8 @@ void Argparse::parse_or_throw()
                             val = arguments.front();
                             arguments.pop_front();
                         } else {
-                            throw ArgparseError("'-" + string(1, chr) +
-                                                "': "
-                                                "option expects a value");
+                            throw ArgparseError(
+                                format("'-{}': option expects a value", chr));
                         }
 
                         opt->valresponder(val);
@@ -211,9 +207,8 @@ void Argparse::parse_or_throw()
                     }
                 }
             } else {
-                throw ArgparseError("'" + arg +
-                                    "': "
-                                    "badly formatted option");
+                throw ArgparseError(
+                    format("'{}': badly formatted option", arg));
             }
         } else {
             // Treat this as a positional argument.
@@ -223,9 +218,8 @@ void Argparse::parse_or_throw()
             } else if (multiple_positional) {
                 multiple_positional->valresponder(arg);
             } else {
-                throw ArgparseError("'" + arg +
-                                    "': "
-                                    "unexpected positional argument");
+                throw ArgparseError(
+                    format("'{}': unexpected positional argument", arg));
             }
         }
     }
@@ -233,9 +227,9 @@ void Argparse::parse_or_throw()
     for (; posit != posend; ++posit) {
         const Opt *opt = *posit;
         if (opt->required)
-            throw ArgparseError("expected additional arguments"
-                                " (starting with '" +
-                                opt->metavar + "')");
+            throw ArgparseError(
+                format("expected additional arguments (starting with '{}')",
+                       opt->metavar));
     }
 }
 
@@ -247,8 +241,8 @@ void Argparse::parse(std::function<void(void)> final_validator)
     } catch (ArgparseError e) {
         ostringstream oss;
         oss << programname << ": " << e.msg() << endl
-            << string(programname.size() + 2, ' ') << "try '" << programname
-            << " --help' for help";
+            << string(programname.size() + 2, ' ')
+            << format("try '{} --help' for help", programname);
         reporter->errx(1, "%s", oss.str().c_str());
         exit(1);
     } catch (ArgparseHelpAction) {

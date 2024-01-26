@@ -596,8 +596,8 @@ bool Browser::TraceView::lookup_register(const RegisterId &r, uint64_t &out)
     out = 0;
     for (size_t j = rsize; j-- > 0;) {
         if (!def[j])
-            throw invalid_argument("register " + reg_name(r) +
-                                   " is not defined");
+            throw invalid_argument(format("register {} is not defined",
+                                          reg_name(r)));
 
         out = (out << 8) | val[j];
     }

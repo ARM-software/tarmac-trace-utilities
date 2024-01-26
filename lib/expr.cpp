@@ -131,7 +131,7 @@ struct RegisterExpression : Expression {
         if (ec.lookup_register(reg, toret))
             return toret;
 
-        throw EvaluationError("register name '" + name + "'");
+        throw EvaluationError(format("register name '{}'", name));
     }
     virtual void dump(ostream &os) { os << "(register " << name << ")"; }
 };
@@ -274,15 +274,16 @@ ExprPtr Parser::parse_unary()
             if (id1 == "reg") {
                 toret = parse_register_name(lexer.idvalue);
                 if (!toret)
-                    throw ParseError("unrecognised register name '" +
-                                     lexer.idvalue + "'");
+                    throw ParseError(format("unrecognised register name '{}'",
+                                            lexer.idvalue));
             } else if (id1 == "sym") {
                 toret = parse_symbol_name(lexer.idvalue);
                 if (!toret)
-                    throw ParseError("unrecognised symbol name '" +
-                                     lexer.idvalue + "'");
+                    throw ParseError(format("unrecognised symbol name '{}'",
+                                            lexer.idvalue));
             } else
-                throw ParseError("unrecognised identifier scope '" + id1 + "'");
+                throw ParseError(format("unrecognised identifier scope '{}'",
+                                        id1));
 
             lexer.advance();
         } else {
@@ -290,8 +291,8 @@ ExprPtr Parser::parse_unary()
             if (!toret)
                 toret = parse_symbol_name(lexer.idvalue);
             if (!toret)
-                throw ParseError("unrecognised identifier name '" +
-                                 lexer.idvalue + "'");
+                throw ParseError(format("unrecognised identifier name '{}'",
+                                        lexer.idvalue));
         }
         break;
     }

@@ -651,10 +651,8 @@ class TarmacLineParserImpl {
                 regname == "AT") {
                 if (!unrecognised_system_operations_reported.count(regname)) {
                     unrecognised_system_operations_reported.insert(regname);
-                    ostringstream os;
-                    os << "unsupported system operation '" << regnametok.s
-                       << "'";
-                    warning(os.str());
+                    warning(format("unsupported system operation '{}'",
+                                   regnametok.s));
                 }
                 return;
             }
@@ -862,10 +860,8 @@ class TarmacLineParserImpl {
                      * --verbose flag if necessary, by setting a
                      * verbosity field in the Parser object.
                      */
-                    ostringstream os;
-                    os << "unrecognised " << bits << "-bit register '"
-                       << regname << "'";
-                    warning(os.str());
+                    warning(format("unrecognised {0}-bit register '{1}'",
+                                   bits, regname));
 #endif
                 }
                 return;
@@ -1151,7 +1147,7 @@ class TarmacLineParserImpl {
             } else {
                 if (!unrecognised_tarmac_events_reported.count(type)) {
                     unrecognised_tarmac_events_reported.insert(type);
-                    warning("unknown Tarmac event type '" + type + "'");
+                    warning(format("unknown Tarmac event type '{}'", type));
                 }
             }
 

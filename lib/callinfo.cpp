@@ -102,20 +102,20 @@ void CallInfo::run(Addr symb_addr)
 void CallInfo::run(const string &symb_name)
 {
     if (!has_image()) {
-        cout << "No image, symbol '" << symb_name
-             << "' can not be looked up !\n";
+        cout << format("No image, symbol '{}' can not be looked up !\n",
+                       symb_name);
         return;
     }
 
     uint64_t symb_addr;
     size_t symb_size;
     if (!lookup_symbol(symb_name, symb_addr, symb_size)) {
-        cout << "Symbol '" << symb_name << "' not found !\n";
+        cout << format("Symbol '{}' not found !\n", symb_name);
         return;
     }
 
-    cout << "Symbol '" << symb_name << "' at 0x" << hex << symb_addr << dec
-         << " (" << symb_size << " bytes) called from :\n";
+    cout << format("Symbol '{0}' at 0x{1:x} ({2} bytes) called from :\n",
+                   symb_name, symb_addr, symb_size);
 
     run(symb_addr);
 }

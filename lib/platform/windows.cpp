@@ -52,8 +52,7 @@ string get_error_message()
 {
     DWORD err = GetLastError();
 
-    std::ostringstream oss;
-    oss << "error " << err;
+    string msg;
 
     constexpr size_t MAX_MESSAGE_SIZE = 0x10000;
     char msgtext[MAX_MESSAGE_SIZE];
@@ -61,13 +60,13 @@ string get_error_message()
             (FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS), NULL,
             err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), msgtext,
             MAX_MESSAGE_SIZE - 1, nullptr)) {
-        oss << " (unable to format: FormatMessage returned " << GetLastError()
-            << ")";
+        msg = format(
+            "error {0} (unable to format: FormatMessage returned {1})", err,
+            GetLastError());
     } else {
-        oss << ": " << msgtext;
+        msg = format("error {0}: {1}", err, msgtext);
     }
 
-    string msg = oss.str();
     while (!msg.empty() && msg[msg.size() - 1] == '\n')
         msg.resize(msg.size() - 1);
 
