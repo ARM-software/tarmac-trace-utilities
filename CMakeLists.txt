@@ -117,6 +117,12 @@ endif()
 add_subdirectory(tools)
 add_subdirectory(browser)
 
+# Translate the messages, if possible.
+
+if(GETTEXT_FOUND)
+  add_subdirectory(po)
+endif()
+
 # Check if we have Python3, which is needed for the test suite.
 
 if(CMAKE_VERSION VERSION_LESS "3.12")
