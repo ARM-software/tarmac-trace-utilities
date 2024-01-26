@@ -27,7 +27,9 @@
 #include <shlobj.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <map>
+#include <string>
 #include <sstream>
 
 using std::ostringstream;
@@ -269,6 +271,24 @@ static std::map<std::string, std::unique_ptr<std::string>> fake_gettext_cache;
 
 void gettext_setup()
 {
+    {
+        std::string env_override;
+        if (get_environment_variable("LCID_OVERRIDE", env_override) &&
+            !env_override.empty()) {
+            size_t pos;
+            unsigned lcid = std::stoul(env_override, &pos, 0);
+            if (pos == env_override.size()) {
+                if (!SetThreadLocale(lcid)) {
+                    std::cerr << "failed to set locale to 0x" << std::hex
+                              << lcid << std::dec << ": " << get_error_message()
+                              << "\n";
+                } else {
+                    std::cerr << "set locale to 0x" << std::hex << lcid
+                              << std::dec << "\n";
+                }
+            }
+        }
+    }
 
     HRSRC lookup_hrsrc = FindResource(
         NULL, MAKEINTRESOURCE(2001), MAKEINTRESOURCE(2001));
