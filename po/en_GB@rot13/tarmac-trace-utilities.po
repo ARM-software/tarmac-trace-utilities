@@ -1,0 +1,1203 @@
+# English translations for Tarmac Trace package.
+# Copyright (C) 2024 Arm Limited
+# This file is distributed under the same license as the Tarmac Trace Utilities package.
+# Simon Tatham <simon.tatham@arm.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tarmac Trace Utilities\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-12 17:37+0000\n"
+"PO-Revision-Date: 2024-01-12 17:46+0000\n"
+"Last-Translator: Simon Tatham <simon.tatham@arm.com>\n"
+"Language-Team: English\n"
+"Language: en_GB@rot13\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: browser/browse.cpp:600
+msgid "register {} is not defined"
+msgstr "eqsufgqe {} uf abg pqruaqp"
+
+#: browser/curses.cpp:249
+msgid "(scroll up for more)"
+msgstr "(foebxx hc rbe ybeq)"
+
+#: browser/curses.cpp:253
+msgid "(scroll down for more)"
+msgstr "(foebxx pbja rbe ybeq)"
+
+#: browser/curses.cpp:456
+msgid "Erase the last character"
+msgstr "Qemfq gtq xmfg otmemogqe"
+
+#: browser/curses.cpp:457
+msgid "Erase the last word of the input line"
+msgstr "Qemfq gtq xmfg jbep br gtq uachg xuaq"
+
+#: browser/curses.cpp:458
+msgid "Erase the whole input line"
+msgstr "Qemfq gtq jtbxq uachg xuaq"
+
+#: browser/curses.cpp:459
+msgid "Cancel the minibuffer input operation"
+msgstr "Omaoqx gtq yuaunhrrqe uachg bcqemguba"
+
+#: browser/curses.cpp:460
+msgid "Accept the current minibuffer contents"
+msgstr "Mooqcg gtq oheeqag yuaunhrrqe obagqagf"
+
+#: browser/curses.cpp:786
+msgid "Tarmac file: "
+msgstr "Gmeymo ruxq: "
+
+#: browser/curses.cpp:787
+msgid "   Time:"
+msgstr "   Guyq:"
+
+#: browser/curses.cpp:788
+msgid "   Line:"
+msgstr "   Xuaq:"
+
+#: browser/curses.cpp:858
+msgid "Step by one visible instruction"
+msgstr "Fgqc nl baq iufunxq uafgehoguba"
+
+#: browser/curses.cpp:859
+msgid "Move by a screenful of visible trace"
+msgstr "Ybiq nl m foeqqarhx br iufunxq gemoq"
+
+#: browser/curses.cpp:860
+msgid "Jump to the start or end of the trace"
+msgstr "Vhyc gb gtq fgmeg be qap br gtq gemoq"
+
+#: browser/curses.cpp:861
+msgid "Scroll to cycle the current location between middle, top and bottom"
+msgstr "Foebxx gb oloxq gtq oheeqag xbomguba nqgjqqa yuppxq, gbc map nbggby"
+
+#: browser/curses.cpp:863
+msgid "Jump to a specified time position"
+msgstr "Vhyc gb m fcqouruqp guyq cbfuguba"
+
+#: browser/curses.cpp:864
+msgid "Jump to a specified line number of the trace file"
+msgstr "Vhyc gb m fcqouruqp xuaq ahynqe br gtq gemoq ruxq"
+
+#: browser/curses.cpp:865
+msgid "Jump to the next / previous visit to a PC location"
+msgstr "Vhyc gb gtq aqkg / ceqiubhf iufug gb m CO xbomguba"
+
+#: browser/curses.cpp:867
+msgid "Toggle display of the core registers"
+msgstr "Gbssxq pufcxml br gtq obeq eqsufgqef"
+
+#: browser/curses.cpp:868
+msgid "Toggle display of the single / double FP registers"
+msgstr "Gbssxq pufcxml br gtq fuasxq / pbhnxq RC eqsufgqef"
+
+#: browser/curses.cpp:869
+msgid "Open a memory view at a specified address"
+msgstr "Bcqa m yqybel iuqj mg m fcqouruqp mppeqff"
+
+#: browser/curses.cpp:871
+msgid "Highlight a single event within the current time"
+msgstr "Tustxustg m fuasxq qiqag jugtua gtq oheeqag guyq"
+
+#: browser/curses.cpp:872
+msgid ""
+"Jump to the previous change to the memory accessed by the highlighted event"
+msgstr ""
+"Vhyc gb gtq ceqiubhf otmasq gb gtq yqybel mooqffqp nl gtq tustxustgqp qiqag"
+
+#: browser/curses.cpp:876
+msgid "Fold the innermost unfolded function call at this _position"
+msgstr "Rbxp gtq uaaqeybfg harbxpqp rhaoguba omxx mg gtuf _cbfuguba"
+
+#: browser/curses.cpp:878
+msgid "Unfold the outermost folded function call at this position"
+msgstr "Harbxp gtq bhgqeybfg rbxpqp rhaoguba omxx mg gtuf cbfuguba"
+
+#: browser/curses.cpp:879
+msgid ""
+"Fold / unfold everything nested inside the innermost unfolded function call "
+"at this position"
+msgstr ""
+"Rbxp / harbxp qiqelgtuas aqfgqp uafupq gtq uaaqeybfg harbxpqp rhaoguba omxx "
+"mg gtuf cbfuguba"
+
+#: browser/curses.cpp:881
+msgid "Maximally fold / unfold the entire trace buffer"
+msgstr "Ymkuymxxl rbxp / harbxp gtq qagueq gemoq nhrrqe"
+
+#: browser/curses.cpp:883
+msgid "Toggle syntax highlighting"
+msgstr "Gbssxq flagmk tustxustguas"
+
+#: browser/curses.cpp:884
+msgid "Toggle symbolic display of branch targets"
+msgstr "Gbssxq flynbxuo pufcxml br nemaot gmesqgf"
+
+#: browser/curses.cpp:980
+msgid "No function call to fold up here"
+msgstr "Ab rhaoguba omxx gb rbxp hc tqeq"
+
+#: browser/curses.cpp:1006
+msgid "No function call to unfold here"
+msgstr "Ab rhaoguba omxx gb harbxp tqeq"
+
+#: browser/curses.cpp:1056
+msgid "Go to time: "
+msgstr "Sb gb guyq: "
+
+#: browser/curses.cpp:1060
+msgid "Go to line: "
+msgstr "Sb gb xuaq: "
+
+#: browser/curses.cpp:1066
+msgid "Go to previous visit to PC: "
+msgstr "Sb gb ceqiubhf iufug gb CO: "
+
+#: browser/curses.cpp:1067
+msgid "Go to next visit to PC: "
+msgstr "Sb gb aqkg iufug gb CO: "
+
+#: browser/curses.cpp:1071
+msgid "Show memory at address: "
+msgstr "Ftbj yqybel mg mppeqff: "
+
+#: browser/curses.cpp:1114
+msgid "Syntax highlighting on"
+msgstr "Flagmk tustxustguas ba"
+
+#: browser/curses.cpp:1115
+msgid "Syntax highlighting off"
+msgstr "Flagmk tustxustguas brr"
+
+#: browser/curses.cpp:1120
+msgid "No image to look up symbolic branch targets"
+msgstr "Ab uymsq gb xbbw hc flynbxuo nemaot gmesqgf"
+
+#: browser/curses.cpp:1125
+msgid "Symbolic branch-target display on"
+msgstr "Flynbxuo nemaot-gmesqg pufcxml ba"
+
+#: browser/curses.cpp:1126
+msgid "Symbolic branch-target display off"
+msgstr "Flynbxuo nemaot-gmesqg pufcxml brr"
+
+#: browser/curses.cpp:1158 browser/wx.cpp:2431 browser/wx.cpp:3256
+msgid "Error parsing expression: {}"
+msgstr "Qeebe cmefuas qkceqffuba: {}"
+
+#: browser/curses.cpp:1164
+msgid "Invalid format for parameter"
+msgstr "Uaimxup rbeymg rbe cmemyqgqe"
+
+#: browser/curses.cpp:2270
+msgid "use colour in the terminal"
+msgstr "hfq obxbhe ua gtq gqeyuamx"
+
+#: browser/curses.cpp:2273
+msgid "don't use colour in the terminal"
+msgstr "pba'g hfq obxbhe ua gtq gqeyuamx"
+
+#: browser/wx.cpp:310
+msgid "{}: {}: unable to parse colour '{}'"
+msgstr "{}: {}: hamnxq gb cmefq obxbhe '{}'"
+
+#: browser/wx.cpp:316
+msgid "{}: {}: unrecognised config directive '{}'"
+msgstr "{}: {}: haeqobsaufqp obarus pueqoguiq '{}'"
+
+#: browser/wx.cpp:1753
+msgid "Locked to: "
+msgstr "Xbowqp gb: "
+
+#: browser/wx.cpp:1825
+msgid "None"
+msgstr "Abaq"
+
+#: browser/wx.cpp:1862
+msgid "New trace view"
+msgstr "Aqj gemoq iuqj"
+
+#: browser/wx.cpp:1866
+msgid "New..."
+msgstr "Aqj..."
+
+#: browser/wx.cpp:1869
+msgid "Memory view"
+msgstr "Yqybel iuqj"
+
+#: browser/wx.cpp:1871
+msgid "Stack view"
+msgstr "Fgmow iuqj"
+
+#: browser/wx.cpp:1872
+msgid "Core register view"
+msgstr "Obeq eqsufgqe iuqj"
+
+#: browser/wx.cpp:1873
+msgid "Single-precision FP reg view"
+msgstr "Fuasxq-ceqoufuba RC eqs iuqj"
+
+#: browser/wx.cpp:1874
+msgid "Double-precision FP reg view"
+msgstr "Pbhnxq-ceqoufuba RC eqs iuqj"
+
+#: browser/wx.cpp:1875
+msgid "Neon vector reg view"
+msgstr "Aqba iqogbe eqs iuqj"
+
+#: browser/wx.cpp:1876
+msgid "MVE vector reg view"
+msgstr "YIQ iqogbe eqs iuqj"
+
+#: browser/wx.cpp:1880
+msgid "&View"
+msgstr "&Iuqj"
+
+#: browser/wx.cpp:1883
+msgid "Re-centre"
+msgstr "Eq-oqageq"
+
+#: browser/wx.cpp:1886
+msgid "Call-depth indentation"
+msgstr "Omxx-pqcgt uapqagmguba"
+
+#: browser/wx.cpp:1887
+msgid "Syntax highlighting"
+msgstr "Flagmk tustxustguas"
+
+#: browser/wx.cpp:1890
+msgid "Symbolic branch targets"
+msgstr "Flynbxuo nemaot gmesqgf"
+
+#: browser/wx.cpp:1913
+msgid "Time: "
+msgstr "Guyq: "
+
+#: browser/wx.cpp:1923
+msgid "Prev"
+msgstr "Ceqi"
+
+#: browser/wx.cpp:1925
+msgid "Next"
+msgstr "Aqkg"
+
+#: browser/wx.cpp:2135
+msgid "Fold all"
+msgstr "Rbxp mxx"
+
+#: browser/wx.cpp:2136
+msgid "Unfold all"
+msgstr "Harbxp mxx"
+
+#: browser/wx.cpp:2144
+msgid "Containing call (lines {}–{} to {})"
+msgstr "Obagmuauas omxx (xuaqf {}–{} gb {})"
+
+#: browser/wx.cpp:2154
+msgid "Fold up"
+msgstr "Rbxp hc"
+
+#: browser/wx.cpp:2155
+msgid "Fold all subroutines"
+msgstr "Rbxp mxx fhnebhguaqf"
+
+#: browser/wx.cpp:2156 browser/wx.cpp:2173
+msgid "Unfold completely"
+msgstr "Harbxp obycxqgqxl"
+
+#: browser/wx.cpp:2162
+msgid "Folded call (lines {}–{} to {})"
+msgstr "Rbxpqp omxx (xuaqf {}–{} gb {})"
+
+#: browser/wx.cpp:2172
+msgid "Unfold one level"
+msgstr "Harbxp baq xqiqx"
+
+#: browser/wx.cpp:2186
+msgid "Memory access: {0} bytes at 0x{1:x}"
+msgstr "Yqybel mooqff: {0} nlgqf mg 0x{1:x}"
+
+#: browser/wx.cpp:2194 browser/wx.cpp:2208
+msgid "Go to previous write"
+msgstr "Sb gb ceqiubhf jeugq"
+
+#: browser/wx.cpp:2195
+msgid "Open a memory window here"
+msgstr "Bcqa m yqybel juapbj tqeq"
+
+#: browser/wx.cpp:2199
+msgid "Register access: {}"
+msgstr "Eqsufgqe mooqff: {}"
+
+#: browser/wx.cpp:2379
+msgid "Open memory window"
+msgstr "Bcqa yqybel juapbj"
+
+#: browser/wx.cpp:2384
+msgid "Enter memory address to display"
+msgstr "Qagqe yqybel mppeqff gb pufcxml"
+
+#: browser/wx.cpp:2772
+msgid "Register {}"
+msgstr "Eqsufgqe {}"
+
+#: browser/wx.cpp:2775
+msgid "Go to last write to this register"
+msgstr "Sb gb xmfg jeugq gb gtuf eqsufgqe"
+
+#: browser/wx.cpp:2849 browser/wx.cpp:2866
+msgid "Core regs"
+msgstr "Obeq eqsf"
+
+#: browser/wx.cpp:2881
+msgid "FP regs (single precision)"
+msgstr "RC eqsf (fuasxq ceqoufuba)"
+
+#: browser/wx.cpp:2896
+msgid "FP regs (double precision)"
+msgstr "RC eqsf (pbhnxq ceqoufuba)"
+
+#: browser/wx.cpp:2911
+msgid "Vector regs (Neon)"
+msgstr "Iqogbe eqsf (Aqba)"
+
+#: browser/wx.cpp:2927
+msgid "Vector regs (MVE)"
+msgstr "Iqogbe eqsf (YIQ)"
+
+#: browser/wx.cpp:2946
+msgid "Memory"
+msgstr "Yqybel"
+
+#: browser/wx.cpp:2965
+msgid "Address: "
+msgstr "Mppeqff: "
+
+#: browser/wx.cpp:3137
+msgid "{0}-byte region at address 0x{1:x}"
+msgstr "{0}-nlgq eqsuba mg mppeqff 0x{1:x}"
+
+#: browser/wx.cpp:3140
+msgid "Go to last write to this region"
+msgstr "Sb gb xmfg jeugq gb gtuf eqsuba"
+
+#: browser/wx.cpp:3406 browser/wx.cpp:3418
+msgid "tarmac-gui-browser fatal error"
+msgstr "gmeymo-shu-nebjfqe rmgmx qeebe"
+
+#: browser/wx.cpp:3431 browser/wx.cpp:3442
+msgid "tarmac-gui-browser warning"
+msgstr "gmeymo-shu-nebjfqe jmeauas"
+
+#: browser/wx.cpp:3452
+msgid "Indexing trace file {0} to index file {1}"
+msgstr "Uapqkuas gemoq ruxq {0} gb uapqk ruxq {1}"
+
+#: browser/wx.cpp:3455
+msgid "Indexing trace file {0}"
+msgstr "Uapqkuas gemoq ruxq {0}"
+
+#: browser/wx.cpp:3462
+msgid "(new index file)"
+msgstr "(aqj uapqk ruxq)"
+
+#: browser/wx.cpp:3465
+msgid "(index file was older than trace file)"
+msgstr "(uapqk ruxq jmf bxpqe gtma gemoq ruxq)"
+
+#: browser/wx.cpp:3469
+msgid "(index file was not generated by this version of the tool)"
+msgstr "(uapqk ruxq jmf abg sqaqemgqp nl gtuf iqefuba br gtq gbbx)"
+
+#: browser/wx.cpp:3472
+msgid "(previous index file generation was not completed)"
+msgstr "(ceqiubhf uapqk ruxq sqaqemguba jmf abg obycxqgqp)"
+
+#: browser/wx.cpp:3475
+msgid "(not actually indexing)"
+msgstr "(abg moghmxxl uapqkuas)"
+
+#: browser/wx.cpp:3516
+msgid "tarmac-gui-browser indexing"
+msgstr "gmeymo-shu-nebjfqe uapqkuas"
+
+#: browser/wx.cpp:3574
+msgid "tarmac-gui-browser setup"
+msgstr "gmeymo-shu-nebjfqe fqghc"
+
+#: browser/wx.cpp:3578
+msgid "Trace file to view (required)"
+msgstr "Gemoq ruxq gb iuqj (eqdhueqp)"
+
+#: browser/wx.cpp:3581
+msgid "Select a trace file to view"
+msgstr "Fqxqog m gemoq ruxq gb iuqj"
+
+#: browser/wx.cpp:3586
+msgid "ELF image matching the trace"
+msgstr "QXR uymsq ymgotuas gtq gemoq"
+
+#: browser/wx.cpp:3589
+msgid "Select an ELF image to use"
+msgstr "Fqxqog ma QXR uymsq gb hfq"
+
+#: browser/wx.cpp:3594
+msgid "Re-index the trace file?"
+msgstr "Eq-uapqk gtq gemoq ruxq?"
+
+#: browser/wx.cpp:3598 browser/wx.cpp:3601
+msgid "If necessary"
+msgstr "Ur aqoqffmel"
+
+#: browser/wx.cpp:3602
+msgid "Always"
+msgstr "Mxjmlf"
+
+#: browser/wx.cpp:3603
+msgid "Never"
+msgstr "Aqiqe"
+
+#: browser/wx.cpp:3607
+msgid "Trace is from a big-endian system"
+msgstr "Gemoq uf reby m nus-qapuma flfgqy"
+
+#: browser/wx.cpp:3731
+msgid "Unable to parse font description:\n"
+msgstr "Hamnxq gb cmefq rbag pqfoeucguba:\n"
+
+#: browser/wx.cpp:3732
+msgid "Setup error"
+msgstr "Fqghc qeebe"
+
+#: lib/argparse.cpp:58
+msgid "Option name should be of the form '--foo' or '-f'"
+msgstr "Bcguba amyq ftbhxp nq br gtq rbey '--foo' be '-f'"
+
+#: lib/argparse.cpp:157
+msgid "'--{}': unrecognised option name"
+msgstr "'--{}': haeqobsaufqp bcguba amyq"
+
+#: lib/argparse.cpp:170
+msgid "'--{}': option expects a value"
+msgstr "'--{}': bcguba qkcqogf m imxhq"
+
+#: lib/argparse.cpp:177
+msgid "'--{}': option expects no value"
+msgstr "'--{}': bcguba qkcqogf ab imxhq"
+
+#: lib/argparse.cpp:189
+msgid "'-{}': unrecognised option name"
+msgstr "'-{}': haeqobsaufqp bcguba amyq"
+
+#: lib/argparse.cpp:203
+msgid "'-{}': option expects a value"
+msgstr "'-{}': bcguba qkcqogf m imxhq"
+
+#: lib/argparse.cpp:213
+msgid "'{}': badly formatted option"
+msgstr "'{}': nmpxl rbeymggqp bcguba"
+
+#: lib/argparse.cpp:224
+msgid "'{}': unexpected positional argument"
+msgstr "'{}': haqkcqogqp cbfugubamx meshyqag"
+
+#: lib/argparse.cpp:233
+msgid "expected additional arguments (starting with '{}')"
+msgstr "qkcqogqp mppugubamx meshyqagf (fgmeguas jugt '{}')"
+
+#: lib/argparse.cpp:247
+msgid "try '{} --help' for help"
+msgstr "gel '{} --help' rbe tqxc"
+
+#: lib/argparse.cpp:329
+msgid "usage: "
+msgstr "hfmsq: "
+
+#: lib/argparse.cpp:370
+msgid "options:"
+msgstr "bcgubaf:"
+
+#: lib/argparse.cpp:396
+msgid "positional arguments:"
+msgstr "cbfugubamx meshyqagf:"
+
+#: lib/argparse.cpp:408
+msgid "also:"
+msgstr "mxfb:"
+
+#: lib/argparse.cpp:409
+msgid "display this text"
+msgstr "pufcxml gtuf gqkg"
+
+#: lib/callinfo.cpp:106
+msgid "No image, symbol '{}' can not be looked up !\n"
+msgstr "Ab uymsq, flynbx '{}' oma abg nq xbbwqp hc !\n"
+
+#: lib/callinfo.cpp:114
+msgid "Symbol '{}' not found !\n"
+msgstr "Flynbx '{}' abg rbhap !\n"
+
+#: lib/callinfo.cpp:118
+msgid "Symbol '{0}' at 0x{1:x} ({2} bytes) called from :\n"
+msgstr "Flynbx '{0}' mg 0x{1:x} ({2} nlgqf) omxxqp reby :\n"
+
+#: lib/expr.cpp:135
+msgid "register name '{}'"
+msgstr "eqsufgqe amyq '{}'"
+
+#: lib/expr.cpp:273
+msgid "expected an identifier after '::'"
+msgstr "qkcqogqp ma upqaguruqe mrgqe '::'"
+
+#: lib/expr.cpp:279
+msgid "unrecognised register name '{}'"
+msgstr "haeqobsaufqp eqsufgqe amyq '{}'"
+
+#: lib/expr.cpp:283
+msgid "unrecognised symbol name '{}'"
+msgstr "haeqobsaufqp flynbx amyq '{}'"
+
+#: lib/expr.cpp:286
+msgid "unrecognised identifier scope '{}'"
+msgstr "haeqobsaufqp upqaguruqe fobcq '{}'"
+
+#: lib/expr.cpp:295
+msgid "unrecognised identifier name '{}'"
+msgstr "haeqobsaufqp upqaguruqe amyq '{}'"
+
+#: lib/expr.cpp:305
+msgid "expected closing ')'"
+msgstr "qkcqogqp oxbfuas ')'"
+
+#: lib/expr.cpp:315
+msgid "unexpected end of expression"
+msgstr "haqkcqogqp qap br qkceqffuba"
+
+#: lib/expr.cpp:318
+msgid "unexpected token"
+msgstr "haqkcqogqp gbwqa"
+
+#: lib/expr.cpp:403
+msgid "unexpected tokens after expression"
+msgstr "haqkcqogqp gbwqaf mrgqe qkceqffuba"
+
+#: lib/image.cpp:205
+#, c-format
+msgid "Cannot open ELF file \"%s\""
+msgstr "Omaabg bcqa QXR ruxq \"%s\""
+
+#: lib/image.cpp:215
+#, c-format
+msgid "Image '%s':\n"
+msgstr "Uymsq '%s':\n"
+
+#: lib/image.cpp:217
+#, c-format
+msgid "symbol '%s#%d' [0x%llx, 0x%llx)\n"
+msgstr "flynbx '%s#%d' [0x%llx, 0x%llx)\n"
+
+#: lib/index.cpp:1005
+msgid "ignoring parse error on partial last line (trace truncated?)"
+msgstr "usabeuas cmefq qeebe ba cmegumx xmfg xuaq (gemoq gehaomgqp?)"
+
+#: lib/index.cpp:1127
+#, c-format
+msgid "%s: magic number did not match"
+msgstr "%s: ymsuo ahynqe pup abg ymgot"
+
+#: lib/misc.cpp:131
+msgid "index file {} does not exist; building it"
+msgstr "uapqk ruxq {} pbqf abg qkufg; nhuxpuas ug"
+
+#: lib/misc.cpp:136
+msgid "index file {} is older than trace file {}; rebuilding it"
+msgstr "uapqk ruxq {} uf bxpqe gtma gemoq ruxq {}; eqnhuxpuas ug"
+
+#: lib/misc.cpp:142
+msgid ""
+"index file {} was not generated by this version of the tool; rebuilding it"
+msgstr ""
+"uapqk ruxq {} jmf abg sqaqemgqp nl gtuf iqefuba br gtq gbbx; eqnhuxpuas ug"
+
+#: lib/misc.cpp:148
+msgid "previous generation of index file {} was not completed; rebuilding it"
+msgstr "ceqiubhf sqaqemguba br uapqk ruxq {} jmf abg obycxqgqp; eqnhuxpuas ug"
+
+#: lib/misc.cpp:154
+msgid "index file {} looks ok; not rebuilding it"
+msgstr "uapqk ruxq {} xbbwf bw; abg eqnhuxpuas ug"
+
+#: lib/misc.cpp:192
+msgid "Reading trace file ({}%)"
+msgstr "Eqmpuas gemoq ruxq ({}%)"
+
+#: lib/misc.cpp:202
+msgid "Reading trace file (finished)"
+msgstr "Eqmpuas gemoq ruxq (ruauftqp)"
+
+#: lib/misc.cpp:226
+msgid "Out of memory"
+msgstr "Bhg br yqybel"
+
+#: lib/parser.cpp:354
+msgid "expected '(' to introduce instruction address and bit pattern"
+msgstr "qkcqogqp '(' gb uagebphoq uafgehoguba mppeqff map nug cmggqea"
+
+#: lib/parser.cpp:359
+msgid "expected a hex instruction address"
+msgstr "qkcqogqp m tqk uafgehoguba mppeqff"
+
+#: lib/parser.cpp:365
+msgid "expected ':' between instruction address and bit pattern"
+msgstr "qkcqogqp ':' nqgjqqa uafgehoguba mppeqff map nug cmggqea"
+
+#: lib/parser.cpp:371 lib/parser.cpp:480
+msgid "expected a hex instruction bit pattern"
+msgstr "qkcqogqp m tqk uafgehoguba nug cmggqea"
+
+#: lib/parser.cpp:378
+msgid "expected ')' after instruction address and bit pattern"
+msgstr "qkcqogqp ')' mrgqe uafgehoguba mppeqff map nug cmggqea"
+
+#: lib/parser.cpp:411 lib/parser.cpp:422
+msgid "expected a hex or decimal number"
+msgstr "qkcqogqp m tqk be pqouymx ahynqe"
+
+#: lib/parser.cpp:429
+msgid "expected ')' after bracketed value"
+msgstr "qkcqogqp ')' mrgqe nemowqgqp imxhq"
+
+#: lib/parser.cpp:434
+msgid "expected a hex value"
+msgstr "qkcqogqp m tqk imxhq"
+
+#: lib/parser.cpp:449
+msgid "expected a hex address after ':'"
+msgstr "qkcqogqp m tqk mppeqff mrgqe ':'"
+
+#: lib/parser.cpp:460
+msgid "expected a hex address after ','"
+msgstr "qkcqogqp m tqk mppeqff mrgqe ','"
+
+#: lib/parser.cpp:493
+msgid "expected instruction-set state"
+msgstr "qkcqogqp uafgehoguba-fqg fgmgq"
+
+#: lib/parser.cpp:515
+msgid "expected CPU mode"
+msgstr "qkcqogqp OCH ybpq"
+
+#: lib/parser.cpp:523
+msgid "expected ':' before instruction"
+msgstr "qkcqogqp ':' nqrbeq uafgehoguba"
+
+#: lib/parser.cpp:549
+msgid "expected register name"
+msgstr "qkcqogqp eqsufgqe amyq"
+
+#: lib/parser.cpp:558
+msgid "unsupported system operation '{}'"
+msgstr "hafhccbegqp flfgqy bcqemguba '{}'"
+
+#: lib/parser.cpp:573
+msgid "expected extra register identification details"
+msgstr "qkcqogqp qkgem eqsufgqe upqaguruomguba pqgmuxf"
+
+#: lib/parser.cpp:579
+msgid "expected ')' after extra register identification details"
+msgstr "qkcqogqp ')' mrgqe qkgem eqsufgqe upqaguruomguba pqgmuxf"
+
+#: lib/parser.cpp:628
+msgid "cannot handle register bit range for this register"
+msgstr "omaabg tmapxq eqsufgqe nug emasq rbe gtuf eqsufgqe"
+
+#: lib/parser.cpp:635 lib/parser.cpp:652
+msgid "expected bit offset within register"
+msgstr "qkcqogqp nug brrfqg jugtua eqsufgqe"
+
+#: lib/parser.cpp:638
+msgid "expected high bit offset within register to be at the top of a byte"
+msgstr "qkcqogqp tust nug brrfqg jugtua eqsufgqe gb nq mg gtq gbc br m nlgq"
+
+#: lib/parser.cpp:642
+msgid "high bit offset is larger than containing register"
+msgstr "tust nug brrfqg uf xmesqe gtma obagmuauas eqsufgqe"
+
+#: lib/parser.cpp:647
+msgid "expected ':' separating bit offsets in register bit range"
+msgstr "qkcqogqp ':' fqcmemguas nug brrfqgf ua eqsufgqe nug emasq"
+
+#: lib/parser.cpp:656
+msgid "expected low bit offset within register to be at the bottom of a byte"
+msgstr "qkcqogqp xbj nug brrfqg jugtua eqsufgqe gb nq mg gtq nbggby br m nlgq"
+
+#: lib/parser.cpp:660
+msgid "low bit offset is higher than high bit offset"
+msgstr "xbj nug brrfqg uf tustqe gtma tust nug brrfqg"
+
+#: lib/parser.cpp:666
+msgid "expected '>' after register bit range"
+msgstr "qkcqogqp '>' mrgqe eqsufgqe nug emasq"
+
+#: lib/parser.cpp:687 lib/parser.cpp:705
+msgid "expected register contents"
+msgstr "qkcqogqp eqsufgqe obagqagf"
+
+#: lib/parser.cpp:712
+msgid "expected additional register contents after ':'"
+msgstr "qkcqogqp mppugubamx eqsufgqe obagqagf mrgqe ':'"
+
+#: lib/parser.cpp:740
+msgid "expected register contents to be an integer number of bytes"
+msgstr "qkcqogqp eqsufgqe obagqagf gb nq ma uagqsqe ahynqe br nlgqf"
+
+#: lib/parser.cpp:769
+msgid "unrecognised {0}-bit register '{1}'"
+msgstr "haeqobsaufqp {0}-nug eqsufgqe '{1}'"
+
+#: lib/parser.cpp:862
+msgid "expected memory address"
+msgstr "qkcqogqp yqybel mppeqff"
+
+#: lib/parser.cpp:875
+msgid "expected physical memory address after ':'"
+msgstr "qkcqogqp ctlfuomx yqybel mppeqff mrgqe ':'"
+
+#: lib/parser.cpp:891
+msgid "expected closing parenthesis"
+msgstr "qkcqogqp oxbfuas cmeqagtqfuf"
+
+#: lib/parser.cpp:898
+msgid "unrecognised parenthesised keyword"
+msgstr "haeqobsaufqp cmeqagtqfufqp wqljbep"
+
+#: lib/parser.cpp:908
+msgid "expected memory contents in hex"
+msgstr "qkcqogqp yqybel obagqagf ua tqk"
+
+#: lib/parser.cpp:935
+msgid "expected load/store memory address"
+msgstr "qkcqogqp xbmp/fgbeq yqybel mppeqff"
+
+#: lib/parser.cpp:948
+msgid "expected a word of data bytes, '.' and '#'"
+msgstr "qkcqogqp m jbep br pmgm nlgqf, '.' map '#'"
+
+#: lib/parser.cpp:951
+msgid "expected data word to cover a whole number of bytes"
+msgstr "qkcqogqp pmgm jbep gb obiqe m jtbxq ahynqe br nlgqf"
+
+#: lib/parser.cpp:960
+msgid "expected exactly 16 data bytes"
+msgstr "qkcqogqp qkmogxl 16 pmgm nlgqf"
+
+#: lib/parser.cpp:969
+msgid "expected each byte to be only one of '.', '#' and hex"
+msgstr "qkcqogqp qmot nlgq gb nq baxl baq br '.', '#' map tqk"
+
+#: lib/parser.cpp:1052
+msgid "unknown Tarmac event type '{}'"
+msgstr "hawabja Gmeymo qiqag glcq '{}'"
+
+#: lib/tarmacutil.cpp:42
+msgid "IMAGEFILE"
+msgstr "UYMSQRUXQ"
+
+#: lib/tarmacutil.cpp:42
+msgid "image file name"
+msgstr "uymsq ruxq amyq"
+
+#: lib/tarmacutil.cpp:44 tools/indextool.cpp:528 tools/indextool.cpp:534
+#: tools/indextool.cpp:540 tools/indextool.cpp:547 tools/indextool.cpp:569
+msgid "OFFSET"
+msgstr "BSSFRG"
+
+#: lib/tarmacutil.cpp:44
+msgid "offset from addresses in the image file to addresses in the trace"
+msgstr "bssfrg sebz nqqerffrf va gur vzntr svyr gb nqqerffrf va gur genpr"
+
+#: lib/tarmacutil.cpp:51
+msgid "generate index and do nothing else"
+msgstr "sqaqemgq uapqk map pb abgtuas qxfq"
+
+#: lib/tarmacutil.cpp:50
+msgid "regenerate index unconditionally"
+msgstr "eqsqaqemgq uapqk haobapugubamxxl"
+
+#: lib/tarmacutil.cpp:52
+msgid "do not regenerate index"
+msgstr "pb abg eqsqaqemgq uapqk"
+
+#: lib/tarmacutil.cpp:55
+msgid "keep index in memory instead of on disk"
+msgstr "wqqc uapqk ua yqybel uafgqmp br ba pufw"
+
+#: lib/tarmacutil.cpp:58
+msgid "assume trace is from a little-endian platform"
+msgstr "mffhyq gemoq uf reby m xuggxq-qapuma cxmgrbey"
+
+#: lib/tarmacutil.cpp:63
+msgid "assume trace is from a big-endian platform"
+msgstr "mffhyq gemoq uf reby m nus-qapuma cxmgrbey"
+
+#: lib/tarmacutil.cpp:74
+msgid ""
+"assume trace is from a Thumb-only platform and might omit the instruction "
+"set state from trace records"
+msgstr ""
+"nffhzr genpr vf sebz n Guhzo-bayl cyngsbez naq zvtug bzvg gur vafgehpgvba "
+"frg fgngr sebz genpr erpbeqf"
+
+#: lib/tarmacutil.cpp:80
+msgid "make tool more verbose"
+msgstr "ymwq gbbx ybeq iqenbfq"
+
+#: lib/tarmacutil.cpp:70
+msgid "make tool quiet"
+msgstr "ymwq gbbx dhuqg"
+
+#: lib/tarmacutil.cpp:73
+msgid "force display of the progress meter"
+msgstr "rbeoq pufcxml br gtq cebseqff yqgqe"
+
+#: lib/tarmacutil.cpp:81
+msgid "INDEXFILE"
+msgstr "UAPQKRUXQ"
+
+#: lib/tarmacutil.cpp:81
+msgid "index file name"
+msgstr "uapqk ruxq amyq"
+
+#: lib/tarmacutil.cpp:83 lib/tarmacutil.cpp:138
+msgid "TRACEFILE"
+msgstr "GEMOQRUXQ"
+
+#: lib/tarmacutil.cpp:83
+msgid "Tarmac trace file to read"
+msgstr "Gmeymo gemoq ruxq gb eqmp"
+
+#: lib/tarmacutil.cpp:101
+msgid "Ignoring --no-index since index is in memory"
+msgstr "Usabeuas --no-index fuaoq uapqk uf ua yqybel"
+
+#: lib/tarmacutil.cpp:103
+msgid "Ignoring index file name since index is in memory"
+msgstr "Usabeuas uapqk ruxq amyq fuaoq uapqk uf ua yqybel"
+
+#: lib/tarmacutil.cpp:117
+msgid "Endianness mismatch between image and provided endianness"
+msgstr "Qapumaaqff yufymgot nqgjqqa uymsq map cebiupqp qapumaaqff"
+
+#: lib/tarmacutil.cpp:138
+msgid "Tarmac trace files to read"
+msgstr "Gmeymo gemoq ruxqf gb eqmp"
+
+#: tools/callinfo.cpp:49
+msgid "FUNCTION"
+msgstr "RHAOGUBA"
+
+#: tools/callinfo.cpp:49
+msgid "name or hex address of function to find calls to"
+msgstr "amyq be tqk mppeqff br rhaoguba gb ruap omxxf gb"
+
+#: tools/callinfo.cpp:54
+msgid "expected at least one function name"
+msgstr "qkcqogqp mg xqmfg baq rhaoguba amyq"
+
+#: tools/flamegraph.cpp:52
+msgid "OUTFILE"
+msgstr "BHGRUXQ"
+
+#: tools/flamegraph.cpp:53
+msgid "write output to OUTFILE (default: standard output)"
+msgstr "jeugq bhgchg gb BHGRUXQ (pqrmhxg: fgmapmep bhgchg)"
+
+#: tools/indextool.cpp:71
+msgid "Node at file offset {}"
+msgstr "Abpq mg ruxq brrfqg {}"
+
+#: tools/indextool.cpp:73
+msgid "Node"
+msgstr "Abpq"
+
+#: tools/indextool.cpp:103
+msgid "Right child node"
+msgstr "Eustg otuxp abpq"
+
+#: tools/indextool.cpp:103
+msgid "Left child node"
+msgstr "Xqrg otuxp abpq"
+
+#: tools/indextool.cpp:106
+msgid "Root node"
+msgstr "Ebbg abpq"
+
+#: tools/indextool.cpp:110
+msgid "{:#x} at file offset {}:"
+msgstr "{:#x} mg ruxq brrfqg {}:"
+
+#: tools/indextool.cpp:126
+msgid "Child offsets"
+msgstr "Otuxp brrfqgf"
+
+#: tools/indextool.cpp:130 tools/indextool.cpp:135
+msgid "null"
+msgstr "ahxx"
+
+#: tools/indextool.cpp:191
+msgid "Line range: start {}, extent {}"
+msgstr "Xuaq emasq: fgmeg {}, qkgqag {}"
+
+#: tools/indextool.cpp:195
+msgid "Byte range: start {:#x}, extent {:#x}"
+msgstr "Nlgq emasq: fgmeg {:#x}, qkgqag {:#x}"
+
+#: tools/indextool.cpp:198
+msgid "Modification time: "
+msgstr "Ybpuruomguba guyq: "
+
+#: tools/indextool.cpp:201
+msgid "invalid"
+msgstr "uaimxup"
+
+#: tools/indextool.cpp:206
+msgid "Root of memory tree: "
+msgstr "Ebbg br yqybel geqq: "
+
+#: tools/indextool.cpp:209
+msgid "Call depth: "
+msgstr "Omxx pqcgt: "
+
+#: tools/indextool.cpp:226
+msgid "sentinel"
+msgstr "fqaguaqx"
+
+#: tools/indextool.cpp:230
+msgid "{} lines, {} insns, left-crosslink {}, right-crosslink {}}}"
+msgstr "{} xuaqf, {} uafaf, xqrg-oebffxuaw {}, eustg-oebffxuaw {}}}"
+
+#: tools/indextool.cpp:248 tools/indextool.cpp:302
+msgid "Range: "
+msgstr "Emasq: "
+
+#: tools/indextool.cpp:253
+msgid "register-space"
+msgstr "eqsufgqe-fcmoq"
+
+#: tools/indextool.cpp:255
+msgid "memory"
+msgstr "yqybel"
+
+#: tools/indextool.cpp:257
+msgid "Contents: "
+msgstr "Obagqagf: "
+
+#: tools/indextool.cpp:266
+msgid "memory subtree"
+msgstr "yqybel fhngeqq"
+
+#: tools/indextool.cpp:268
+msgid "memory subtree with root pointer at {:#x}, actual root is {:#x}"
+msgstr "yqybel fhngeqq jugt ebbg cbuagqe mg {:#x}, moghmx ebbg uf {:#x}"
+
+#: tools/indextool.cpp:274
+msgid "Last modification: "
+msgstr "Xmfg ybpuruomguba: "
+
+#: tools/indextool.cpp:276
+msgid "never"
+msgstr "aqiqe"
+
+#: tools/indextool.cpp:278
+msgid "line {}"
+msgstr "xuaq {}"
+
+#: tools/indextool.cpp:286
+msgid "Latest modification time in whole subtree: "
+msgstr "Xmgqfg ybpuruomguba guyq ua jtbxq fhngeqq: "
+
+#: tools/indextool.cpp:306
+msgid "Contents: {} bytes"
+msgstr "Obagqagf: {} nlgqf"
+
+#: tools/indextool.cpp:308
+msgid "Contents: {} bytes at file offset {:#x}"
+msgstr "Obagqagf: {} nlgqf mg ruxq brrfqg {:#x}"
+
+#: tools/indextool.cpp:322
+msgid "Line: "
+msgstr "Xuaq: "
+
+#: tools/indextool.cpp:346
+msgid " - dependent on iflags\n"
+msgstr " - pqcqapqag ba urxmsf\n"
+
+#: tools/indextool.cpp:362 tools/indextool.cpp:366
+msgid "'{}': unable to parse numeric value"
+msgstr "'{}': hamnxq gb cmefq ahyqeuo imxhq"
+
+#: tools/indextool.cpp:368
+msgid "'{}': numeric value out of range"
+msgstr "'{}': ahyqeuo imxhq bhg br emasq"
+
+#: tools/indextool.cpp:431
+msgid "Unable to find a node at line {}\n"
+msgstr "Hamnxq gb ruap m abpq mg xuaq {}\n"
+
+#: tools/indextool.cpp:446
+msgid "Memory last modified at line {}:"
+msgstr "Yqybel xmfg ybpuruqp mg xuaq {}:"
+
+#: tools/indextool.cpp:475
+msgid "{}, last modified at line {}: "
+msgstr "{}, xmfg ybpuruqp mg xuaq {}: "
+
+#: tools/indextool.cpp:516
+msgid "dump file header"
+msgstr "phyc ruxq tqmpqe"
+
+#: tools/indextool.cpp:519
+msgid "dump logical content of the sequential order tree"
+msgstr "phyc xbsuomx obagqag br gtq fqdhqagumx bepqe geqq"
+
+#: tools/indextool.cpp:522
+msgid ""
+"dump logical content of the sequential order tree, and memory contents at "
+"each node"
+msgstr ""
+"phyc xbsuomx obagqag br gtq fqdhqagumx bepqe geqq, map yqybel obagqagf mg "
+"qmot abpq"
+
+#: tools/indextool.cpp:526
+msgid "dump physical structure of the sequential order tree"
+msgstr "phyc ctlfuomx fgehogheq br gtq fqdhqagumx bepqe geqq"
+
+#: tools/indextool.cpp:529
+msgid "dump logical content of memory tree with root at OFFSET"
+msgstr "phyc xbsuomx obagqag br yqybel geqq jugt ebbg mg BRRFQG"
+
+#: tools/indextool.cpp:535
+msgid "dump physical structure of a memory tree with root at OFFSET"
+msgstr "phyc ctlfuomx fgehogheq br m yqybel geqq jugt ebbg mg BRRFQG"
+
+#: tools/indextool.cpp:541
+msgid "dump logical content of a memory subtree with root at OFFSET"
+msgstr "phyc xbsuomx obagqag br m yqybel fhngeqq jugt ebbg mg BRRFQG"
+
+#: tools/indextool.cpp:548
+msgid "dump physical structure of a memory subtree with root at OFFSET"
+msgstr "phyc ctlfuomx fgehogheq br m yqybel fhngeqq jugt ebbg mg BRRFQG"
+
+#: tools/indextool.cpp:553
+msgid "dump logical content of the by-PC tree"
+msgstr "phyc xbsuomx obagqag br gtq nl-CO geqq"
+
+#: tools/indextool.cpp:555
+msgid "dump physical structure of the by-PC tree"
+msgstr "phyc ctlfuomx fgehogheq br gtq nl-CO geqq"
+
+#: tools/indextool.cpp:557
+msgid "write a memory map of the register space"
+msgstr "jeugq m yqybel ymc br gtq eqsufgqe fcmoq"
+
+#: tools/indextool.cpp:559
+msgid "FLAGS"
+msgstr "RXMSF"
+
+#: tools/indextool.cpp:560
+msgid "(for --regmap) specify iflags context to retrieve registers"
+msgstr "(rbe --regmap) fcqourl urxmsf obagqkg gb eqgeuqiq eqsufgqef"
+
+#: tools/indextool.cpp:566
+msgid ""
+"do not dump offsets in index file (so that output is more stable when index "
+"format changes)"
+msgstr ""
+"pb abg phyc brrfqgf ua uapqk ruxq (fb gtmg bhgchg uf ybeq fgmnxq jtqa uapqk "
+"rbeymg otmasqf)"
+
+#: tools/indextool.cpp:570
+msgid ""
+"dump full content of memory tree corresponding to a particular line of the "
+"trace file"
+msgstr ""
+"phyc rhxx obagqag br yqybel geqq obeeqfcbapuas gb m cmeguohxme xuaq br gtq "
+"gemoq ruxq"
+
+#: tools/indextool.cpp:579
+msgid "expected an option describing a query"
+msgstr "qkcqogqp ma bcguba pqfoeunuas m dhqel"
+
+#: tools/indextool.cpp:581
+msgid "expected a trace file name"
+msgstr "qkcqogqp m gemoq ruxq amyq"
+
+#: tools/indextool.cpp:607
+msgid "Endianness: "
+msgstr "Qapumaaqff: "
+
+#: tools/indextool.cpp:608
+msgid "big"
+msgstr "nus"
+
+#: tools/indextool.cpp:608
+msgid "little"
+msgstr "xuggxq"
+
+#: tools/indextool.cpp:609
+msgid "Architecture: "
+msgstr "Meotugqogheq: "
+
+#: tools/indextool.cpp:611
+msgid "Root of sequential order tree: "
+msgstr "Ebbg br fqdhqagumx bepqe geqq: "
+
+#: tools/indextool.cpp:613
+msgid "Root of by-PC tree: "
+msgstr "Ebbg br nl-CO geqq: "
+
+#: tools/indextool.cpp:614
+msgid "Line number adjustment for file header: "
+msgstr "Xuaq ahynqe mpvhfgyqag rbe ruxq tqmpqe: "
+
+#: tools/profileinfo.cpp:71
+msgid "Address"
+msgstr "Mppeqff"
+
+#: tools/profileinfo.cpp:72
+msgid "Count"
+msgstr "Obhag"
+
+#: tools/profileinfo.cpp:73
+msgid "Time"
+msgstr "Guyq"
+
+#: tools/profileinfo.cpp:74
+msgid "Function name"
+msgstr "Rhaoguba amyq"
+
+#: tools/vcdwriter.cpp:340
+msgid "Error when using the instruction timestamp from the tarmac trace"
+msgstr "Qeebe jtqa hfuas gtq uafgehoguba guyqfgmyc reby gtq gmeymo gemoq"
+
+#: tools/vcdwriter.cpp:408
+msgid "VCDFILE"
+msgstr "IOPRUXQ"
+
+#: tools/vcdwriter.cpp:409
+msgid "VCD file name (default: tarmac_filename.vcd)"
+msgstr "IOP ruxq amyq (pqrmhxg: gmeymo_ruxqamyq.iop)"
+
+#: tools/vcdwriter.cpp:411
+msgid "Do not emit the date field in the vcd file"
+msgstr "Pb abg qyug gtq pmgq ruqxp ua gtq iop ruxq"
+
+#: tools/vcdwriter.cpp:414
+msgid "Use the instructions' timestamps from the tarmac trace."
+msgstr "Hfq gtq uafgehogubaf' guyqfgmycf reby gtq gmeymo gemoq."
