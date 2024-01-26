@@ -17,6 +17,7 @@
  */
 
 #include "libtarmac/calltree.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
 #include "libtarmac/reporter.hh"
@@ -391,6 +392,8 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
+    gettext_setup();
+
     string vcd_filename("");
     bool no_date = false;
     bool use_tarmac_timestamp = false;

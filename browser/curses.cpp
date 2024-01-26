@@ -22,6 +22,7 @@
 #include "libtarmac/expr.hh"
 #include "libtarmac/image.hh"
 #include "libtarmac/index_ds.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/memtree.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/parser.hh"
@@ -2248,6 +2249,8 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
+    gettext_setup();
+
     // Default to using colour if available, but permit an override by
     // setting NO_COLOR in the environment (to any non-empty string),
     // per https://no-color.org/ . This is done before option

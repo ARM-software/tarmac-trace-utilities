@@ -19,6 +19,7 @@
 #include "profileinfo.hh"
 #include "libtarmac/calltree.hh"
 #include "libtarmac/image.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/reporter.hh"
 
 #include <iomanip>
@@ -102,6 +103,8 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
+    gettext_setup();
+
     IndexerParams iparams;
     iparams.record_memory = false;
 

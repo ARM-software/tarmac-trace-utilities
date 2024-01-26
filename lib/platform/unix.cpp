@@ -19,6 +19,7 @@
 #include "libtarmac/disktree.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/reporter.hh"
+#include "libtarmac/intl.hh"
 
 #include <errno.h>
 #include <string.h>
@@ -178,4 +179,13 @@ bool get_environment_variable(const string &varname, string &out)
 
     out = std::string(val);
     return true;
+}
+
+void gettext_setup()
+{
+#if HAVE_LIBINTL
+    setlocale(LC_ALL, "");
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    textdomain(PACKAGE);
+#endif
 }

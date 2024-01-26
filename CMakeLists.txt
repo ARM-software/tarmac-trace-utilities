@@ -52,7 +52,8 @@ else()
 endif()
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
-configure_file(cmake/cmake.h.in ${CMAKE_BINARY_DIR}/include/cmake.h)
+configure_file(cmake/cmake.h.in ${CMAKE_BINARY_DIR}/include/cmake.h
+  ESCAPE_QUOTES)
 
 # Support large Tarmac traces if possible on this system.
 # Note: OFF_T is used in the code base to represent both a file offset

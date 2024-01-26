@@ -33,4 +33,6 @@
 #define _(str) str
 #endif
 
+void gettext_setup();
+
 #endif // LIBTARMAC_INTL_HH

@@ -24,6 +24,11 @@ find_package(PkgConfig ${REQUIRED_PACKAGE})
 find_package(Gettext)
 find_package(Intl)
 
+include(GNUInstallDirs)
+
+set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}
+  CACHE STRING "Directory to find gettext locale files in.")
+
 set(HAVE_LIBINTL 0)
 if(Intl_FOUND)
   set(HAVE_LIBINTL 1)

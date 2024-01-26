@@ -22,4 +22,9 @@
 #cmakedefine01 HAVE_APPDATAPROGRAMDATA
 #cmakedefine01 HAVE_LIBINTL
 
+#if HAVE_LIBINTL
+#define PACKAGE "@PROJECT_NAME@"
+#define LOCALEDIR "@LOCALEDIR@"
+#endif
+
 #endif // LIBTARMAC_CMAKE_H

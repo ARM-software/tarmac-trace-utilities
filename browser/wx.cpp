@@ -3659,6 +3659,8 @@ class SetupDialog : public wxDialog {
 
 bool GuiTarmacBrowserApp::OnInit()
 {
+    gettext_setup();
+
     Argparse ap("tarmac-gui-browser", argc, argv);
     TarmacUtility tu;
     tu.add_options(ap);

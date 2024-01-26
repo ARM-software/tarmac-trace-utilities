@@ -19,6 +19,7 @@
 #include "libtarmac/disktree.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/reporter.hh"
+#include "libtarmac/intl.hh"
 
 #include "cmake.h"
 
@@ -258,4 +259,11 @@ bool get_environment_variable(const string &varname, string &out)
         out.pop_back();
     free(val);
     return true;
+}
+
+void gettext_setup()
+{
+#if HAVE_LIBINTL
+#error "We didn't expect gettext to be available on Windows, so no setup code"
+#endif
 }

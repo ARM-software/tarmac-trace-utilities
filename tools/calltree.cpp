@@ -18,6 +18,7 @@
 
 #include "libtarmac/argparse.hh"
 #include "libtarmac/calltree.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/reporter.hh"
 #include "libtarmac/tarmacutil.hh"
 
@@ -25,6 +26,8 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
+    gettext_setup();
+
     IndexerParams iparams;
     iparams.record_memory = false;
 
