@@ -23,7 +23,7 @@ else()
 endif()
 
 add_library(tarmac
-  argparse.cpp btod.cpp callinfo.cpp calltree.cpp elf.cpp expr.cpp
+  argparse.cpp btod.cpp callinfo.cpp calltree.cpp elf.cpp expr.cpp format.cpp
   image.cpp index.cpp index_ds.cpp misc.cpp parser.cpp registers.cpp
   tarmacutil.cpp ${platform_sources})
 

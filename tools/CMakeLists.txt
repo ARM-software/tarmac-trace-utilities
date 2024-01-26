@@ -57,3 +57,6 @@ target_link_libraries(btodtest tarmac)
 
 add_executable(avltest avltest.cpp)
 target_link_libraries(avltest tarmac)
+
+add_executable(formattest formattest.cpp)
+target_link_libraries(formattest tarmac)

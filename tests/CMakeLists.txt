@@ -225,3 +225,10 @@ add_test(NAME avl
   COMMAND ${test_driver_cmd}
       ${CMAKE_BINARY_DIR}/avltest
   )
+
+# Test the format() function.
+add_test(NAME format
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/formattest.ref stdout
+      ${CMAKE_BINARY_DIR}/formattest
+  )

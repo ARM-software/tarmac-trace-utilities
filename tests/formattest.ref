@@ -1,0 +1,8 @@
+hello, world
+use a substitution: hello, world
+no numbers: hello, world
+forward order: hello, world
+reverse order: hello, world
+literal braces: {hello, world}
+decimal and hex: 43690, aaaa
+hex with #: 0, 0x1, 0xa

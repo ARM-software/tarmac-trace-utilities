@@ -21,9 +21,12 @@
 
 #include <cstddef>
 #include <stdint.h>
+#include <functional>
+#include <ostream>
 #include <stdio.h>
 #include <string>
 #include <time.h>
+#include <vector>
 
 template <typename T, size_t n> static inline void enforce_array(T (&)[n]) {}
 #define lenof(x) (sizeof(enforce_array(x), x) / sizeof(*(x)))
@@ -78,5 +81,40 @@ bool get_environment_variable(const std::string &varname, std::string &out);
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
 #endif
+
+class FormatterInternalArgBase {
+  public:
+    virtual void format(std::ostream &os) = 0;
+};
+
+std::string
+format_internal(const std::string &,
+                const std::vector<std::function<void(std::ostream &)>> &);
+
+template <typename Arg>
+class FormatterInternalArg : public FormatterInternalArgBase {
+    const Arg *arg;
+
+  public:
+    FormatterInternalArg(const Arg *arg) : arg(&arg) {}
+    void format(std::ostream &os) override { os << *arg; }
+};
+template <typename Arg>
+class FormatterInternalArg<Arg&> : public FormatterInternalArgBase {
+    const Arg *arg;
+
+  public:
+    FormatterInternalArg(const Arg *arg) : arg(&arg) {}
+    void format(std::ostream &os) override { os << *arg; }
+};
+
+template <typename... Args>
+inline std::string format(const std::string &fmt, Args &&...args)
+{
+    std::vector<std::function<void(std::ostream &)>> params = {
+        [&args](std::ostream &os) { os << std::forward<Args>(args); }...
+    };
+    return format_internal(fmt, params);
+}
 
 #endif // LIBTARMAC_MISC_HH
