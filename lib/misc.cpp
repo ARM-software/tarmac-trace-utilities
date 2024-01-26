@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include <iostream>
+#include <sstream>
 
 using std::clog;
 using std::endl;
@@ -225,4 +226,29 @@ void MemArena::resize(size_t newsize)
     if (!mapping)
         reporter->errx(1, _("Out of memory"));
     curr_size = newsize;
+}
+
+static std::wstring string_to_wstring(const std::string &str)
+{
+    std::wostringstream woss;
+    mbstate_t state = {0};
+    for (char c: str) {
+        wchar_t wc;
+        if (mbrtowc(&wc, &c, 1, &state) == 1)
+            woss << wc;
+    }
+    return woss.str();
+}
+
+size_t terminal_width(const std::string &str)
+{
+    std::wstring wstr = string_to_wstring(str);
+#if HAVE_WCSWIDTH
+    return wcswidth(wstr.c_str(), wstr.size());
+#else
+    // If we don't have wcswidth available, I don't know of any other
+    // reliable way to identify double- or zero-width wide characters,
+    // so we're just going to have to approximate.
+    return wstr.size();
+#endif
 }

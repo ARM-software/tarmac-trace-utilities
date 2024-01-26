@@ -25,6 +25,9 @@ find_package(Gettext)
 find_package(Intl)
 
 include(GNUInstallDirs)
+include(CheckSymbolExists)
+
+check_symbol_exists(wcswidth "wchar.h" HAVE_WCSWIDTH)
 
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}
   CACHE STRING "Directory to find gettext locale files in.")

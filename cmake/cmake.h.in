@@ -21,6 +21,7 @@
 
 #cmakedefine01 HAVE_APPDATAPROGRAMDATA
 #cmakedefine01 HAVE_LIBINTL
+#cmakedefine01 HAVE_WCSWIDTH
 
 #if HAVE_LIBINTL
 #define PACKAGE "@PROJECT_NAME@"

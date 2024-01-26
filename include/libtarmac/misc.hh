@@ -117,4 +117,6 @@ inline std::string format(const std::string &fmt, Args &&...args)
     return format_internal(fmt, params);
 }
 
+size_t terminal_width(const std::string &str);
+
 #endif // LIBTARMAC_MISC_HH

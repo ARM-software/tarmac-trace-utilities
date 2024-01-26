@@ -281,11 +281,11 @@ static vector<string> textwrap(const string &input, unsigned indent1,
     unsigned thiswidth = width1;
     line << string(indent1, ' ');
 
+    size_t column = indent1;
     while (!words.empty()) {
         const string &word = words.front();
 
-        unsigned candidate_len = line.tellp();
-        candidate_len += word.size();
+        unsigned candidate_len = column + terminal_width(word);
         if (pushed_word)
             candidate_len++; // count the separating space
 
@@ -296,12 +296,14 @@ static vector<string> textwrap(const string &input, unsigned indent1,
 
             thiswidth = width;
             line << string(indent, ' ');
+            column = indent;
         }
 
         if (pushed_word)
             line << " ";
         line << word;
         pushed_word = true;
+        column = candidate_len;
         words.pop();
     }
 
@@ -356,8 +358,10 @@ void Argparse::help(ostream &os)
                 os << endl;
         }
 
-        if (ndesc && desclines[ndesc - 1].size() < helpindent1 - HELPSPACE)
-            os << string(helpindent1 - desclines[ndesc - 1].size(), ' ');
+        size_t last_desc_line_width = (ndesc == 0 ? 0 :
+                                       terminal_width(desclines.back()));
+        if (ndesc && last_desc_line_width <= helpindent1 - HELPSPACE)
+            os << string(helpindent1 - last_desc_line_width, ' ');
         else
             os << endl << string(helpindent1, ' ');
 
