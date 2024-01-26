@@ -29,6 +29,9 @@
 #if HAVE_LIBINTL
 #include <libintl.h>
 #define _(str) gettext(str)
+#elif defined _WINDOWS
+const char *fake_gettext(const char *text);
+#define _(str) fake_gettext(str)
 #else
 #define _(str) str
 #endif

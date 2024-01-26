@@ -27,6 +27,7 @@
 #include <shlobj.h>
 #include <stdlib.h>
 
+#include <map>
 #include <sstream>
 
 using std::ostringstream;
@@ -260,9 +261,80 @@ bool get_environment_variable(const string &varname, string &out)
     return true;
 }
 
+#if HAVE_LIBINTL
+#error "We didn't expect libintl to be available on Windows, so no setup code"
+#else
+static const void *strings_lookup_table = nullptr;
+static std::map<std::string, std::unique_ptr<std::string>> fake_gettext_cache;
+
 void gettext_setup()
 {
-#if HAVE_LIBINTL
-#error "We didn't expect gettext to be available on Windows, so no setup code"
-#endif
+
+    HRSRC lookup_hrsrc = FindResource(
+        NULL, MAKEINTRESOURCE(2001), MAKEINTRESOURCE(2001));
+    if (!lookup_hrsrc)
+        return;
+
+    HGLOBAL lookup_hglobal = LoadResource(NULL, lookup_hrsrc);
+    if (!lookup_hglobal)
+        return;
+
+    strings_lookup_table = LockResource(lookup_hglobal);
 }
+
+const char *fake_gettext(const char *text)
+{
+    if (!strings_lookup_table)
+        return text;
+
+    auto it = fake_gettext_cache.find(text);
+    if (it != fake_gettext_cache.end())
+        return it->second->c_str();
+
+    // FIXME: this is little-endian centric (but perhaps that's ok
+    // because it's Windows?)
+
+    const uint32_t *header = static_cast<const uint32_t *>(strings_lookup_table);
+    const char *stringbase = static_cast<const char *>(strings_lookup_table);
+
+    size_t nentries = header[0];
+    const uint32_t *table = header + 1;
+
+    size_t index;
+    {
+        size_t lo = 0, hi = nentries;
+        while (lo < hi) {
+            size_t md = lo + ((hi - lo) >> 1);
+            const char *string = stringbase + table[md];
+            int cmp = strcmp(text, string);
+            if (cmp < 0) {
+                hi = md;
+            } else if (cmp > 0) {
+                lo = md + 1;
+            } else {
+                index = md;
+                goto found;
+            }
+        }
+    }
+
+    // If we fall out here, we didn't find the string at all
+    return text;
+
+  found:;
+
+    char buf[4096];
+    DWORD retd = FormatMessage(FORMAT_MESSAGE_FROM_HMODULE,
+                               GetModuleHandle(NULL), index, 0,
+                               buf, sizeof(buf), NULL);
+
+    std::unique_ptr<std::string> strp = std::make_unique<std::string>(
+        retd ? buf : text);
+    const std::string &strref = *strp;
+
+    fake_gettext_cache[text] = std::move(strp);
+
+    return strref.c_str();
+}
+
+#endif
