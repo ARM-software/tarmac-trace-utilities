@@ -70,3 +70,6 @@ check_cxx_source_compiles("
 #include <shlobj.h>
 int main(void) { (void)FOLDERID_AppDataProgramData; }
 " HAVE_APPDATAPROGRAMDATA)
+
+# libintl-based localization is not supported on Windows
+set(HAVE_LIBINTL 0)

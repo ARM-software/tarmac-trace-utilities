@@ -21,3 +21,10 @@
 
 find_package(Curses ${REQUIRED_PACKAGE})
 find_package(PkgConfig ${REQUIRED_PACKAGE})
+find_package(Gettext)
+find_package(Intl)
+
+set(HAVE_LIBINTL 0)
+if(Intl_FOUND)
+  set(HAVE_LIBINTL 1)
+endif()

@@ -16,10 +16,21 @@
  * This file is part of Tarmac Trace Utilities
  */
 
-#ifndef LIBTARMAC_CMAKE_H
-#define LIBTARMAC_CMAKE_H
+#ifndef LIBTARMAC_INTL_HH
+#define LIBTARMAC_INTL_HH
 
-#cmakedefine01 HAVE_APPDATAPROGRAMDATA
-#cmakedefine01 HAVE_LIBINTL
+/*
+ * Wrapper to cope with the gettext library only being available in
+ * some builds.
+ */
 
-#endif // LIBTARMAC_CMAKE_H
+#include "cmake.h"
+
+#if HAVE_LIBINTL
+#include <libintl.h>
+#define _(str) gettext(str)
+#else
+#define _(str) str
+#endif
+
+#endif // LIBTARMAC_INTL_HH
