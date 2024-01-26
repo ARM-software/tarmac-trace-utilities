@@ -254,6 +254,8 @@ bool get_environment_variable(const string &varname, string &out)
         return false;
 
     out = std::string(val, len);
+    if (!out.empty() && out.back() == '\0')
+        out.pop_back();
     free(val);
     return true;
 }
