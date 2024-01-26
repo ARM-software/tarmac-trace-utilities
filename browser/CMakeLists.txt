@@ -21,7 +21,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 if(CURSES_FOUND)
   link_directories(${CURSES_LIBRARY_DIRS})
-  add_executable(tarmac-browser browse.cpp curses.cpp)
+  add_executable(tarmac-browser browse.cpp curses.cpp ${EXTRA_FILES})
   target_include_directories(tarmac-browser PRIVATE ${CURSES_INCLUDE_DIRS})
   target_link_libraries(tarmac-browser tarmac ${CURSES_LIBRARIES})
   install_programs(tarmac-browser)
@@ -31,7 +31,7 @@ endif()
 
 if (${wxWidgets_FOUND})
   include(${wxWidgets_USE_FILE})
-  add_executable(tarmac-gui-browser browse.cpp wx.cpp)
+  add_executable(tarmac-gui-browser browse.cpp wx.cpp ${EXTRA_FILES})
   target_link_libraries(tarmac-gui-browser tarmac ${wxWidgets_LIBRARIES})
   if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     set_target_properties(tarmac-gui-browser PROPERTIES

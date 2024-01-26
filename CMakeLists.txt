@@ -21,6 +21,25 @@ set(CMAKE_CXX_STANDARD 14)
 project(tarmac-trace-utilities
   LANGUAGES CXX)
 
+# Check if we have Python3, which is needed for the test suite.
+
+if(CMAKE_VERSION VERSION_LESS "3.12")
+  # The method of finding Python was different before CMake 3.12.
+  set(Python_ADDITIONAL_VERSIONS 3)
+  find_package (PythonInterp ${REQUIRED_PACKAGE})
+  if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_MAJOR LESS 3)
+    set(can_run_tests ON)
+    set(python_exe ${PYTHON_EXECUTABLE})
+  endif()
+else()
+  # Up-to-date approach.
+  find_package (Python3 ${REQUIRED_PACKAGE} COMPONENTS Interpreter)
+  if(Python3_FOUND)
+    set(can_run_tests ON)
+    set(python_exe ${Python3_EXECUTABLE})
+  endif()
+endif()
+
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
   include(cmake/windows.cmake)
 else()
@@ -112,35 +131,16 @@ else()
   endmacro()
 endif()
 
-# Build the executable programs.
-
-add_subdirectory(tools)
-add_subdirectory(browser)
-
 # Translate the messages, if possible.
 
 if(GETTEXT_FOUND)
   add_subdirectory(po)
 endif()
 
-# Check if we have Python3, which is needed for the test suite.
+# Build the executable programs.
 
-if(CMAKE_VERSION VERSION_LESS "3.12")
-  # The method of finding Python was different before CMake 3.12.
-  set(Python_ADDITIONAL_VERSIONS 3)
-  find_package (PythonInterp ${REQUIRED_PACKAGE})
-  if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_MAJOR LESS 3)
-    set(can_run_tests ON)
-    set(python_exe ${PYTHON_EXECUTABLE})
-  endif()
-else()
-  # Up-to-date approach.
-  find_package (Python3 ${REQUIRED_PACKAGE} COMPONENTS Interpreter)
-  if(Python3_FOUND)
-    set(can_run_tests ON)
-    set(python_exe ${Python3_EXECUTABLE})
-  endif()
-endif()
+add_subdirectory(tools)
+add_subdirectory(browser)
 
 # Run the test suite.
 

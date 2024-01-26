@@ -71,5 +71,9 @@ check_cxx_source_compiles("
 int main(void) { (void)FOLDERID_AppDataProgramData; }
 " HAVE_APPDATAPROGRAMDATA)
 
-# libintl-based localization is not supported on Windows
+# libintl-based localization within the tools is not supported on
+# Windows, but we can still use the gettext command-line utilities to
+# build translation files if possible, and then use mo2msgres.py to
+# convert them into Windows translation resources.
+find_package(Gettext)
 set(HAVE_LIBINTL 0)
