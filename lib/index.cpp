@@ -1003,8 +1003,8 @@ bool Index::read_one_trace_line()
         if (ifs->eof()) {
             ostringstream oss;
             oss << e.msg << endl
-                << _("tarmac-browser: ignoring parse error "
-                     "on partial last line (trace truncated?)");
+                << _("ignoring parse error on partial last line "
+                     "(trace truncated?)");
             reporter->indexing_warning(trace.tarmac_filename, lineno,
                                        oss.str());
             finish_reading_trace_file();
