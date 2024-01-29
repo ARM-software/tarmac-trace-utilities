@@ -21,8 +21,6 @@
 
 find_package(Curses ${REQUIRED_PACKAGE})
 find_package(PkgConfig ${REQUIRED_PACKAGE})
-find_package(Gettext)
-find_package(Intl)
 
 include(GNUInstallDirs)
 include(CheckSymbolExists)
@@ -32,7 +30,17 @@ check_symbol_exists(wcswidth "wchar.h" HAVE_WCSWIDTH)
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}
   CACHE STRING "Directory to find gettext locale files in.")
 
+# USE_LIBINTL: user-facing option to not even _try_ to link with libintl
+set(USE_LIBINTL ON
+  CACHE BOOL "Use libintl for message internationalisation if possible")
+
+# HAVE_LIBINTL: whether we turn out to be _actually_ linking with
+# libintl (requiring it to be enabled, _and_ found at configure time)
 set(HAVE_LIBINTL 0)
-if(Intl_FOUND)
-  set(HAVE_LIBINTL 1)
+if(USE_LIBINTL)
+  find_package(Gettext)
+  find_package(Intl)
+  if(Intl_FOUND)
+    set(HAVE_LIBINTL 1)
+  endif()
 endif()
