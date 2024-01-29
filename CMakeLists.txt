@@ -46,6 +46,19 @@ else()
   include(cmake/unix.cmake)
 endif()
 
+# Function to add standard include/library configuration that applies
+# to all Tarmac tools. This includes the 'libtarmac' library built
+# from our own lib subdirectory, and also any common dependencies.
+function(standard_target_configuration target)
+  target_link_libraries(${target} tarmac)
+  if(HAVE_LIBINTL)
+    # If libtarmac expects to call libintl, we'll need libintl's
+    # include and library files.
+    target_include_directories(${target} PRIVATE ${Intl_INCLUDE_DIRS})
+    target_link_libraries(${target} ${Intl_LIBRARIES})
+  endif()
+endfunction()
+
 # Provide developpers with a strict mode to ensure that all parts of
 # tarmac-trace-utilities are built and tested.
 set(FORCE_BUILDING_ALL_APPS OFF CACHE BOOL "Fail if not all applications can be built because of missing dependencies")

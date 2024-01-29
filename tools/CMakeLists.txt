@@ -20,19 +20,19 @@
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_executable(tarmac-callinfo callinfo.cpp ${EXTRA_FILES})
-target_link_libraries(tarmac-callinfo tarmac)
+standard_target_configuration(tarmac-callinfo)
 
 add_executable(tarmac-calltree calltree.cpp ${EXTRA_FILES})
-target_link_libraries(tarmac-calltree tarmac)
+standard_target_configuration(tarmac-calltree)
 
 add_executable(tarmac-flamegraph flamegraph.cpp ${EXTRA_FILES})
-target_link_libraries(tarmac-flamegraph tarmac)
+standard_target_configuration(tarmac-flamegraph)
 
 add_executable(tarmac-profile profileinfo.cpp ${EXTRA_FILES})
-target_link_libraries(tarmac-profile tarmac)
+standard_target_configuration(tarmac-profile)
 
 add_executable(tarmac-vcd vcdwriter.cpp vcd.cpp ${EXTRA_FILES})
-target_link_libraries(tarmac-vcd tarmac)
+standard_target_configuration(tarmac-vcd)
 
 install_programs(
   tarmac-callinfo tarmac-calltree tarmac-flamegraph tarmac-profile
@@ -41,22 +41,22 @@ install_programs(
 # Test and diagnostic utilities, not installed.
 
 add_executable(tarmac-indextool indextool.cpp)
-target_link_libraries(tarmac-indextool tarmac)
+standard_target_configuration(tarmac-indextool)
 
 add_executable(parsertest parsertest.cpp)
-target_link_libraries(parsertest tarmac)
+standard_target_configuration(parsertest)
 
 add_executable(exprtest exprtest.cpp)
-target_link_libraries(exprtest tarmac)
+standard_target_configuration(exprtest)
 
 add_executable(argparsetest argparsetest.cpp)
-target_link_libraries(argparsetest tarmac)
+standard_target_configuration(argparsetest)
 
 add_executable(btodtest btodtest.cpp)
-target_link_libraries(btodtest tarmac)
+standard_target_configuration(btodtest)
 
 add_executable(avltest avltest.cpp)
-target_link_libraries(avltest tarmac)
+standard_target_configuration(avltest)
 
 add_executable(formattest formattest.cpp)
-target_link_libraries(formattest tarmac)
+standard_target_configuration(formattest)
