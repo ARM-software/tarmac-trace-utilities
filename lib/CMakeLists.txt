@@ -27,6 +27,10 @@ add_library(tarmac
   image.cpp index.cpp index_ds.cpp misc.cpp parser.cpp registers.cpp
   tarmacutil.cpp ${platform_sources})
 
+if(HAVE_LIBINTL)
+  target_include_directories(tarmac PRIVATE ${Intl_INCLUDE_DIRS})
+endif()
+
 set(LIBTARMAC_HEADERS "${CMAKE_BINARY_DIR}/include/libtarmac/platform.hh")
 foreach(H argparse.hh callinfo.hh calltree.hh disktree.hh elf.hh expr.hh
     image.hh index.hh index_ds.hh memtree.hh misc.hh parser.hh registers.hh
