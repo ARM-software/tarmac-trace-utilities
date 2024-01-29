@@ -1,0 +1,1196 @@
+# French translations for Tarmac Trace package
+# Traductions françaises du paquet Tarmac Trace.
+# Copyright (C) 2024 Arm Limited
+# This file is distributed under the same license as the Tarmac Trace Utilities package.
+# Arnaud de Grandmaison <arnaud.degrandmaison@arm.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tarmac Trace Utilities\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-26 15:50+0000\n"
+"PO-Revision-Date: 2024-01-29 16:55+0100\n"
+"Last-Translator: Arnaud de Grandmaison <arnaud.degrandmaison@arm.com>\n"
+"Language-Team: French <traduc@traduc.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: browser/browse.cpp:600
+msgid "register {} is not defined"
+msgstr "le registre {} n'est pas défini"
+
+#: browser/curses.cpp:249
+msgid "(scroll up for more)"
+msgstr "(défiler vers le haut pour plus)"
+
+#: browser/curses.cpp:253
+msgid "(scroll down for more)"
+msgstr "faire défiler vers le bas pour plus"
+
+#: browser/curses.cpp:456
+msgid "Erase the last character"
+msgstr "Efface le dernier caractère"
+
+#: browser/curses.cpp:457
+msgid "Erase the last word of the input line"
+msgstr "Efface le dernier mot de la ligne d'entrée"
+
+#: browser/curses.cpp:458
+msgid "Erase the whole input line"
+msgstr "Efface toute la ligne d'entrée "
+
+#: browser/curses.cpp:459
+msgid "Cancel the minibuffer input operation"
+msgstr "Annule l'opération d'entrée sur le mini-tampon"
+
+#: browser/curses.cpp:460
+msgid "Accept the current minibuffer contents"
+msgstr "Accepte le contenu du mini-tampon"
+
+#: browser/curses.cpp:786
+msgid "Tarmac file: "
+msgstr "fichier Tarmac: "
+
+#: browser/curses.cpp:787
+msgid "   Time:"
+msgstr "   Temps:"
+
+#: browser/curses.cpp:788
+msgid "   Line:"
+msgstr "   Ligne:"
+
+#: browser/curses.cpp:858
+msgid "Step by one visible instruction"
+msgstr "Avance d'une instruction visible"
+
+#: browser/curses.cpp:859
+msgid "Move by a screenful of visible trace"
+msgstr "Avance d'un écran de la trace visible"
+
+#: browser/curses.cpp:860
+msgid "Jump to the start or end of the trace"
+msgstr "Saute au début ou à la fin de la trace"
+
+#: browser/curses.cpp:861
+msgid "Scroll to cycle the current location between middle, top and bottom"
+msgstr "Faire défiler pour alterner entre le milieu, le dessus et le dessous"
+
+#: browser/curses.cpp:863
+msgid "Jump to a specified time position"
+msgstr "Saute à une position à un temps spécifié"
+
+#: browser/curses.cpp:864
+msgid "Jump to a specified line number of the trace file"
+msgstr "Saute à une ligne spécifiée dans le fichier de trace"
+
+#: browser/curses.cpp:865
+msgid "Jump to the next / previous visit to a PC location"
+msgstr "Saute à la prochaine / précédente visite d'une valeur du PC"
+
+#: browser/curses.cpp:867
+msgid "Toggle display of the core registers"
+msgstr "Active / désactive l'affichage des registres du cœur"
+
+#: browser/curses.cpp:868
+msgid "Toggle display of the single / double FP registers"
+msgstr "Active / désactive l'affichage des registres simple / double précision"
+
+#: browser/curses.cpp:869
+msgid "Open a memory view at a specified address"
+msgstr "Ouvre une vue de la mémoire à une adresse spécifiée"
+
+#: browser/curses.cpp:871
+msgid "Highlight a single event within the current time"
+msgstr "Surligne un évènement au temps présent"
+
+#: browser/curses.cpp:872
+msgid ""
+"Jump to the previous change to the memory accessed by the highlighted event"
+msgstr "Saute au changement précédent de la mémoire accédée par l'évènement surligné"
+
+#: browser/curses.cpp:876
+msgid "Fold the innermost unfolded function call at this _position"
+msgstr "Plie l'appel de fonction non plié le plus profond at cette _position"
+
+#: browser/curses.cpp:878
+msgid "Unfold the outermost folded function call at this position"
+msgstr "Déplie l'appel de fonction plié le plus à l'extérieur de cette position"
+
+#: browser/curses.cpp:879
+msgid ""
+"Fold / unfold everything nested inside the innermost unfolded function call "
+"at this position"
+msgstr ""
+
+#: browser/curses.cpp:881
+msgid "Maximally fold / unfold the entire trace buffer"
+msgstr "Plie / déplie de façon maximale le tampon entier de trace"
+
+#: browser/curses.cpp:883
+msgid "Toggle syntax highlighting"
+msgstr "Active / désactive la coloration syntaxique"
+
+#: browser/curses.cpp:884
+msgid "Toggle symbolic display of branch targets"
+msgstr "Active / désactive l'affichage symbolique des cibles de branchement"
+
+#: browser/curses.cpp:980
+msgid "No function call to fold up here"
+msgstr "Aucun appel de fonction à piler"
+
+#: browser/curses.cpp:1006
+msgid "No function call to unfold here"
+msgstr "Aucun appel de fonction à déplier"
+
+#: browser/curses.cpp:1056
+msgid "Go to time: "
+msgstr "Aller au temps: "
+
+#: browser/curses.cpp:1060
+msgid "Go to line: "
+msgstr "Aller à la ligne: "
+
+#: browser/curses.cpp:1066
+msgid "Go to previous visit to PC: "
+msgstr "Aller à la précédente visite du PC: "
+
+#: browser/curses.cpp:1067
+msgid "Go to next visit to PC: "
+msgstr "Aller à prochaine visite du PC: "
+
+#: browser/curses.cpp:1071
+msgid "Show memory at address: "
+msgstr "Afficher le contenu de la mémoire à l'adresse: "
+
+#: browser/curses.cpp:1114
+msgid "Syntax highlighting on"
+msgstr "Coloration syntaxique activée"
+
+#: browser/curses.cpp:1115
+msgid "Syntax highlighting off"
+msgstr "Coloration syntaxique désactivée"
+
+#: browser/curses.cpp:1120
+msgid "No image to look up symbolic branch targets"
+msgstr "Pas d'image dans laquelle rechercher les symboles des cibles des branchements"
+
+#: browser/curses.cpp:1125
+msgid "Symbolic branch-target display on"
+msgstr "Affichage symbolique des cibles des branchements activé"
+
+#: browser/curses.cpp:1126
+msgid "Symbolic branch-target display off"
+msgstr "Affichage symbolique des cibles des branchements désactivé"
+
+#: browser/curses.cpp:1158 browser/wx.cpp:2430 browser/wx.cpp:3255
+msgid "Error parsing expression: {}"
+msgstr "Erreur lors de l'analyse de l'expression: {}"
+
+#: browser/curses.cpp:1164
+msgid "Invalid format for parameter"
+msgstr "Format invalide pour le paramètre"
+
+#: browser/curses.cpp:2270
+msgid "use colour in the terminal"
+msgstr "Utilise la couleur dans le terminal"
+
+#: browser/curses.cpp:2273
+msgid "don't use colour in the terminal"
+msgstr "n'utilise pas la couleur dans le terminal"
+
+#: browser/wx.cpp:309
+msgid "{}: {}: unable to parse colour '{}'"
+msgstr "{}: {}: impossible d'analyser la couleur '{}'"
+
+#: browser/wx.cpp:315
+msgid "{}: {}: unrecognised config directive '{}'"
+msgstr "{}: {}: option de configuration non reconnue '{}'"
+
+#: browser/wx.cpp:1752
+msgid "Locked to: "
+msgstr "Verrouillé à: "
+
+#: browser/wx.cpp:1824
+msgid "None"
+msgstr "Vide"
+
+#: browser/wx.cpp:1861
+msgid "New trace view"
+msgstr "Vue d'une nouvelle trace"
+
+#: browser/wx.cpp:1865
+msgid "New..."
+msgstr "Nouvelle..."
+
+#: browser/wx.cpp:1868
+msgid "Memory view"
+msgstr "Vue mémoire"
+
+#: browser/wx.cpp:1870
+msgid "Stack view"
+msgstr "Vue de la pile"
+
+#: browser/wx.cpp:1871
+msgid "Core register view"
+msgstr "Vue des registres du cœur"
+
+#: browser/wx.cpp:1872
+msgid "Single-precision FP reg view"
+msgstr "Vue des registres simple précision"
+
+#: browser/wx.cpp:1873
+msgid "Double-precision FP reg view"
+msgstr "Vue des registres double précision"
+
+#: browser/wx.cpp:1874
+msgid "Neon vector reg view"
+msgstr "Vue des registre vecteur Neon"
+
+#: browser/wx.cpp:1875
+msgid "MVE vector reg view"
+msgstr "Vue des registres vecteur MVE"
+
+#: browser/wx.cpp:1879
+msgid "&View"
+msgstr "&Vue"
+
+#: browser/wx.cpp:1882
+msgid "Re-centre"
+msgstr "Re-centre"
+
+#: browser/wx.cpp:1885
+msgid "Call-depth indentation"
+msgstr "Indentation suivant la profondeur d'appel"
+
+#: browser/wx.cpp:1886
+msgid "Syntax highlighting"
+msgstr "Coloration syntaxique"
+
+#: browser/wx.cpp:1889
+msgid "Symbolic branch targets"
+msgstr "Affichage symbolique des branchements"
+
+#: browser/wx.cpp:1912
+msgid "Time: "
+msgstr "Temps: "
+
+#: browser/wx.cpp:1922
+msgid "Prev"
+msgstr "Précédent"
+
+#: browser/wx.cpp:1924
+msgid "Next"
+msgstr "Suivant"
+
+#: browser/wx.cpp:2134
+msgid "Fold all"
+msgstr "Tout plier"
+
+#: browser/wx.cpp:2135
+msgid "Unfold all"
+msgstr "Tout déplier"
+
+#: browser/wx.cpp:2143
+msgid "Containing call (lines {}–{} to {})"
+msgstr "Appel parent (lignes {}–{} à {})"
+
+#: browser/wx.cpp:2153
+msgid "Fold up"
+msgstr "Replier"
+
+#: browser/wx.cpp:2154
+msgid "Fold all subroutines"
+msgstr "Plier tous les fonctions appelées"
+
+#: browser/wx.cpp:2155 browser/wx.cpp:2172
+msgid "Unfold completely"
+msgstr "Déplier complètement"
+
+#: browser/wx.cpp:2161
+msgid "Folded call (lines {}–{} to {})"
+msgstr "Appels pliés (lignes {}–{} à {})"
+
+#: browser/wx.cpp:2171
+msgid "Unfold one level"
+msgstr "Déplier d'un niveau"
+
+#: browser/wx.cpp:2185
+msgid "Memory access: {0} bytes at 0x{1:x}"
+msgstr "Accès mémoire: {0} octets à 0x{1:x}"
+
+#: browser/wx.cpp:2193 browser/wx.cpp:2207
+msgid "Go to previous write"
+msgstr "Aller à l'écriture précédente"
+
+#: browser/wx.cpp:2194
+msgid "Open a memory window here"
+msgstr "Ouvre une vue mémoire ici"
+
+#: browser/wx.cpp:2198
+msgid "Register access: {}"
+msgstr "Accès registre: {}"
+
+#: browser/wx.cpp:2378
+msgid "Open memory window"
+msgstr "Ouvre une vue mémoire"
+
+#: browser/wx.cpp:2383
+msgid "Enter memory address to display"
+msgstr "Fournir l'adresse mémoire à afficher"
+
+#: browser/wx.cpp:2771
+msgid "Register {}"
+msgstr "Registre {}"
+
+#: browser/wx.cpp:2774
+msgid "Go to last write to this register"
+msgstr "Aller à la dernière écriture de ce registre"
+
+#: browser/wx.cpp:2848 browser/wx.cpp:2865
+msgid "Core regs"
+msgstr "Registres du cœur"
+
+#: browser/wx.cpp:2880
+msgid "FP regs (single precision)"
+msgstr "Registres flottant (précision simple)"
+
+#: browser/wx.cpp:2895
+msgid "FP regs (double precision)"
+msgstr "Registres flottants (précision double)"
+
+#: browser/wx.cpp:2910
+msgid "Vector regs (Neon)"
+msgstr "Registres vecteur (Neon)"
+
+#: browser/wx.cpp:2926
+msgid "Vector regs (MVE)"
+msgstr "Registres vecteur (MVE)"
+
+#: browser/wx.cpp:2945
+msgid "Memory"
+msgstr "Mémoire"
+
+#: browser/wx.cpp:2964
+msgid "Address: "
+msgstr "Adresse"
+
+#: browser/wx.cpp:3136
+msgid "{0}-byte region at address 0x{1:x}"
+msgstr "région de {0}-octets à l'adresse 0x{1:x}"
+
+#: browser/wx.cpp:3139
+msgid "Go to last write to this region"
+msgstr "Aller à la dernière écriture dans cette région"
+
+#: browser/wx.cpp:3405 browser/wx.cpp:3417
+msgid "tarmac-gui-browser fatal error"
+msgstr "erreur fatale dans tarmac-gui-browser"
+
+#: browser/wx.cpp:3430 browser/wx.cpp:3441
+msgid "tarmac-gui-browser warning"
+msgstr "avertissement dans tarmac-gui-browser"
+
+#: browser/wx.cpp:3451
+msgid "Indexing trace file {0} to index file {1}"
+msgstr "Indexation du fichier de trace {0} vers le ficher d'index {1}"
+
+#: browser/wx.cpp:3454
+msgid "Indexing trace file {0}"
+msgstr "Indexation du fichier de trace {0}"
+
+#: browser/wx.cpp:3461
+msgid "(new index file)"
+msgstr "(nouveau fichier d'index)"
+
+#: browser/wx.cpp:3464
+msgid "(index file was older than trace file)"
+msgstr "(le fichier d'index était plus ancien que le fichier de trace)"
+
+#: browser/wx.cpp:3468
+msgid "(index file was not generated by this version of the tool)"
+msgstr "(le fichier d'index n'a pas été généré par cette version de l'outil)"
+
+#: browser/wx.cpp:3471
+msgid "(previous index file generation was not completed)"
+msgstr "(le fichier d'index précédent était incomplet)"
+
+#: browser/wx.cpp:3474
+msgid "(not actually indexing)"
+msgstr "(pas d'indexation)"
+
+#: browser/wx.cpp:3515
+msgid "tarmac-gui-browser indexing"
+msgstr "tarmac-gui-browser indexation"
+
+#: browser/wx.cpp:3573
+msgid "tarmac-gui-browser setup"
+msgstr "tarmac-gui-browser configuration"
+
+#: browser/wx.cpp:3577
+msgid "Trace file to view (required)"
+msgstr "Fichier de trace à afficher (requis)"
+
+#: browser/wx.cpp:3580
+msgid "Select a trace file to view"
+msgstr "Sélectionner un fichier de trace à afficher"
+
+#: browser/wx.cpp:3585
+msgid "ELF image matching the trace"
+msgstr "Fichier image ELF correspondant à la trace"
+
+#: browser/wx.cpp:3588
+msgid "Select an ELF image to use"
+msgstr "Sélectionner un fichier image ELF à utiliser"
+
+#: browser/wx.cpp:3593
+msgid "Re-index the trace file?"
+msgstr "Ré-indexation du fichier de trace ?"
+
+#: browser/wx.cpp:3597 browser/wx.cpp:3600
+msgid "If necessary"
+msgstr "Si nécessaire"
+
+#: browser/wx.cpp:3601
+msgid "Always"
+msgstr "Toujours"
+
+#: browser/wx.cpp:3602
+msgid "Never"
+msgstr "Jamais"
+
+#: browser/wx.cpp:3606
+msgid "Trace is from a big-endian system"
+msgstr "La trace provient d'un system grand-boutiste"
+
+#: browser/wx.cpp:3730
+msgid "Unable to parse font description:\n"
+msgstr "Impossible d'analyser la description de fonte:\n"
+
+#: browser/wx.cpp:3731
+msgid "Setup error"
+msgstr "Erreur de configuration"
+
+#: lib/argparse.cpp:57
+msgid "Option name should be of the form '--foo' or '-f'"
+msgstr "Le nom de l'option doit être de la forme '--foo' ou '-f'"
+
+#: lib/argparse.cpp:156
+msgid "'--{}': unrecognised option name"
+msgstr "'--{}': nom d'option non reconnu"
+
+#: lib/argparse.cpp:169
+msgid "'--{}': option expects a value"
+msgstr "'--{}': l'option requiert une valeur"
+
+#: lib/argparse.cpp:176
+msgid "'--{}': option expects no value"
+msgstr "'--{}': l'option ne requiert aucune valeur"
+
+#: lib/argparse.cpp:188
+msgid "'-{}': unrecognised option name"
+msgstr "'-{}': nom d'option non reconnu"
+
+#: lib/argparse.cpp:202
+msgid "'-{}': option expects a value"
+msgstr "'-{}': l'option requiert une valeur"
+
+#: lib/argparse.cpp:212
+msgid "'{}': badly formatted option"
+msgstr "'{}': option mal formatée"
+
+#: lib/argparse.cpp:223
+msgid "'{}': unexpected positional argument"
+msgstr "'{}': argument positionnel inattendu"
+
+#: lib/argparse.cpp:232
+msgid "expected additional arguments (starting with '{}')"
+msgstr "d'autres arguments sont attendus (à partir de '{}')"
+
+#: lib/argparse.cpp:246
+msgid "try '{} --help' for help"
+msgstr "'{} --help' pour afficher l'aide"
+
+#: lib/argparse.cpp:328
+msgid "usage: "
+msgstr "usage: "
+
+#: lib/argparse.cpp:369
+msgid "options:"
+msgstr "options:"
+
+#: lib/argparse.cpp:395
+msgid "positional arguments:"
+msgstr "arguments positionnels:"
+
+#: lib/argparse.cpp:407
+msgid "also:"
+msgstr "aussi:"
+
+#: lib/argparse.cpp:408
+msgid "display this text"
+msgstr "affiche ce texte"
+
+#: lib/callinfo.cpp:106
+msgid "No image, symbol '{}' can not be looked up !\n"
+msgstr "Pas d'image, le symbol '{}' ne peut être recherché !\n"
+
+#: lib/callinfo.cpp:114
+msgid "Symbol '{}' not found !\n"
+msgstr "Symbole '{}' non trouve !\n"
+
+#: lib/callinfo.cpp:118
+msgid "Symbol '{0}' at 0x{1:x} ({2} bytes) called from :\n"
+msgstr "Symbole '{0}' à 0x{1:x} ({2} octets) appelé depuis :\n"
+
+#: lib/expr.cpp:135
+msgid "register name '{}'"
+msgstr "nom du registre '{}'"
+
+#: lib/expr.cpp:273
+msgid "expected an identifier after '::'"
+msgstr "identifiant requis après '::'"
+
+#: lib/expr.cpp:279
+msgid "unrecognised register name '{}'"
+msgstr "nom de registre '{}' non reconnu"
+
+#: lib/expr.cpp:283
+msgid "unrecognised symbol name '{}'"
+msgstr "nom de symbole '{}' non reconnu"
+
+#: lib/expr.cpp:286
+msgid "unrecognised identifier scope '{}'"
+msgstr "identifiant de portée '{}' non reconnu"
+
+#: lib/expr.cpp:295
+msgid "unrecognised identifier name '{}'"
+msgstr "nom d'identifiant '{}' non reconnu"
+
+#: lib/expr.cpp:305
+msgid "expected closing ')'"
+msgstr "parenthèse fermante ')' requise"
+
+#: lib/expr.cpp:315
+msgid "unexpected end of expression"
+msgstr "fin d'expression inattendue"
+
+#: lib/expr.cpp:318
+msgid "unexpected token"
+msgstr "token inattendu"
+
+#: lib/expr.cpp:403
+msgid "unexpected tokens after expression"
+msgstr "tokens inattendus après l'expression"
+
+#: lib/image.cpp:205
+#, c-format
+msgid "Cannot open ELF file \"%s\""
+msgstr "Impossible d'ouvrir l'image ELF \"%s\""
+
+#: lib/image.cpp:215
+#, c-format
+msgid "Image '%s':\n"
+msgstr "Image '%s':\n"
+
+#: lib/image.cpp:217
+#, c-format
+msgid "symbol '%s#%d' [0x%llx, 0x%llx)\n"
+msgstr "symbole '%s#%d' [0x%llx, 0x%llx)\n"
+
+#: lib/index.cpp:1006
+msgid "ignoring parse error on partial last line (trace truncated?)"
+msgstr "l'erreur d'analyze de la dernière ligne est ignorée (fichier de trace tronqué ?)"
+
+#: lib/index.cpp:1131
+#, c-format
+msgid "%s: magic number did not match"
+msgstr "%s: le nombre magique ne correspond pas"
+
+#: lib/misc.cpp:131
+msgid "index file {} does not exist; building it"
+msgstr "le fichier d'index {} n'existe pas; démarrage de sa construction"
+
+#: lib/misc.cpp:136
+msgid "index file {} is older than trace file {}; rebuilding it"
+msgstr "le fichier d'index {} est plus ancien que le fichier de trace {}; démarrage de sa reconstruction"
+
+#: lib/misc.cpp:142
+msgid ""
+"index file {} was not generated by this version of the tool; rebuilding it"
+msgstr "le fichier d'index {} n'a pas été généré avec cette version de l'outil; démarrage de sa reconstruction"
+
+#: lib/misc.cpp:148
+msgid "previous generation of index file {} was not completed; rebuilding it"
+msgstr "le fichier d'index n'avait pas été complètement généré; démarrage de sa reconstruction"
+
+#: lib/misc.cpp:154
+msgid "index file {} looks ok; not rebuilding it"
+msgstr "le fichier d'index {} semble OK; il ne sera pas reconstruit"
+
+#: lib/misc.cpp:192
+msgid "Reading trace file ({}%)"
+msgstr "Lecture du fichier de trace ({}%)"
+
+#: lib/misc.cpp:202
+msgid "Reading trace file (finished)"
+msgstr "Lecture du fichier de trace (terminé)"
+
+#: lib/misc.cpp:226
+msgid "Out of memory"
+msgstr "Plus de mémoire"
+
+#: lib/parser.cpp:429
+msgid "expected '(' to introduce instruction address and bit pattern"
+msgstr "'(' est attendu pour introduire une adresse d'instruction et un modèle de bits"
+
+#: lib/parser.cpp:434
+msgid "expected a hex instruction address"
+msgstr "une adresse d'instruction au format hexadécimal est requise"
+
+#: lib/parser.cpp:440
+msgid "expected ':' between instruction address and bit pattern"
+msgstr "':' est requis entre une adresse d'instruction et un modèle de bits"
+
+#: lib/parser.cpp:454 lib/parser.cpp:566
+msgid "expected a hex instruction bit pattern"
+msgstr "un modèle de bit au format hexadécimal est requis pour une instruction"
+
+#: lib/parser.cpp:464
+msgid "expected ')' after instruction address and bit pattern"
+msgstr "une ')' est requise après une adresse d'instruction et un modèle de bits"
+
+#: lib/parser.cpp:497 lib/parser.cpp:508
+msgid "expected a hex or decimal number"
+msgstr "un nombre au format hexadécimal ou décimal est requis"
+
+#: lib/parser.cpp:515
+msgid "expected ')' after bracketed value"
+msgstr "une ')' est requise après une valeur entre parenthèses"
+
+#: lib/parser.cpp:520
+msgid "expected a hex value"
+msgstr "une valeur au format hexadécimale est requise"
+
+#: lib/parser.cpp:535
+msgid "expected a hex address after ':'"
+msgstr "une adresse au format hexadécimal est requise après ':'"
+
+#: lib/parser.cpp:546
+msgid "expected a hex address after ','"
+msgstr "une adresse au format hexadecimal est requis après ','"
+
+#: lib/parser.cpp:587
+msgid "expected instruction-set state"
+msgstr "un état du jeu d'instruction est requis"
+
+#: lib/parser.cpp:612
+msgid "expected CPU mode"
+msgstr "mode du CPU requis"
+
+#: lib/parser.cpp:620
+msgid "expected ':' before instruction"
+msgstr "un ':' est requis avant l'instruction"
+
+#: lib/parser.cpp:647
+msgid "expected register name"
+msgstr "un nom de registre est attendu"
+
+#: lib/parser.cpp:656
+msgid "unsupported system operation '{}'"
+msgstr "opération système non supportée '{}'"
+
+#: lib/parser.cpp:671
+msgid "expected extra register identification details"
+msgstr "des détails d'identification supplémentaire du registre sont requis"
+
+#: lib/parser.cpp:677
+msgid "expected ')' after extra register identification details"
+msgstr "une ')' est requise après les détails d'identification supplémentaire d'un registre"
+
+#: lib/parser.cpp:726
+msgid "cannot handle register bit range for this register"
+msgstr "impossible de gérer l'interval de bits pour ce registre"
+
+#: lib/parser.cpp:733 lib/parser.cpp:750
+msgid "expected bit offset within register"
+msgstr "un offset de bit dans le registre est requis"
+
+#: lib/parser.cpp:736
+msgid "expected high bit offset within register to be at the top of a byte"
+msgstr "l'offset haut des bits du registre doit concerner l'octet le plus significatif"
+
+#: lib/parser.cpp:740
+msgid "high bit offset is larger than containing register"
+msgstr "l'offset haut des bits est plus grand que le registre"
+
+#: lib/parser.cpp:745
+msgid "expected ':' separating bit offsets in register bit range"
+msgstr "un ':' est requis pour séparer les offsets de bit dans l'interval de bit d'un registre"
+
+#: lib/parser.cpp:754
+msgid "expected low bit offset within register to be at the bottom of a byte"
+msgstr "l'offset bas des bits du registre doit concerner l'octet le moins significatif"
+
+#: lib/parser.cpp:758
+msgid "low bit offset is higher than high bit offset"
+msgstr "l'offset bas des bits est supérieur à l'offset haut des bits"
+
+#: lib/parser.cpp:764
+msgid "expected '>' after register bit range"
+msgstr "un '>' est requis après l'interval de bits d'un registre"
+
+#: lib/parser.cpp:785 lib/parser.cpp:803
+msgid "expected register contents"
+msgstr "le contenu du registre est requis"
+
+#: lib/parser.cpp:810
+msgid "expected additional register contents after ':'"
+msgstr "contenu additionnel du registre requis après ':'"
+
+#: lib/parser.cpp:838
+msgid "expected register contents to be an integer number of bytes"
+msgstr "le contenu d'un registre doit être un nombre entier d'octets"
+
+#: lib/parser.cpp:867
+msgid "unrecognised {0}-bit register '{1}'"
+msgstr "registre {1} de {0} bit(s) non reconnu"
+
+#: lib/parser.cpp:960
+msgid "expected memory address"
+msgstr "adresse mémoire requise"
+
+#: lib/parser.cpp:973
+msgid "expected physical memory address after ':'"
+msgstr "adresse mémoire physique requise après ':'"
+
+#: lib/parser.cpp:989
+msgid "expected closing parenthesis"
+msgstr "parenthèse fermante requise"
+
+#: lib/parser.cpp:996
+msgid "unrecognised parenthesised keyword"
+msgstr "mot clé parenthésé non reconnu"
+
+#: lib/parser.cpp:1006
+msgid "expected memory contents in hex"
+msgstr "contenu de la mémoire requis au format hexadécimal"
+
+#: lib/parser.cpp:1038
+msgid "expected load/store memory address"
+msgstr "une adresse de lecture/écriture en mémoire est attendue"
+
+#: lib/parser.cpp:1051
+msgid "expected a word of data bytes, '.' and '#'"
+msgstr "un mot d'octets de données est attendu, '.' et '#'"
+
+#: lib/parser.cpp:1054
+msgid "expected data word to cover a whole number of bytes"
+msgstr "le mot de donnée doit couvrir le nombre entier d'octets"
+
+#: lib/parser.cpp:1063
+msgid "expected exactly 16 data bytes"
+msgstr "exactement 16 octets de données sont requis"
+
+#: lib/parser.cpp:1072
+msgid "expected each byte to be only one of '.', '#' and hex"
+msgstr "chacun des octets doit être '.', '#' ou hex"
+
+#: lib/parser.cpp:1155
+msgid "unknown Tarmac event type '{}'"
+msgstr "évènement Tarmac de type '{}' inconnu"
+
+#: lib/tarmacutil.cpp:42
+msgid "IMAGEFILE"
+msgstr "FICHIERIMAGE"
+
+#: lib/tarmacutil.cpp:42
+msgid "image file name"
+msgstr "nom du fichier contenant l'image"
+
+#: lib/tarmacutil.cpp:44 tools/indextool.cpp:528 tools/indextool.cpp:534
+#: tools/indextool.cpp:540 tools/indextool.cpp:547 tools/indextool.cpp:569
+msgid "OFFSET"
+msgstr "OFFSET"
+
+#: lib/tarmacutil.cpp:44
+msgid "offset from addresses in the image file to addresses in the trace"
+msgstr "décalage des addresses dans l'image par rapport à celles de la trace"
+
+#: lib/tarmacutil.cpp:51
+msgid "generate index and do nothing else"
+msgstr "génère uniquement l'index"
+
+#: lib/tarmacutil.cpp:56
+msgid "regenerate index unconditionally"
+msgstr "re-génère l'index inconditionnellement"
+
+#: lib/tarmacutil.cpp:58
+msgid "do not regenerate index"
+msgstr "ne pas générer l'index"
+
+#: lib/tarmacutil.cpp:61
+msgid "keep index in memory instead of on disk"
+msgstr "garde l'index en mémoire plutôt que sur le disque"
+
+#: lib/tarmacutil.cpp:64
+msgid "assume trace is from a little-endian platform"
+msgstr "suppose que la trace provient d'une plateforme petit-boutiste"
+
+#: lib/tarmacutil.cpp:69
+msgid "assume trace is from a big-endian platform"
+msgstr "suppose que la trace provient d'une plateforme grand-boutiste"
+
+#: lib/tarmacutil.cpp:74
+msgid ""
+"assume trace is from a Thumb-only platform and might omit the instruction "
+"set state from trace records"
+msgstr ""
+"considère que la trace provient d'une plateforme uniquement Thumb et "
+"peut omettre l'état du jeu d'instruction dans la trace"
+
+#: lib/tarmacutil.cpp:80
+msgid "make tool more verbose"
+msgstr "rend l'outil plus verbeux"
+
+#: lib/tarmacutil.cpp:82
+msgid "make tool quiet"
+msgstr "rend l'outil plus silencieux"
+
+#: lib/tarmacutil.cpp:85
+msgid "force display of the progress meter"
+msgstr "force l'affichage de la barre de progression"
+
+#: lib/tarmacutil.cpp:93
+msgid "INDEXFILE"
+msgstr "FICHIERINDEX"
+
+#: lib/tarmacutil.cpp:93
+msgid "index file name"
+msgstr "nom du fichier d'index"
+
+#: lib/tarmacutil.cpp:95 lib/tarmacutil.cpp:150
+msgid "TRACEFILE"
+msgstr "FICHIERTRACE"
+
+#: lib/tarmacutil.cpp:95
+msgid "Tarmac trace file to read"
+msgstr "nom du fichier de trace Tarmac"
+
+#: lib/tarmacutil.cpp:113
+msgid "Ignoring --no-index since index is in memory"
+msgstr "--no-index est ignoré car l'index est en mémoire"
+
+#: lib/tarmacutil.cpp:115
+msgid "Ignoring index file name since index is in memory"
+msgstr "Le fichier d'index est ignoré puisque l'index est en mémoire"
+
+#: lib/tarmacutil.cpp:129
+msgid "Endianness mismatch between image and provided endianness"
+msgstr "Le boutisme de l'image ne correspond pas à celui spécifié"
+
+#: lib/tarmacutil.cpp:150
+msgid "Tarmac trace files to read"
+msgstr "fichier de trace Tarmac à lire"
+
+#: tools/callinfo.cpp:49
+msgid "FUNCTION"
+msgstr "FONCTION"
+
+#: tools/callinfo.cpp:49
+msgid "name or hex address of function to find calls to"
+msgstr "nom ou address hexadécimale de la fonction dont les appels sont à retrouver"
+
+#: tools/callinfo.cpp:54
+msgid "expected at least one function name"
+msgstr "au moins un nom de fonction est requis"
+
+#: tools/flamegraph.cpp:52
+msgid "OUTFILE"
+msgstr "FICHIERSORTIE"
+
+#: tools/flamegraph.cpp:53
+msgid "write output to OUTFILE (default: standard output)"
+msgstr "écrit les résultats dans FICHIERSORTIE (défaut: sortie standard)"
+
+#: tools/indextool.cpp:71
+msgid "Node at file offset {}"
+msgstr "Nœud à l'offset de fichier {}"
+
+#: tools/indextool.cpp:73
+msgid "Node"
+msgstr "Nœud"
+
+#: tools/indextool.cpp:103
+msgid "Right child node"
+msgstr "Nœud fils de droite"
+
+#: tools/indextool.cpp:103
+msgid "Left child node"
+msgstr "Nœud fils de gauche"
+
+#: tools/indextool.cpp:106
+msgid "Root node"
+msgstr "Nœud racine"
+
+#: tools/indextool.cpp:110
+msgid "{:#x} at file offset {}:"
+msgstr "{:#x} à l'offset de fichier {}:"
+
+#: tools/indextool.cpp:126
+msgid "Child offsets"
+msgstr "Offsets fils"
+
+#: tools/indextool.cpp:130 tools/indextool.cpp:135
+msgid "null"
+msgstr "zéro"
+
+#: tools/indextool.cpp:191
+msgid "Line range: start {}, extent {}"
+msgstr "Interval de lignes: début {}, fin {}"
+
+#: tools/indextool.cpp:195
+msgid "Byte range: start {:#x}, extent {:#x}"
+msgstr "Interval d'octets: début {:#x}, fin {:#x}"
+
+#: tools/indextool.cpp:198
+msgid "Modification time: "
+msgstr "Temps de modification: "
+
+#: tools/indextool.cpp:201
+msgid "invalid"
+msgstr "invalide"
+
+#: tools/indextool.cpp:206
+msgid "Root of memory tree: "
+msgstr "Racine de l'arbre mémoire"
+
+#: tools/indextool.cpp:209
+msgid "Call depth: "
+msgstr "Profondeur d'appel"
+
+#: tools/indextool.cpp:226
+msgid "sentinel"
+msgstr "sentinelle"
+
+#: tools/indextool.cpp:230
+msgid "{} lines, {} insns, left-crosslink {}, right-crosslink {}}}"
+msgstr "{} lignes, {} instructions, {} liaisons à gauche, {} liaisons à droite}}"
+
+#: tools/indextool.cpp:248 tools/indextool.cpp:302
+msgid "Range: "
+msgstr "Interval: "
+
+#: tools/indextool.cpp:253
+msgid "register-space"
+msgstr "espace-registre"
+
+#: tools/indextool.cpp:255
+msgid "memory"
+msgstr "mémoire"
+
+#: tools/indextool.cpp:257
+msgid "Contents: "
+msgstr "Contenu: "
+
+#: tools/indextool.cpp:266
+msgid "memory subtree"
+msgstr "sous-arbre mémoire"
+
+#: tools/indextool.cpp:268
+msgid "memory subtree with root pointer at {:#x}, actual root is {:#x}"
+msgstr "sous arbre mémoire avec pointeur racine à {:#x}, racine courante {:#x}"
+
+#: tools/indextool.cpp:274
+msgid "Last modification: "
+msgstr "Dernière modification: "
+
+#: tools/indextool.cpp:276
+msgid "never"
+msgstr "jamais"
+
+#: tools/indextool.cpp:278
+msgid "line {}"
+msgstr "ligne {}"
+
+#: tools/indextool.cpp:286
+msgid "Latest modification time in whole subtree: "
+msgstr "Dernière temps de modification dans le sous-arbre complet: "
+
+#: tools/indextool.cpp:306
+msgid "Contents: {} bytes"
+msgstr "COntenu: {} octets"
+
+#: tools/indextool.cpp:308
+msgid "Contents: {} bytes at file offset {:#x}"
+msgstr "Contenu: {} octets à l'offset de fichier {:#x}"
+
+#: tools/indextool.cpp:322
+msgid "Line: "
+msgstr "Ligne: "
+
+#: tools/indextool.cpp:346
+msgid " - dependent on iflags\n"
+msgstr " - depend de iflags\n"
+
+#: tools/indextool.cpp:362 tools/indextool.cpp:366
+msgid "'{}': unable to parse numeric value"
+msgstr "'{}': impossible d'analyser la valeur numérique"
+
+#: tools/indextool.cpp:368
+msgid "'{}': numeric value out of range"
+msgstr "'{}': la valeur numérique est hors de l'interval"
+
+#: tools/indextool.cpp:431
+msgid "Unable to find a node at line {}\n"
+msgstr "Nœud non trouvé à la ligne {}\n"
+
+#: tools/indextool.cpp:446
+msgid "Memory last modified at line {}:"
+msgstr "Dernière modification de la mémoire à la ligne {}:"
+
+#: tools/indextool.cpp:475
+msgid "{}, last modified at line {}: "
+msgstr "{}, modifié pour la dernière fois à la ligne {}"
+
+#: tools/indextool.cpp:516
+msgid "dump file header"
+msgstr "affiche l'entête de fichier"
+
+#: tools/indextool.cpp:519
+msgid "dump logical content of the sequential order tree"
+msgstr "affiche le contenu logique de l'arbre d'ordre séquentiel"
+
+#: tools/indextool.cpp:522
+msgid ""
+"dump logical content of the sequential order tree, and memory contents at "
+"each node"
+msgstr ""
+"affiche le contenu logique de l'arbre d'ordre séquentiel ainsi que "
+"le contenu de la mémoire pour chaque nœud"
+
+#: tools/indextool.cpp:526
+msgid "dump physical structure of the sequential order tree"
+msgstr "affiche la structure physique de l'arbre d'ordre séquentiel"
+
+#: tools/indextool.cpp:529
+msgid "dump logical content of memory tree with root at OFFSET"
+msgstr "affiche le contenu logique de l'arbre mémoire  dont la racine est OFFSET"
+
+#: tools/indextool.cpp:535
+msgid "dump physical structure of a memory tree with root at OFFSET"
+msgstr "affiche la structure physique d'un arbre mémoire dont la racine est OFFSET"
+
+#: tools/indextool.cpp:541
+msgid "dump logical content of a memory subtree with root at OFFSET"
+msgstr "affiche le contenu logique d'un sous-arbre mémoire dont la racine est  OFFSET"
+
+#: tools/indextool.cpp:548
+msgid "dump physical structure of a memory subtree with root at OFFSET"
+msgstr "affiche la structure physique d'un sous-arbre mémoire dont la racine est OFFSET"
+
+#: tools/indextool.cpp:553
+msgid "dump logical content of the by-PC tree"
+msgstr "affiche le contenu logique de l'arbre by-PC"
+
+#: tools/indextool.cpp:555
+msgid "dump physical structure of the by-PC tree"
+msgstr "affiche la structure physique de l'arbre by-PC"
+
+#: tools/indextool.cpp:557
+msgid "write a memory map of the register space"
+msgstr "affiche une carte mémoire de l'espace registre"
+
+#: tools/indextool.cpp:559
+msgid "FLAGS"
+msgstr "DRAPEAUX"
+
+#: tools/indextool.cpp:560
+msgid "(for --regmap) specify iflags context to retrieve registers"
+msgstr "(pour --regmap) spécifie le context iflags pour récupérer les registres"
+
+#: tools/indextool.cpp:566
+msgid ""
+"do not dump offsets in index file (so that output is more stable when index "
+"format changes)"
+msgstr "ne stocke pas les offset dans le fichier de trace (de façon que la sortie soit plus stable quand le format de l'index change)"
+
+#: tools/indextool.cpp:570
+msgid ""
+"dump full content of memory tree corresponding to a particular line of the "
+"trace file"
+msgstr "affiche le contenu complet de l'arbre mémoire correspondant à une ligne particulière du fichier de trace"
+
+#: tools/indextool.cpp:579
+msgid "expected an option describing a query"
+msgstr "une option décrivant la requête est attendue"
+
+#: tools/indextool.cpp:581
+msgid "expected a trace file name"
+msgstr "un nom de fichier de trace est requis"
+
+#: tools/indextool.cpp:607
+msgid "Endianness: "
+msgstr "Boutisme: "
+
+#: tools/indextool.cpp:608
+msgid "big"
+msgstr "grand"
+
+#: tools/indextool.cpp:608
+msgid "little"
+msgstr "petit"
+
+#: tools/indextool.cpp:609
+msgid "Architecture: "
+msgstr "Architecture: "
+
+#: tools/indextool.cpp:611
+msgid "Root of sequential order tree: "
+msgstr "Racine de l'arbre d'ordre séquentiel"
+
+#: tools/indextool.cpp:613
+msgid "Root of by-PC tree: "
+msgstr "Racine de l'arbre by-PC"
+
+#: tools/indextool.cpp:614
+msgid "Line number adjustment for file header: "
+msgstr "Ajustement du nombre de lignes pour l'entête de fichier"
+
+#: tools/profileinfo.cpp:71
+msgid "Address"
+msgstr "Adresse"
+
+#: tools/profileinfo.cpp:72
+msgid "Count"
+msgstr "Compte"
+
+#: tools/profileinfo.cpp:73
+msgid "Time"
+msgstr "Temps"
+
+#: tools/profileinfo.cpp:74
+msgid "Function name"
+msgstr "Nom de fonction"
+
+#: tools/vcdwriter.cpp:341
+msgid "Error when using the instruction timestamp from the tarmac trace"
+msgstr "Erreur lors de l'usage de la marque de temps dans le fichier de trace"
+
+#: tools/vcdwriter.cpp:409
+msgid "VCDFILE"
+msgstr "FICHIERVCD"
+
+#: tools/vcdwriter.cpp:410
+msgid "VCD file name (default: tarmac_filename.vcd)"
+msgstr "nom du fichier VCD (défaut: tarmac_filename.vcd)"
+
+#: tools/vcdwriter.cpp:412
+msgid "Do not emit the date field in the vcd file"
+msgstr "Ne pas émettre le champs date dans le fichier vcd"
+
+#: tools/vcdwriter.cpp:415
+msgid "Use the instructions' timestamps from the tarmac trace."
+msgstr "utilise the la marque de temps de la trace tarmac"

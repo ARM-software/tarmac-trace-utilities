@@ -1824,3 +1824,60 @@ the trace output) to a region of memory:
 
 All the other semihosting calls require no special handling, because
 they only *read* the memory of the Arm CPU, rather than writing it.
+
+Translations
+============
+
+The Arm Tarmac Trace Utilities rely on GNU's ``gettext`` to provide
+internationalization.
+
+Adding a translation
+--------------------
+
+A new translation can be easily added. Let's walk this thru an example,
+adding the French translation ``fr_FR``. This assumes that you have
+``gettext`` available on your machine. 
+
+.. code-block:: bash
+
+  $ mkdir po/fr_FR
+  $ msginit -l fr_FR -i po/tarmac-trace-utilities.pot -o po/fr_FR/tarmac-trace-utilities.po
+
+We then need to add our new translation to the infrastructure.
+Edit file ``po/CMakeLists.txt`` to add our new translation to
+the list of directories to consider and copy a boilerplate
+``CMakeLists.txt`` into the ``fr_FR`` translation dir.
+
+.. code-block:: bash
+
+  $ vim po/CMakeLists.txt
+  ... edit ...
+  $ cat po/CMakeLists.txt
+  ...
+  add_subdirectory(fr_FR)
+  ...
+  $ cp po/en_GB@wide/CMakeLists.txt po/fr_FR/
+
+Et voila ! The infrastructure is now in place, you only need to use your
+favorite text editor to translate all strings from
+``po/fr_FR/tarmac-trace-utilities.po``.
+
+In case you want to test the translation, the easiest is to install the tarmac trace
+utilities as some additional (and required !) steps are performed only at installation. In
+order not to pollute your system, you can set the cmake installation prefix with 
+``-DCMAKE_INSTALL_PREFIX:PATH=/some/where``.
+
+The translation can then be locally tested by setting the ``LANGUAGE`` environment variable.
+
+.. code-block:: bash
+
+  $ cmake -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=/some/where ...
+  $ ninja
+  $ ninja instal
+  $ LANGUAGE=fr_FR /some/where/bin/tarmac-vcd --help
+  usage: tarmac-vcd [options] FICHIERTRACE
+  options:
+      --image=FICHIERIMAGE   nom du fichier contenant l'image
+      --load-offset=DECALAGE
+                             décalage des addresses dans l'image par rapport à
+                             celles de la trace
