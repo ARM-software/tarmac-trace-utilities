@@ -1,5 +1,5 @@
 ..
-  Copyright 2016-2021 Arm Limited. All rights reserved.
+  Copyright 2016-2024 Arm Limited. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
   This file is part of Tarmac Trace Utilities
 
 
-|CIUbuntu2004| |CIUbuntu2204| |CImacOS13|
+|CIUbuntu2004| |CIUbuntu2204| |CImacOS13| |CImacOS14|
 
 .. |CIUbuntu2004| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2004.yml/badge.svg
    :alt: Last build status on Ubuntu 20.04 (gcc + clang)
@@ -29,6 +29,10 @@
 .. |CImacOS13| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-13.yml/badge.svg
    :alt: Last build status on macOS 13 (Ventura)
    :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-13.yml
+
+.. |CImacOS14| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-14.yml/badge.svg
+   :alt: Last build status on macOS 14 (Sonoma)
+   :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-14.yml
 
 Tarmac Trace Utilities
 ~~~~~~~~~~~~~~~~~~~~~~

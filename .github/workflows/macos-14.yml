@@ -1,0 +1,26 @@
+name: "macOS Sonoma"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CMAKE_BUILD_TYPE: Debug
+  NUM_BUILD_JOBS: 2
+
+jobs:
+
+  configure_build_test:
+    name: "Configure, build and test"
+    runs-on: macos-14
+    steps:
+    - uses: actions/checkout@v4
+    - name: Configure
+      run: CC=clang CXX=clang++ cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE:STRING=${{env.CMAKE_BUILD_TYPE}}
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.CMAKE_BUILD_TYPE}} -- -j${{env.NUM_BUILD_JOBS}}
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.CMAKE_BUILD_TYPE}}
