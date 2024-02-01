@@ -285,7 +285,8 @@ static vector<string> textwrap(const string &input, unsigned indent1,
     while (!words.empty()) {
         const string &word = words.front();
 
-        unsigned candidate_len = column + terminal_width(word);
+        unsigned wordwidth = terminal_width(word);
+        unsigned candidate_len = column + wordwidth;
         if (pushed_word)
             candidate_len++; // count the separating space
 
@@ -297,6 +298,9 @@ static vector<string> textwrap(const string &input, unsigned indent1,
             thiswidth = width;
             line << string(indent, ' ');
             column = indent;
+
+            // Regenerate candidate_len, which we've just invalidated
+            candidate_len = column + wordwidth;
         }
 
         if (pushed_word)
