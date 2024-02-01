@@ -263,3 +263,10 @@ Parse warning: unsupported system operation 'AT'
 * MemoryEvent time=947020259 read=false known=true addr=9884cfa8 size=8 contents=7
 --- Tarmac line:                        000000009884cf90  ........ 11111111 22222222 ........  NS:000000009884cf90   NM ISH IWBRWA
 * MemoryEvent time=947020259 read=false known=true addr=9884cf94 size=8 contents=1111111122222222
+--- Tarmac line:        3981 tic ES  (000000d8:c878)     T thrd_s:         LDMCS    r0!,{r3-r6}
+* InstructionEvent time=3981 effect=executed pc=d8 iset=Thumb width=16 instruction=c878 disassembly="LDMCS    r0!,{r3-r6}"
+--- Tarmac line:                     LD 00004020  ........ 626d654d 2043424d 4545203e   S:0000000000004020  NM NSH
+* MemoryEvent time=3981 read=true known=true addr=4024 size=8 contents=626d654d2043424d
+* MemoryEvent time=3981 read=true known=true addr=4020 size=4 contents=4545203e
+--- Tarmac line:                        00004010  3e000a73 ........ ........ ........   S:0000000000004010  NM NSH
+* MemoryEvent time=3981 read=true known=true addr=401c size=4 contents=3e000a73

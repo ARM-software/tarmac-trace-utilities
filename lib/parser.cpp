@@ -340,28 +340,41 @@ class TarmacLineParserImpl {
         // Tarmac lines often, but not always, start with a timestamp.
         // If they don't, we default to the previous timestamp.
         Time time = prev_line.timestamp;
-        if (tok.isdecimal()) {
-            time = tok.decimalvalue();
-            highlight(tok, HL_TIMESTAMP);
-            tok = lex();
 
-            if (tok.isword() && (known_timestamp_units.find(tok.s) !=
-                                 known_timestamp_units.end()))
-                tok = lex();
+        // Before even checking for a timestamp on this line, see if
+        // this looks like a continuation of a previous LD or ST
+        // record. (Otherwise we're at risk of confusing a hex address
+        // for a decimal timestamp, if the address happens not to have
+        // any [a-f] digits.)
+        if (prev_line.event_type_is_continuable &&
+            tok.startpos == prev_line.post_event_type_start) {
+            pos = tok.startpos;        // rewind past the next token
+            tok = prev_line.event_type_token;
         } else {
-            // Another possibility is that the timestamp and its unit
-            // are smushed together in a single token, with no
-            // intervening space.
-            if (tok.isword()) {
-                size_t end_of_digits = tok.s.find_first_not_of(
-                    Token::decimal_digits);
-                if (end_of_digits > 0 && end_of_digits != string::npos &&
-                    (known_timestamp_units.find(tok.s.substr(end_of_digits)) !=
-                     known_timestamp_units.end())) {
-                    auto pair = tok.split(end_of_digits);
-                    time = pair.first.decimalvalue();
-                    highlight(pair.first, HL_TIMESTAMP);
+            // With that case ruled out, look for a timestamp.
+            if (tok.isdecimal()) {
+                time = tok.decimalvalue();
+                highlight(tok, HL_TIMESTAMP);
+                tok = lex();
+
+                if (tok.isword() && (known_timestamp_units.find(tok.s) !=
+                                     known_timestamp_units.end()))
                     tok = lex();
+            } else {
+                // Another possibility is that the timestamp and its unit
+                // are smushed together in a single token, with no
+                // intervening space.
+                if (tok.isword()) {
+                    size_t end_of_digits =
+                        tok.s.find_first_not_of(Token::decimal_digits);
+                    if (end_of_digits > 0 && end_of_digits != string::npos &&
+                        (known_timestamp_units.find(tok.s.substr(
+                             end_of_digits)) != known_timestamp_units.end())) {
+                        auto pair = tok.split(end_of_digits);
+                        time = pair.first.decimalvalue();
+                        highlight(pair.first, HL_TIMESTAMP);
+                        tok = lex();
+                    }
                 }
             }
         }
@@ -372,12 +385,6 @@ class TarmacLineParserImpl {
         // But for now, we just drop the cpu* identifiers.
         if (tok.starts_with("cpu")) {
             tok = lex();
-        }
-
-        if (prev_line.event_type_is_continuable &&
-            tok.startpos == prev_line.post_event_type_start) {
-            pos = tok.startpos;        // rewind past the next token
-            tok = prev_line.event_type_token;
         }
 
         // Now we definitely expect an event type, and we diverge
