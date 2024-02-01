@@ -31,13 +31,16 @@ if(HAVE_LIBINTL)
   target_include_directories(tarmac PRIVATE ${Intl_INCLUDE_DIRS})
 endif()
 
-set(LIBTARMAC_HEADERS "${CMAKE_BINARY_DIR}/include/libtarmac/platform.hh")
+set(LIBTARMAC_HEADERS
+  "${CMAKE_BINARY_DIR}/include/libtarmac/platform.hh"
+  "${CMAKE_BINARY_DIR}/include/libtarmac/cmake.h")
 foreach(H argparse.hh callinfo.hh calltree.hh disktree.hh elf.hh expr.hh
     image.hh index.hh index_ds.hh memtree.hh misc.hh parser.hh registers.hh
     reporter.hh tarmacutil.hh)
     list(APPEND LIBTARMAC_HEADERS ${CMAKE_SOURCE_DIR}/include/libtarmac/${H})
 endforeach()
 set_target_properties(tarmac PROPERTIES PUBLIC_HEADER "${LIBTARMAC_HEADERS}")
+target_include_directories(tarmac PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/include)
 
 install(TARGETS tarmac
   LIBRARY DESTINATION lib

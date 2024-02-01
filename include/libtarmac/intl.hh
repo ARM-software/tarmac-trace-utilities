@@ -24,7 +24,7 @@
  * some builds.
  */
 
-#include "cmake.h"
+#include "libtarmac/cmake.h"
 
 #if HAVE_LIBINTL
 #include <libintl.h>

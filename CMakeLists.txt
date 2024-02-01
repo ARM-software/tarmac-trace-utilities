@@ -83,8 +83,8 @@ else()
   find_package(wxWidgets ${REQUIRED_PACKAGE} COMPONENTS core base)
 endif()
 
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
-configure_file(cmake/cmake.h.in ${CMAKE_BINARY_DIR}/include/cmake.h
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include/libtarmac)
+configure_file(cmake/cmake.h.in ${CMAKE_BINARY_DIR}/include/libtarmac/cmake.h
   ESCAPE_QUOTES)
 
 # Support large Tarmac traces if possible on this system.
@@ -120,11 +120,8 @@ else()
 endif()
 configure_file(include/libtarmac/platform.hh.in ${CMAKE_BINARY_DIR}/include/libtarmac/platform.hh)
 
-# Set up the header file directory, and build the library of common
-# code.
+# Build the library of common code.
 
-include_directories(PRIVATE include)
-include_directories(PRIVATE ${CMAKE_BINARY_DIR}/include)
 add_subdirectory(lib)
 
 # Macro to mark a binary as to be installed by 'make install' or
