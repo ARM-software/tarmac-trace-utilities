@@ -40,6 +40,7 @@ import sys
 language_tag_to_lcid = {
     'en_GB': 0x0809,
     'en_US': 0x0409,
+    'fr': 0x040C,
 }
 
 def decode_mo(mo):
