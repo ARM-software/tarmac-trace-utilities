@@ -181,8 +181,10 @@ bool get_environment_variable(const string &varname, string &out)
     return true;
 }
 
-void gettext_setup()
+void gettext_setup(bool console_application)
 {
+    // On this platform, we don't need to know whether it's a console
+    // application
 #if HAVE_LIBINTL
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, LOCALEDIR);

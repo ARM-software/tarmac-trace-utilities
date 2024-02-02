@@ -392,7 +392,7 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
-    gettext_setup();
+    gettext_setup(true);
 
     string vcd_filename("");
     bool no_date = false;

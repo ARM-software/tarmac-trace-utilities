@@ -2250,7 +2250,7 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
-    gettext_setup();
+    gettext_setup(true);
 
     // Default to using colour if available, but permit an override by
     // setting NO_COLOR in the environment (to any non-empty string),

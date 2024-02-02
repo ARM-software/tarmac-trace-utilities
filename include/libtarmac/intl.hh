@@ -36,6 +36,13 @@ const char *fake_gettext(const char *text);
 #define _(str) str
 #endif
 
-void gettext_setup();
+/*
+ * Applications calling this function need to say whether they're a
+ * console or GUI application. This is because on Windows the output
+ * character encoding might differ. For example, on a typical
+ * English-language Windows machine, char strings sent to a GUI are
+ * interpreted as code page 1252, but in a console, code page 850.
+ */
+void gettext_setup(bool console_application);
 
 #endif // LIBTARMAC_INTL_HH

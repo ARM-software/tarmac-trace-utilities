@@ -103,7 +103,7 @@ std::unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
-    gettext_setup();
+    gettext_setup(true);
 
     IndexerParams iparams;
     iparams.record_memory = false;

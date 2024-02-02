@@ -38,7 +38,7 @@ unique_ptr<Reporter> reporter = make_cli_reporter();
 
 int main(int argc, char **argv)
 {
-    gettext_setup();
+    gettext_setup(true);
 
     unique_ptr<string> outfile = nullptr;
 

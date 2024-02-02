@@ -268,8 +268,9 @@ bool get_environment_variable(const string &varname, string &out)
 #else
 static const void *strings_lookup_table = nullptr;
 static std::map<std::string, std::unique_ptr<std::string>> fake_gettext_cache;
+static UINT fake_gettext_codepage = CP_ACP;
 
-void gettext_setup()
+void gettext_setup(bool console_application)
 {
     {
         std::string env_override;
@@ -300,6 +301,15 @@ void gettext_setup()
         return;
 
     strings_lookup_table = LockResource(lookup_hglobal);
+
+    if (console_application) {
+        // If we're running in a Windows console, we'll need to
+        // translate into the console's code page instead of the
+        // default one.
+        UINT console_codepage = GetConsoleOutputCP();
+        if (console_codepage != 0)     // 0 indicates the function failed
+            fake_gettext_codepage = console_codepage;
+    }
 }
 
 const char *fake_gettext(const char *text)
@@ -343,17 +353,41 @@ const char *fake_gettext(const char *text)
 
   found:;
 
-    char buf[4096];
-    DWORD retd = FormatMessage(FORMAT_MESSAGE_FROM_HMODULE,
-                               GetModuleHandle(NULL), index, 0,
-                               buf, sizeof(buf), NULL);
+    LPWSTR unicode_message;
+    DWORD unicode_len = FormatMessageW(
+        FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_ALLOCATE_BUFFER,
+        GetModuleHandle(NULL), index, 0, (LPWSTR)&unicode_message, 0, NULL);
 
-    std::unique_ptr<std::string> strp = std::make_unique<std::string>(
-        retd ? buf : text);
+    std::unique_ptr<std::string> strp;
+
+    if (unicode_len != 0) {
+        // Convert to the output code page without an output buffer,
+        // to determine string length
+        int nchars =
+            WideCharToMultiByte(fake_gettext_codepage, 0, unicode_message,
+                                unicode_len, NULL, 0, NULL, NULL);
+
+        if (nchars > 0) {
+            // Now allocate a buffer and do it again
+            std::vector<char> buf(nchars + 1);
+            int nchars2 = WideCharToMultiByte(fake_gettext_codepage, 0,
+                                              unicode_message, unicode_len,
+                                              buf.data(), nchars, NULL, NULL);
+
+            // Check it worked the same both times, and use the result
+            if (nchars2 == nchars) {
+                buf[nchars] = '\0';
+                strp = std::make_unique<std::string>(buf.data());
+            }
+        }
+        LocalFree(unicode_message);
+    }
+
+    if (!strp)
+        strp = std::make_unique<std::string>(text);
+
     const std::string &strref = *strp;
-
     fake_gettext_cache[text] = std::move(strp);
-
     return strref.c_str();
 }
 
