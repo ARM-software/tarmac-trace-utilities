@@ -26,7 +26,7 @@ endmacro()
 
 add_subdirectory(en_GB@wide)
 add_subdirectory(en_GB@rot13)
-add_subdirectory(fr_FR)
+add_subdirectory(fr)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows" AND Python3_FOUND)
   add_custom_command(OUTPUT translation.rc

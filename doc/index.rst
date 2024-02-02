@@ -1843,10 +1843,25 @@ adding the French translation ``fr_FR``. This assumes that you have
   $ mkdir po/fr_FR
   $ msginit -l fr_FR -i po/tarmac-trace-utilities.pot -o po/fr_FR/tarmac-trace-utilities.po
 
+The output file ``po/fr_FR/tarmac-trace-utilities.po`` contains a set
+of headers, including a ``Language:`` header. For some locale names,
+including this one, ``msginit`` deletes the territory suffix, and
+writes ``Language: fr`` instead of ``Language: fr_FR``, because it
+thinks that this is the 'default' variant of that language. In that
+situation it's probably a good idea to rename the containing directory
+as well, so that the directory and the language header match:
+
+.. code-block:: bash
+
+  $ mv po/fr_FR po/fr
+
+If the new language is not one that ``msginit`` treats in that way,
+then we proceed with the original directory name.
+
 We then need to add our new translation to the infrastructure.
 Edit file ``po/CMakeLists.txt`` to add our new translation to
 the list of directories to consider and copy a boilerplate
-``CMakeLists.txt`` into the ``fr_FR`` translation dir.
+``CMakeLists.txt`` into the ``fr`` translation dir.
 
 .. code-block:: bash
 
@@ -1854,13 +1869,13 @@ the list of directories to consider and copy a boilerplate
   ... edit ...
   $ cat po/CMakeLists.txt
   ...
-  add_subdirectory(fr_FR)
+  add_subdirectory(fr)
   ...
-  $ cp po/en_GB@wide/CMakeLists.txt po/fr_FR/
+  $ cp po/en_GB@wide/CMakeLists.txt po/fr/
 
 Et voila ! The infrastructure is now in place, you only need to use your
 favorite text editor to translate all strings from
-``po/fr_FR/tarmac-trace-utilities.po``.
+``po/fr/tarmac-trace-utilities.po``.
 
 In case you want to test the translation, the easiest is to install the tarmac trace
 utilities as some additional (and required !) steps are performed only at installation. In
@@ -1873,7 +1888,7 @@ The translation can then be locally tested by setting the ``LANGUAGE`` environme
 
   $ cmake -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=/some/where ...
   $ ninja
-  $ ninja instal
+  $ ninja install
   $ LANGUAGE=fr_FR /some/where/bin/tarmac-vcd --help
   usage: tarmac-vcd [options] FICHIERTRACE
   options:
