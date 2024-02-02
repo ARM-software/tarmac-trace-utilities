@@ -270,3 +270,5 @@ Parse warning: unsupported system operation 'AT'
 * MemoryEvent time=3981 read=true known=true addr=4020 size=4 contents=4545203e
 --- Tarmac line:                        00004010  3e000a73 ........ ........ ........   S:0000000000004010  NM NSH
 * MemoryEvent time=3981 read=true known=true addr=401c size=4 contents=3e000a73
+--- Tarmac line: 8677000000 ps R cpsr 1220023cd
+* RegisterEvent time=8677000000 reg=psr offset=0 bytes=22:00:23:cd

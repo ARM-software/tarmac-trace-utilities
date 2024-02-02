@@ -708,9 +708,11 @@ class TarmacLineParserImpl {
             RegisterId reg;
             bool got_reg_id = lookup_reg_name(reg, regname);
             bool is_fpcr = (got_reg_id && reg.prefix == RegPrefix::fpcr);
+            bool is_cpsr = (got_reg_id && reg.prefix == RegPrefix::psr &&
+                            regname == "cpsr");
             bool is_sp = (!strcasecmp(regname.c_str(), "sp") ||
                           !strncasecmp(regname.c_str(), "sp_", 3));
-            bool special = is_fpcr || is_sp;
+            bool special = is_fpcr || is_sp || is_cpsr;
 
             bool got_reg_subrange = false;
             unsigned reg_subrange_skip_lo, reg_subrange_skip_hi;
@@ -799,9 +801,8 @@ class TarmacLineParserImpl {
                 if (got_reg_subrange)
                     contents.append(2 * reg_subrange_skip_lo, '-');
             } else if (special) {
-                // Special cases described above (SP and FPCR), where we have
-                // to wait to see how much data we can get out of the input
-                // line.
+                // Special cases described above, where we have to wait to see
+                // how much data we can get out of the input line.
                 //
                 // In all cases of this so far encountered, it's enough to read
                 // a single contiguous token of register contents, plus a
@@ -830,6 +831,21 @@ class TarmacLineParserImpl {
                         reg = { RegPrefix::xsp, 0 };
                         got_reg_id = true;
                     }
+                }
+
+                if (is_cpsr) {
+                    // If the special register was CPSR, we treat it as 32-bit
+                    // always. But some Tarmac generators use the register name
+                    // "cpsr" to represent a combination of the literal CPSR
+                    // and some bits which are really from other status
+                    // registers. Also, they don't reliably print the same
+                    // number of digits every time. So we tolerate an arbitrary
+                    // number of hex digits, and normalise to the low 32 bits.
+
+                    if (contents.size() < 8)
+                        contents =
+                            std::string(8 - contents.size(), '0') + contents;
+                    contents = contents.substr(contents.size() - 8);
                 }
             }
 

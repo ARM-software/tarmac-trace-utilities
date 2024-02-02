@@ -254,3 +254,9 @@ R SP 0123456789abcdef
        3981 tic ES  (000000d8:c878)     T thrd_s:         LDMCS    r0!,{r3-r6}
                     LD 00004020  ........ 626d654d 2043424d 4545203e   S:0000000000004020  NM NSH
                        00004010  3e000a73 ........ ........ ........   S:0000000000004010  NM NSH
+
+# Seen in the output of a Fast Model. The CPSR register is only 32 bits
+# wide, but Fast Models uses the register name 'cpsr' in an extended
+# sense, including some additional status bits stored elsewhere. So
+# an update that apparently writes more than 32 bits to CPSR is possible.
+8677000000 ps R cpsr 1220023cd
