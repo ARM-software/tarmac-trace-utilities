@@ -203,7 +203,7 @@ class TarmacLineParserImpl {
 
     string line;
     size_t pos, size;
-    ParseParams params;
+    const ParseParams &params;
     set<string> unrecognised_registers_already_reported;
     set<string> unrecognised_system_operations_reported;
     set<string> unrecognised_tarmac_events_reported;
@@ -211,6 +211,11 @@ class TarmacLineParserImpl {
     InterLineState next_line;
 
     static set<string> known_timestamp_units;
+
+    TarmacLineParserImpl(const ParseParams &params, ParseReceiver *receiver)
+        : params(params), receiver(receiver)
+    {
+    }
 
     inline bool iswordchr(char c)
     {
@@ -1188,11 +1193,10 @@ class TarmacLineParserImpl {
     }
 };
 
-TarmacLineParser::TarmacLineParser(ParseParams params, ParseReceiver &rec)
-    : pImpl(new TarmacLineParserImpl)
+TarmacLineParser::TarmacLineParser(const ParseParams &params,
+                                   ParseReceiver &rec)
+    : pImpl(new TarmacLineParserImpl(params, &rec))
 {
-    pImpl->params = params;
-    pImpl->receiver = &rec;
 }
 
 TarmacLineParser::~TarmacLineParser() { delete pImpl; }

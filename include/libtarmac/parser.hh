@@ -37,11 +37,16 @@ struct TarmacEvent {
 enum ISet { ARM, THUMB, A64 };
 
 struct ParseParams {
-    bool bigend = false;
+    bool bigend;
 
     // In C++17 we could replace these two fields with a std::optional<ISet>
-    bool iset_specified = false;
+    bool iset_specified;
     ISet iset;  // only meaningful if specified_iset is True
+
+    ParseParams() : bigend(false), iset_specified(false) {}
+    ParseParams(bool bigend) : bigend(bigend), iset_specified(false) {}
+    ParseParams(bool bigend, ISet iset)
+        : bigend(bigend), iset_specified(true), iset(iset) {}
 };
 
 enum HighlightClass {
@@ -147,7 +152,7 @@ class TarmacLineParser {
     TarmacLineParserImpl *pImpl;
 
   public:
-    TarmacLineParser(ParseParams params, ParseReceiver &);
+    TarmacLineParser(const ParseParams &params, ParseReceiver &);
     ~TarmacLineParser();
     void parse(const std::string &s) const;
 };
