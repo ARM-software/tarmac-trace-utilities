@@ -26,6 +26,7 @@ if(CURSES_FOUND)
   target_include_directories(tarmac-browser PRIVATE ${CURSES_INCLUDE_DIRS})
   target_link_libraries(tarmac-browser ${CURSES_LIBRARIES})
   install(TARGETS tarmac-browser
+    EXPORT ${TTU_targets_export_name}
     RUNTIME)
 else()
   message(WARNING "Not building tarmac-browser (failed to locate curses)")
@@ -41,6 +42,7 @@ if (${wxWidgets_FOUND})
       LINK_FLAGS /subsystem:windows)
   endif()
   install(TARGETS tarmac-gui-browser
+    EXPORT ${TTU_targets_export_name}
     RUNTIME)
 else()
   message(WARNING "Not building tarmac-gui-browser (failed to locate wxWidgets)")

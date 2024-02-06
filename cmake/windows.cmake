@@ -1,4 +1,4 @@
-# Copyright 2016-2021 Arm Limited. All rights reserved.
+# Copyright 2016-2021,2024 Arm Limited. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,3 +77,12 @@ int main(void) { (void)FOLDERID_AppDataProgramData; }
 # convert them into Windows translation resources.
 find_package(Gettext)
 set(HAVE_LIBINTL 0)
+
+# On Windows, we don't include GNUInstallDirs, but we still want to
+# install things into 'include' and 'lib' subdirectories of the
+# install directory. So we define some of the same variables that
+# GNUInstallDirs would have defined.
+set(CMAKE_INSTALL_LIBDIR "lib"
+  CACHE STR "Subdirectory of the install dir to put the libtarmac library.")
+set(CMAKE_INSTALL_INCLUDEDIR "include"
+  CACHE STR "Subdirectory of the install dir to put the libtarmac headers.")

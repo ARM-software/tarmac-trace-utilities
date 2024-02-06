@@ -1,4 +1,4 @@
-# Copyright 2016-2021,2023 Arm Limited. All rights reserved.
+# Copyright 2016-2021,2023,2024 Arm Limited. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -232,3 +232,43 @@ add_test(NAME format
       --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/formattest.ref stdout
       ${CMAKE_BINARY_DIR}/formattest
   )
+
+# Test that TTU can be exported and subsequently imported in a CMake project.
+# This is slightly involved because we first need to configure/build/install
+# a snapshot of the *current* tarmac-trace-utilities checkout outside of the
+# current build tree (in order not to mess it up) and use the just installed
+# libraries in a sample application (ttu-import) that we build to ensure the
+# build just worked and that the sample application runs fine.
+set(TTU_IMPORT_CMAKE_ARGS
+  -G ${CMAKE_GENERATOR}
+  -DCMAKE_CXX_COMPILER:PATH=${CMAKE_CXX_COMPILER}
+  -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+  -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/ttu-import
+  -DTTU_SOURCE_DIR:PATH=${CMAKE_CURRENT_LIST_DIR}/../..
+  -DUSE_LIBINTL:BOOL=${USE_LIBINTL})
+if(DEFINED CMAKE_EXPORT_COMPILE_COMMANDS)
+  set(TTU_IMPORT_CMAKE_ARGS ${TTU_IMPORT_CMAKE_ARGS} -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=${CMAKE_EXPORT_COMPILE_COMMANDS})
+endif()
+
+add_test(NAME ttu-import-clean-dir
+  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/ttu-import
+  )
+
+add_test(NAME ttu-import-configure
+  COMMAND ${CMAKE_COMMAND} -G ${CMAKE_GENERATOR} -S ${CMAKE_CURRENT_SOURCE_DIR}/ttu-import -B ${CMAKE_CURRENT_BINARY_DIR}/ttu-import ${TTU_IMPORT_CMAKE_ARGS}
+  )
+
+add_test(NAME ttu-import-build
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_CURRENT_BINARY_DIR}/ttu-import
+  )
+
+add_test(NAME ttu-import
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/ttu-import.ref stdout
+      ${CMAKE_CURRENT_BINARY_DIR}/ttu-import/ttu-import --hello
+  )
+
+# Enforce test ordering (but does not take into account test success or failure).
+set_tests_properties(ttu-import-configure PROPERTIES DEPENDS ttu-import-clean-dir)
+set_tests_properties(ttu-import-build PROPERTIES DEPENDS ttu-import-configure)
+set_tests_properties(ttu-import PROPERTIES DEPENDS ttu-import-build)

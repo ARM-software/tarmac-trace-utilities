@@ -27,10 +27,6 @@ add_library(tarmac
   image.cpp index.cpp index_ds.cpp misc.cpp parser.cpp registers.cpp
   tarmacutil.cpp ${platform_sources})
 
-if(HAVE_LIBINTL)
-  target_include_directories(tarmac PRIVATE ${Intl_INCLUDE_DIRS})
-endif()
-
 set(LIBTARMAC_HEADERS
   "${CMAKE_BINARY_DIR}/include/libtarmac/platform.hh"
   "${CMAKE_BINARY_DIR}/include/libtarmac/cmake.h")
@@ -40,9 +36,18 @@ foreach(H argparse.hh callinfo.hh calltree.hh disktree.hh elf.hh expr.hh
     list(APPEND LIBTARMAC_HEADERS ${CMAKE_SOURCE_DIR}/include/libtarmac/${H})
 endforeach()
 set_target_properties(tarmac PROPERTIES PUBLIC_HEADER "${LIBTARMAC_HEADERS}")
-target_include_directories(tarmac PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/include)
+target_compile_features(tarmac PUBLIC cxx_std_14)
+target_include_directories(tarmac
+  PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include;${CMAKE_BINARY_DIR}/include;$<${HAVE_LIBINTL}:${Intl_INCLUDE_DIRS}>>"
+  INTERFACE
+  "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
+if(HAVE_LIBINTL)
+  target_link_libraries(tarmac PUBLIC ${Intl_LIBRARIES})
+endif()
 
 install(TARGETS tarmac
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
+  EXPORT ${TTU_targets_export_name}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   PUBLIC_HEADER DESTINATION include/libtarmac)

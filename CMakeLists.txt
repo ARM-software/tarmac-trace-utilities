@@ -1,4 +1,4 @@
-# Copyright 2016-2021 Arm Limited. All rights reserved.
+# Copyright 2016-2021,2024 Arm Limited. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 cmake_minimum_required (VERSION 3.5.1)
 
 set(CMAKE_CXX_STANDARD 14)
+
+set(TTU_package_name "TarmacTraceUtilities")
+set(TTU_targets_export_name "${TTU_package_name}Targets")
+set(TTU_version 0.0.0)
 
 project(tarmac-trace-utilities
   LANGUAGES CXX)
@@ -160,3 +164,38 @@ if(can_run_tests)
 else()
   message(WARNING "Not running tests (failed to locate Python 3)")
 endif()
+
+# Provide downstream users a package configuration information so they can
+# include, build and use our tarmac-trace-utilities with minimal fuss --- if
+# they work with CMake. The package information can be used with CMake's
+# find_package command.
+set(TTU_config_file "${TTU_package_name}Config.cmake"
+    CACHE STRING "Name of the CMake package config file")
+set(TTU_version_file "${TTU_package_name}ConfigVersion.cmake"
+    CACHE STRING "Name of the CMake package version file")
+set(TTU_generated_dir "${CMAKE_CURRENT_BINARY_DIR}/lib/cmake/${TTU_package_name}"
+    CACHE PATH "Directory where the CMake package information will be generated")
+set(TTU_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${TTU_package_name}"
+    CACHE PATH "Directory where the CMake package information will be installed")
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  ${TTU_generated_dir}/${TTU_version_file}
+  VERSION ${TTU_version}
+  COMPATIBILITY AnyNewerVersion)
+install(EXPORT
+    ${TTU_targets_export_name}
+  COMPONENT "${PROJECT_NAME}"
+  NAMESPACE "${TTU_package_name}::"
+  DESTINATION ${TTU_install_dir}
+  EXPORT_LINK_INTERFACE_LIBRARIES)
+configure_package_config_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${TTU_config_file}.in
+  ${TTU_generated_dir}/${TTU_config_file}
+  INSTALL_DESTINATION ${TTU_install_dir})
+install(
+  FILES
+    ${TTU_generated_dir}/${TTU_config_file}
+    ${TTU_generated_dir}/${TTU_version_file}
+  COMPONENT "${PROJECT_NAME}"
+  DESTINATION ${TTU_install_dir})

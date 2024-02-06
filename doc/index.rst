@@ -1,5 +1,5 @@
 ..
-  Copyright 2016-2021,2023 Arm Limited. All rights reserved.
+  Copyright 2016-2021,2023,2024 Arm Limited. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -1824,6 +1824,46 @@ the trace output) to a region of memory:
 
 All the other semihosting calls require no special handling, because
 they only *read* the memory of the Arm CPU, rather than writing it.
+
+Using Arm Tarmac Trace Utilities in your own project
+====================================================
+
+If your own downstream project is using CMake, it is extremely easy to use
+the Arm Tarmac Trace Utilities as it takes advantage of CMake to export 
+package information. This information can be used thanks to CMake's
+``find_package``. Linking against the ``tarmac`` library (from the
+``TarmacTraceUtilities`` namespace) will set the proper search path as well
+for the include files when compiling the programs.
+
+The downstream project only needs the following two steps with CMake
+to use and enjoy Arm's Tarmac trace utilities:
+
+* Fetch, configure, build and install Arm's Tarmac trace utilities:
+
+  .. code-block:: none
+
+    ...
+    include(ExternalProject)
+    ExternalProject_Add(tarmac-trace-utilities
+      GIT_REPOSITORY "https://github.com/ARM-software/tarmac-trace-utilities"
+      GIT_TAG "59d93f724cb836062602612300ac0f609a4753ee")
+    ...
+
+* Use the package configuration information with ``find_package``:
+
+  .. code-block:: none
+
+    ...
+    set(TarmacTraceUtilities_DIR "${CMAKE_BINARY_DIR}/lib/cmake/TarmacTraceUtilities"
+        CACHE PATH "Path to the tarmac-trace-utilities package configuration files")
+    find_package(TarmacTraceUtilities REQUIRED
+      CONFIG
+      NO_DEFAULT_PATH
+      NO_PACKAGE_ROOT_PATH
+      NO_SYSTEM_ENVIRONMENT_PATH
+      )
+    ...
+    target_link_libraries(myprogram TarmacTraceUtilities::tarmac)
 
 Translations
 ============

@@ -37,6 +37,7 @@ standard_target_configuration(tarmac-vcd)
 install(TARGETS
   tarmac-callinfo tarmac-calltree tarmac-flamegraph tarmac-profile
   tarmac-vcd
+  EXPORT ${TTU_targets_export_name}
   RUNTIME)
 
 # Test and diagnostic utilities, not installed.
