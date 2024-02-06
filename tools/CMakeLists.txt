@@ -1,4 +1,4 @@
-# Copyright 2016-2021,2023 Arm Limited. All rights reserved.
+# Copyright 2016-2021,2023,2024 Arm Limited. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,9 +34,10 @@ standard_target_configuration(tarmac-profile)
 add_executable(tarmac-vcd vcdwriter.cpp vcd.cpp ${EXTRA_FILES})
 standard_target_configuration(tarmac-vcd)
 
-install_programs(
+install(TARGETS
   tarmac-callinfo tarmac-calltree tarmac-flamegraph tarmac-profile
-  tarmac-vcd)
+  tarmac-vcd
+  RUNTIME)
 
 # Test and diagnostic utilities, not installed.
 

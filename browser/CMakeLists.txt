@@ -1,4 +1,4 @@
-# Copyright 2016-2021 Arm Limited. All rights reserved.
+# Copyright 2016-2021,2024 Arm Limited. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ if(CURSES_FOUND)
   standard_target_configuration(tarmac-browser)
   target_include_directories(tarmac-browser PRIVATE ${CURSES_INCLUDE_DIRS})
   target_link_libraries(tarmac-browser ${CURSES_LIBRARIES})
-  install_programs(tarmac-browser)
+  install(TARGETS tarmac-browser
+    RUNTIME)
 else()
   message(WARNING "Not building tarmac-browser (failed to locate curses)")
 endif()
@@ -39,7 +40,8 @@ if (${wxWidgets_FOUND})
     set_target_properties(tarmac-gui-browser PROPERTIES
       LINK_FLAGS /subsystem:windows)
   endif()
-  install_programs(tarmac-gui-browser)
+  install(TARGETS tarmac-gui-browser
+    RUNTIME)
 else()
   message(WARNING "Not building tarmac-gui-browser (failed to locate wxWidgets)")
 endif()
