@@ -21,7 +21,7 @@
 #include "libtarmac/reporter.hh"
 #include "libtarmac/intl.hh"
 
-#include "cmake.h"
+#include "libtarmac/cmake.h"
 
 #include <windows.h>
 #include <shlobj.h>
