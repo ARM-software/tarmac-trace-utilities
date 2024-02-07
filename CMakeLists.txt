@@ -116,7 +116,7 @@ if (HAVE_OFF_T)
     message(WARNING "Large Tarmac files are not supported on this platform.")
   endif()
 else()
-  message(FATAL "off_t is not available on this platform")
+  message(FATAL_ERROR "off_t is not available on this platform")
 endif()
 configure_file(include/libtarmac/platform.hh.in ${CMAKE_BINARY_DIR}/include/libtarmac/platform.hh)
 
