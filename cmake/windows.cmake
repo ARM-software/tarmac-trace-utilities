@@ -83,6 +83,6 @@ set(HAVE_LIBINTL 0)
 # install directory. So we define some of the same variables that
 # GNUInstallDirs would have defined.
 set(CMAKE_INSTALL_LIBDIR "lib"
-  CACHE STR "Subdirectory of the install dir to put the libtarmac library.")
+  CACHE STRING "Subdirectory of the install dir to put the libtarmac library.")
 set(CMAKE_INSTALL_INCLUDEDIR "include"
-  CACHE STR "Subdirectory of the install dir to put the libtarmac headers.")
+  CACHE STRING "Subdirectory of the install dir to put the libtarmac headers.")
