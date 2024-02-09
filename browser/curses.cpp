@@ -1062,7 +1062,7 @@ class TraceBuffer : public Window {
             return true;
         } else if (c == 'p' || c == 'P') {
             screen->minibuf_ask(
-                (c == 'p' ?
+                (c == 'P' ?
                  _("Go to previous visit to PC: ") :
                  _("Go to next visit to PC: ")), this);
             minibuf_reqtype = c;
