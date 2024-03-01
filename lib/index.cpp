@@ -1066,6 +1066,9 @@ void Index::finalise_index()
 {
     FileHeader &hdr = *arena->getptr<FileHeader>(header_offset);
 
+    if (seqroot == 0)
+        reporter->errx(1, "error: trace file contains no events at all");
+
     unsigned flags = 0;
     if (pparams.bigend)
         flags |= FLAG_BIGEND;

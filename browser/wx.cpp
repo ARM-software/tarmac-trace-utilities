@@ -3528,6 +3528,7 @@ void WXGUIReporter::indexing_start(streampos total)
     // many updates as the progress bar has pixels.
     progress_max = min(total, static_cast<streampos>(
                            progress_dlg->GetSize().GetWidth()));
+    progress_max = max(progress_max, 1); // prevent div by 0 on empty file
     progress_scale = (double)progress_max / total;
     progress_dlg->SetRange(progress_max);
 
