@@ -944,6 +944,8 @@ void Index::open_trace_file()
      */
     ifs = make_unique<ifstream>(trace.tarmac_filename.c_str(),
                                 std::ios_base::in | std::ios_base::binary);
+    if (ifs->fail())
+        reporter->err(1, "%s: open", trace.tarmac_filename.c_str());
 
     memroot = seqroot = 0;
     prev_lineno = 0; // used to fill in last-mod time in make_sub_memtree
