@@ -221,6 +221,12 @@ Parse warning: unsupported system operation 'AT'
 * MemoryEvent time=947020259 read=false known=true addr=9884cfb0 size=8 contents=fe
 --- Tarmac line:                        000000009884cfa0  00000000 00000007 ........ ........  NS:000000009884cfa0   NM ISH IWBRWA
 * MemoryEvent time=947020259 read=false known=true addr=9884cfa8 size=8 contents=7
+--- Tarmac line:       16465 tic ES  (00000000000001ac:9e6703e5) O el3h_s:         FMOV     d5,xzr
+* InstructionEvent time=16465 effect=executed pc=1ac iset=A64 width=32 instruction=9e6703e5 disassembly="FMOV     d5,xzr"
+--- Tarmac line:                     R V5<63:0> 00000000
+* RegisterEvent time=16465 reg=v5 offset=0 bytes=00:00:00:00:00:00:00:00
+--- Tarmac line:                     R V5<127:64> 00000000
+* RegisterEvent time=16465 reg=v5 offset=8 bytes=00:00:00:00:00:00:00:00
 --- Tarmac line:     1234567 cs E dummy header line to reset timestamp for next two lines
 * TextOnlyEvent time=1234567 type="E" text="dummy header line to reset timestamp for next two lines"
 --- Tarmac line:                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH

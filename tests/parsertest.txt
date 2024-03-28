@@ -199,6 +199,20 @@ Tarmac Text Rev 3t
                        000000009884cfa0  00000000 00000007 ........ ........  NS:000000009884cfa0   NM ISH IWBRWA
 
 # ----------------------------------------------------------------------
+
+# Trace snippet seen from the execution testbench provided with
+# Neoverse-N1 RTL, in which a write to a d-register from xzr (which
+# also zeroes out the top 64 bits of the containing v-register) is
+# displayed as two register updates each covering a 64-bit range, but
+# with only 32 bits (8 hex digits) of zero data shown, violating the
+# usual convention that the data is written with a number of digits
+# corresponding to its bit width.
+
+      16465 tic ES  (00000000000001ac:9e6703e5) O el3h_s:         FMOV     d5,xzr
+                    R V5<63:0> 00000000
+                    R V5<127:64> 00000000
+
+# ----------------------------------------------------------------------
 # Manually written tests
 
 # Test LD and ST records (showing a 16-byte region of memory with

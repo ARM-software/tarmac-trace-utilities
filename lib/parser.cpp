@@ -794,7 +794,21 @@ class TarmacLineParserImpl {
                     contents.append(2 * reg_subrange_skip_hi, '-');
                     hex_digits_expected -= 2 * reg_subrange_skip_lo;
                 }
+                size_t data_start_pos = contents.size();
                 while (contents.size() < hex_digits_expected) {
+                    if (tok.iseol() &&
+                        contents.find_first_not_of('0', data_start_pos) ==
+                            string::npos) {
+                        // Special case: if the line ends with fewer
+                        // hex digits than expected, but all the
+                        // digits we've seen are zero, then we assume
+                        // that the Tarmac producer abbreviated a zero
+                        // value on the grounds that it was boring.
+                        // This is seen in Neoverse-N1 RTL, for example.
+                        contents.append(hex_digits_expected - contents.size(),
+                                        '0');
+                        break;
+                    }
                     if (!tok.isregvalue())
                         parse_error(tok, _("expected register contents"));
                     consume_register_contents(tok);
