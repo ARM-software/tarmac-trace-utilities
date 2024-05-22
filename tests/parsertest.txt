@@ -274,3 +274,8 @@ R SP 0123456789abcdef
 # sense, including some additional status bits stored elsewhere. So
 # an update that apparently writes more than 32 bits to CPSR is possible.
 8677000000 ps R cpsr 1220023cd
+
+# Seen in the output of an unnamed CPU's hardware Tarmac module: the
+# data for a 64-bit register update can be split by a space.
+R X0 01234567 89abcdef
+R SP_EL2 fedcba98 76543210

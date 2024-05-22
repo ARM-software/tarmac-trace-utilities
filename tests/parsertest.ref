@@ -278,3 +278,7 @@ Parse warning: unsupported system operation 'AT'
 * MemoryEvent time=3981 read=true known=true addr=401c size=4 contents=3e000a73
 --- Tarmac line: 8677000000 ps R cpsr 1220023cd
 * RegisterEvent time=8677000000 reg=psr offset=0 bytes=22:00:23:cd
+--- Tarmac line: R X0 01234567 89abcdef
+* RegisterEvent time=8677000000 reg=x0 offset=0 bytes=01:23:45:67:89:ab:cd:ef
+--- Tarmac line: R SP_EL2 fedcba98 76543210
+* RegisterEvent time=8677000000 reg=xsp offset=0 bytes=fe:dc:ba:98:76:54:32:10

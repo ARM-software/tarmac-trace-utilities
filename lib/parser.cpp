@@ -825,7 +825,14 @@ class TarmacLineParserImpl {
                 //
                 // In all cases of this so far encountered, it's enough to read
                 // a single contiguous token of register contents, plus a
-                // second one if a ':' follows it.
+                // second one if a ':' or a space follows it.
+                //
+                // However, for CPSR, we're a bit stricter about a second token
+                // after a space, because some trace generators suffix a
+                // human-readable flags representation in a form like __C_ or
+                // NZ_V, and it would be a shame if __C_ were mistaken for a
+                // register value just because it contains valid hex digits and
+                // underscores only. So in this case we expect real hex.
                 if (!tok.isregvalue())
                     parse_error(tok, _("expected register contents"));
                 consume_register_contents(tok);
@@ -836,6 +843,8 @@ class TarmacLineParserImpl {
                     if (!tok.isregvalue())
                         parse_error(tok, _("expected additional register "
                                            "contents after ':'"));
+                    consume_register_contents(tok);
+                } else if (tok.isregvalue() && !(is_cpsr && !tok.ishex())) {
                     consume_register_contents(tok);
                 }
 
