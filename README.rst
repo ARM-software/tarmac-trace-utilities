@@ -16,7 +16,7 @@
   This file is part of Tarmac Trace Utilities
 
 
-|CIUbuntu2004| |CIUbuntu2204| |CImacOS13| |CImacOS14|
+|CIUbuntu2004| |CIUbuntu2204| |CIUbuntu2404| |CImacOS13| |CImacOS14|
 
 .. |CIUbuntu2004| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2004.yml/badge.svg
    :alt: Last build status on Ubuntu 20.04 (gcc + clang)
