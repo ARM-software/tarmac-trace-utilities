@@ -26,6 +26,10 @@
    :alt: Last build status on Ubuntu 22.04 (gcc + clang)
    :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2204.yml
 
+.. |CIUbuntu2404| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2404.yml/badge.svg
+   :alt: Last build status on Ubuntu 24.04 (gcc + clang)
+   :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2404.yml
+
 .. |CImacOS13| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-13.yml/badge.svg
    :alt: Last build status on macOS 13 (Ventura)
    :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-13.yml
