@@ -808,6 +808,13 @@ class TarmacLineParserImpl {
                         contents.append(hex_digits_expected - contents.size(),
                                         '0');
                         break;
+                    } else if (tok.iseol() &&
+                        contents.find_first_not_of('-', data_start_pos) ==
+                            string::npos) {
+                        // Similar special case if all the digits are '-'.
+                        contents.append(hex_digits_expected - contents.size(),
+                                        '-');
+                        break;
                     }
                     if (!tok.isregvalue())
                         parse_error(tok, _("expected register contents"));

@@ -279,3 +279,15 @@ R SP 0123456789abcdef
 # data for a 64-bit register update can be split by a space.
 R X0 01234567 89abcdef
 R SP_EL2 fedcba98 76543210
+
+# From the same Tarmac generator: sometimes core register updates list
+# their contents as -------- (perhaps because the Tarmac generator
+# can't retrieve the value for some reason?). And sometimes they don't
+# list the full 64 bits of the value. We interpret this as a
+# non-update (because the same syntax in other contexts means some of
+# the register is left alone, e.g. examples above that update only
+# half of Q0), which might not be the best interpretation, but we
+# should at least not reject the input that doesn't have enough -
+# signs to fill X1.
+R X0 -------- --------
+R X1 --------

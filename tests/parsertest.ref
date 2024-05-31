@@ -282,3 +282,5 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=8677000000 reg=x0 offset=0 bytes=01:23:45:67:89:ab:cd:ef
 --- Tarmac line: R SP_EL2 fedcba98 76543210
 * RegisterEvent time=8677000000 reg=xsp offset=0 bytes=fe:dc:ba:98:76:54:32:10
+--- Tarmac line: R X0 -------- --------
+--- Tarmac line: R X1 --------
