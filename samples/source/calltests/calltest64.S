@@ -47,6 +47,17 @@ loopstart: mov x1, #0x100000000
         b leaf_ret
 loopend:
 
+        // More calls to test functions. I've run out of unusual types
+        // of call, so these ones can be done the standard way.
+        bl branch_after_call_wrapper
+        // After returning from this function, immediately take a
+        // conditional branch, which should not be identified as even a
+        // _candidate_ for being a call.
+        cmp x0, #122
+        bne branch_target_after_return
+        mov x0, #121
+branch_target_after_return:
+
         // We're done. Exit.
         mov x0, #0x18
         ldr x1, =0x20026
@@ -71,3 +82,23 @@ nonleaf_pop_lr:
 
         // Helper function for the indirect call above.
 call_via_x1: br x1
+
+        // Wrapper function that calls branch_after_call, while being
+        // very near it, so that the internal branch might trip the
+        // call detector.
+branch_after_call_wrapper:
+        stp x19, lr, [sp, #-16]!
+        bl branch_after_call
+        ldp x19, lr, [sp], #16
+        ret
+        // A function that does a conditional branch immediately after
+        // being called.
+branch_after_call:
+        stp x19, lr, [sp, #-16]!
+        cmp x0, #123
+        bne branch_after_call_internal_label
+        mov x0, #122
+branch_after_call_internal_label:
+        add x0, x0, #10
+        ldp x19, lr, [sp], #16
+        ret

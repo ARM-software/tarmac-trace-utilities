@@ -54,6 +54,14 @@ loopend:
         // of call, so these ones can be done the standard way.
         bl internal_bl
         bl internal_bx_lr
+        bl branch_after_call_wrapper
+        // After returning from this function, immediately take a
+        // conditional branch, which should not be identified as even a
+        // _candidate_ for being a call.
+        cmp r0, #122
+        bne branch_target_after_return
+        mov r0, #121
+branch_target_after_return:
 
         // We're done. Exit.
         mov r0, #0x18
@@ -139,3 +147,23 @@ internal_bx_lr:
         b done
 done:   mul r0, r0, r0
         pop {r4, pc}
+
+        // Wrapper function that calls branch_after_call, while being
+        // very near it, so that the internal branch might trip the
+        // call detector.
+branch_after_call_wrapper:
+        push {r4, lr}
+        bl branch_after_call
+        pop {r4, lr}
+        bx lr
+        // A function that does a conditional branch immediately after
+        // being called.
+branch_after_call:
+        push {r4, lr}
+        cmp r0, #123
+        bne branch_after_call_internal_label
+        mov r0, #122
+branch_after_call_internal_label:
+        add r0, r0, #10
+        pop {r4, lr}
+        bx lr

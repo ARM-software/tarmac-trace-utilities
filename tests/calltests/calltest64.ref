@@ -1,58 +1,72 @@
 transfer of control @ 164, sp=ffffffffffffffff, pc=210120
-transfer of control @ 172, sp=100000, pc=210164
+transfer of control @ 172, sp=100000, pc=210174
   inserting as pending call with sp=100000 lr=210130
 transfer of control @ 179, sp=100000, pc=210130
   looks like return for call @ 172
-transfer of control @ 184, sp=100000, pc=210174
+transfer of control @ 184, sp=100000, pc=210184
   inserting as pending call with sp=100000 lr=210138
-transfer of control @ 190, sp=ffff0, pc=210164
-  inserting as pending call with sp=ffff0 lr=21017c
-transfer of control @ 197, sp=ffff0, pc=21017c
+transfer of control @ 190, sp=ffff0, pc=210174
+  inserting as pending call with sp=ffff0 lr=21018c
+transfer of control @ 197, sp=ffff0, pc=21018c
   looks like return for call @ 190
-transfer of control @ 199, sp=ffff0, pc=210164
-  inserting as pending call with sp=ffff0 lr=210180
-transfer of control @ 206, sp=ffff0, pc=210180
+transfer of control @ 199, sp=ffff0, pc=210174
+  inserting as pending call with sp=ffff0 lr=210190
+transfer of control @ 206, sp=ffff0, pc=210190
   looks like return for call @ 199
 transfer of control @ 213, sp=100000, pc=210138
   looks like return for call @ 184
-transfer of control @ 218, sp=100000, pc=210188
+transfer of control @ 218, sp=100000, pc=210198
   inserting as pending call with sp=100000 lr=210140
-transfer of control @ 219, sp=100000, pc=210164
+transfer of control @ 219, sp=100000, pc=210174
 transfer of control @ 226, sp=100000, pc=210140
   looks like return for call @ 218
-transfer of control @ 237, sp=100000, pc=210164
+transfer of control @ 237, sp=100000, pc=210174
   inserting as pending call with sp=100000 lr=210144
 transfer of control @ 244, sp=100000, pc=210144
   looks like return for call @ 237
-transfer of control @ 253, sp=100000, pc=210164
+transfer of control @ 253, sp=100000, pc=210174
   inserting as pending call with sp=100000 lr=210144
 transfer of control @ 260, sp=100000, pc=210144
   looks like return for call @ 253
-transfer of control @ 269, sp=100000, pc=210164
+transfer of control @ 269, sp=100000, pc=210174
   inserting as pending call with sp=100000 lr=210144
 transfer of control @ 276, sp=100000, pc=210144
   looks like return for call @ 269
-transfer of control @ 285, sp=100000, pc=210164
+transfer of control @ 285, sp=100000, pc=210174
   inserting as pending call with sp=100000 lr=210144
 transfer of control @ 292, sp=100000, pc=210144
   looks like return for call @ 285
 transfer of control @ 297, sp=100000, pc=210158
-o t:1000000 l:164 pc:0x210120 - t:73000000 l:302 pc:0x210160 : 
+transfer of control @ 299, sp=100000, pc=21019c
+  inserting as pending call with sp=100000 lr=21015c
+transfer of control @ 305, sp=ffff0, pc=2101ac
+  inserting as pending call with sp=ffff0 lr=2101a4
+transfer of control @ 312, sp=fffe0, pc=2101bc
+transfer of control @ 321, sp=ffff0, pc=2101a4
+  looks like return for call @ 305
+transfer of control @ 328, sp=100000, pc=21015c
+  looks like return for call @ 299
+transfer of control @ 331, sp=100000, pc=210168
+o t:1000000 l:164 pc:0x210120 - t:86000000 l:336 pc:0x210170 : 
   - t:4000000 l:170 pc:0x21012c - t:9000000 l:179 pc:0x210130
-    o t:5000000 l:172 pc:0x210164 - t:8000000 l:178 pc:0x210170 : leaf_ret
+    o t:5000000 l:172 pc:0x210174 - t:8000000 l:178 pc:0x210180 : leaf_ret
   - t:10000000 l:182 pc:0x210134 - t:24000000 l:213 pc:0x210138
-    o t:11000000 l:184 pc:0x210174 - t:23000000 l:212 pc:0x210184 : nonleaf_pop_lr
-      - t:12000000 l:188 pc:0x210178 - t:17000000 l:197 pc:0x21017c
-        o t:13000000 l:190 pc:0x210164 - t:16000000 l:196 pc:0x210170 : leaf_ret
-      - t:17000000 l:197 pc:0x21017c - t:22000000 l:206 pc:0x210180
-        o t:18000000 l:199 pc:0x210164 - t:21000000 l:205 pc:0x210170 : leaf_ret
+    o t:11000000 l:184 pc:0x210184 - t:23000000 l:212 pc:0x210194 : nonleaf_pop_lr
+      - t:12000000 l:188 pc:0x210188 - t:17000000 l:197 pc:0x21018c
+        o t:13000000 l:190 pc:0x210174 - t:16000000 l:196 pc:0x210180 : leaf_ret
+      - t:17000000 l:197 pc:0x21018c - t:22000000 l:206 pc:0x210190
+        o t:18000000 l:199 pc:0x210174 - t:21000000 l:205 pc:0x210180 : leaf_ret
   - t:25000000 l:216 pc:0x21013c - t:31000000 l:226 pc:0x210140
-    o t:26000000 l:218 pc:0x210188 - t:30000000 l:225 pc:0x210170 : call_via_x1
+    o t:26000000 l:218 pc:0x210198 - t:30000000 l:225 pc:0x210180 : call_via_x1
   - t:36000000 l:236 pc:0x210154 - t:41000000 l:244 pc:0x210144
-    o t:37000000 l:237 pc:0x210164 - t:40000000 l:243 pc:0x210170 : leaf_ret
+    o t:37000000 l:237 pc:0x210174 - t:40000000 l:243 pc:0x210180 : leaf_ret
   - t:45000000 l:252 pc:0x210154 - t:50000000 l:260 pc:0x210144
-    o t:46000000 l:253 pc:0x210164 - t:49000000 l:259 pc:0x210170 : leaf_ret
+    o t:46000000 l:253 pc:0x210174 - t:49000000 l:259 pc:0x210180 : leaf_ret
   - t:54000000 l:268 pc:0x210154 - t:59000000 l:276 pc:0x210144
-    o t:55000000 l:269 pc:0x210164 - t:58000000 l:275 pc:0x210170 : leaf_ret
+    o t:55000000 l:269 pc:0x210174 - t:58000000 l:275 pc:0x210180 : leaf_ret
   - t:63000000 l:284 pc:0x210154 - t:68000000 l:292 pc:0x210144
-    o t:64000000 l:285 pc:0x210164 - t:67000000 l:291 pc:0x210170 : leaf_ret
+    o t:64000000 l:285 pc:0x210174 - t:67000000 l:291 pc:0x210180 : leaf_ret
+  - t:71000000 l:297 pc:0x210158 - t:82000000 l:328 pc:0x21015c
+    o t:72000000 l:299 pc:0x21019c - t:81000000 l:327 pc:0x2101a8 : branch_after_call_wrapper
+      - t:73000000 l:303 pc:0x2101a0 - t:80000000 l:321 pc:0x2101a4
+        o t:74000000 l:305 pc:0x2101ac - t:79000000 l:320 pc:0x2101c4 : branch_after_call

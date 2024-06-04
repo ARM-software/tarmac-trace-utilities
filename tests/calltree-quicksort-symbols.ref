@@ -3,55 +3,55 @@ o t:1 l:157 pc:0x8000 - t:2044 l:4321 pc:0x80e4 : _start
     o t:10 l:177 pc:0x8038 - t:2027 l:4285 pc:0x8050 : quicksort
       - t:366 l:858 pc:0x8078 - t:1769 l:3736 pc:0x807c
         o t:367 l:860 pc:0x8038 - t:1768 l:3735 pc:0x8050 : quicksort
-          - t:370 l:869 pc:0x8044 - t:878 l:1901 pc:0x807c
-            o t:371 l:870 pc:0x8054 - t:877 l:1900 pc:0x8050 : quicksort
-              - t:584 l:1274 pc:0x8044 - t:733 l:1587 pc:0x807c
-                o t:585 l:1275 pc:0x8054 - t:732 l:1586 pc:0x8050 : quicksort
-                  - t:659 l:1420 pc:0x8044 - t:693 l:1494 pc:0x807c
-                    o t:660 l:1421 pc:0x8054 - t:692 l:1493 pc:0x8050 : quicksort
+          - t:580 l:1263 pc:0x8078 - t:878 l:1901 pc:0x807c
+            o t:581 l:1265 pc:0x8038 - t:877 l:1900 pc:0x8050 : quicksort
+              - t:655 l:1409 pc:0x8078 - t:733 l:1587 pc:0x807c
+                o t:656 l:1411 pc:0x8038 - t:732 l:1586 pc:0x8050 : quicksort
+                  - t:685 l:1470 pc:0x8078 - t:693 l:1494 pc:0x807c
+                    o t:686 l:1472 pc:0x8038 - t:692 l:1493 pc:0x8050 : quicksort
                   - t:718 l:1544 pc:0x8078 - t:726 l:1568 pc:0x807c
                     o t:719 l:1546 pc:0x8038 - t:725 l:1567 pc:0x8050 : quicksort
               - t:780 l:1679 pc:0x8078 - t:871 l:1882 pc:0x807c
                 o t:781 l:1681 pc:0x8038 - t:870 l:1881 pc:0x8050 : quicksort
-                  - t:784 l:1690 pc:0x8044 - t:864 l:1863 pc:0x807c
-                    o t:785 l:1691 pc:0x8054 - t:863 l:1862 pc:0x8050 : quicksort
-                      - t:824 l:1771 pc:0x8044 - t:857 l:1844 pc:0x807c
-                        o t:825 l:1772 pc:0x8054 - t:856 l:1843 pc:0x8050 : quicksort
+                  - t:820 l:1760 pc:0x8078 - t:864 l:1863 pc:0x807c
+                    o t:821 l:1762 pc:0x8038 - t:863 l:1862 pc:0x8050 : quicksort
+                      - t:849 l:1820 pc:0x8078 - t:857 l:1844 pc:0x807c
+                        o t:850 l:1822 pc:0x8038 - t:856 l:1843 pc:0x8050 : quicksort
           - t:1049 l:2227 pc:0x8078 - t:1571 l:3313 pc:0x807c
             o t:1050 l:2229 pc:0x8038 - t:1570 l:3312 pc:0x8050 : quicksort
-              - t:1053 l:2238 pc:0x8044 - t:1564 l:3294 pc:0x807c
-                o t:1054 l:2239 pc:0x8054 - t:1563 l:3293 pc:0x8050 : quicksort
-                  - t:1181 l:2487 pc:0x8044 - t:1432 l:3005 pc:0x807c
-                    o t:1182 l:2488 pc:0x8054 - t:1431 l:3004 pc:0x8050 : quicksort
-                      - t:1278 l:2675 pc:0x8044 - t:1425 l:2986 pc:0x807c
-                        o t:1279 l:2676 pc:0x8054 - t:1424 l:2985 pc:0x8050 : quicksort
-                          - t:1340 l:2798 pc:0x8044 - t:1385 l:2893 pc:0x807c
-                            o t:1341 l:2799 pc:0x8054 - t:1384 l:2892 pc:0x8050 : quicksort
+              - t:1177 l:2476 pc:0x8078 - t:1564 l:3294 pc:0x807c
+                o t:1178 l:2478 pc:0x8038 - t:1563 l:3293 pc:0x8050 : quicksort
+                  - t:1274 l:2664 pc:0x8078 - t:1432 l:3005 pc:0x807c
+                    o t:1275 l:2666 pc:0x8038 - t:1431 l:3004 pc:0x8050 : quicksort
+                      - t:1336 l:2787 pc:0x8078 - t:1425 l:2986 pc:0x807c
+                        o t:1337 l:2789 pc:0x8038 - t:1424 l:2985 pc:0x8050 : quicksort
+                          - t:1377 l:2869 pc:0x8078 - t:1385 l:2893 pc:0x807c
+                            o t:1378 l:2871 pc:0x8038 - t:1384 l:2892 pc:0x8050 : quicksort
                           - t:1410 l:2943 pc:0x8078 - t:1418 l:2967 pc:0x807c
                             o t:1411 l:2945 pc:0x8038 - t:1417 l:2966 pc:0x8050 : quicksort
                   - t:1479 l:3097 pc:0x8078 - t:1557 l:3275 pc:0x807c
                     o t:1480 l:3099 pc:0x8038 - t:1556 l:3274 pc:0x8050 : quicksort
-                      - t:1483 l:3108 pc:0x8044 - t:1517 l:3182 pc:0x807c
-                        o t:1484 l:3109 pc:0x8054 - t:1516 l:3181 pc:0x8050 : quicksort
+                      - t:1509 l:3158 pc:0x8078 - t:1517 l:3182 pc:0x807c
+                        o t:1510 l:3160 pc:0x8038 - t:1516 l:3181 pc:0x8050 : quicksort
                       - t:1542 l:3232 pc:0x8078 - t:1550 l:3256 pc:0x807c
                         o t:1543 l:3234 pc:0x8038 - t:1549 l:3255 pc:0x8050 : quicksort
           - t:1615 l:3397 pc:0x8078 - t:1623 l:3421 pc:0x807c
             o t:1616 l:3399 pc:0x8038 - t:1622 l:3420 pc:0x8050 : quicksort
           - t:1676 l:3524 pc:0x8078 - t:1762 l:3717 pc:0x807c
             o t:1677 l:3526 pc:0x8038 - t:1761 l:3716 pc:0x8050 : quicksort
-              - t:1680 l:3535 pc:0x8044 - t:1755 l:3698 pc:0x807c
-                o t:1681 l:3536 pc:0x8054 - t:1754 l:3697 pc:0x8050 : quicksort
-                  - t:1720 l:3616 pc:0x8044 - t:1748 l:3679 pc:0x807c
-                    o t:1721 l:3617 pc:0x8054 - t:1747 l:3678 pc:0x8050 : quicksort
+              - t:1716 l:3605 pc:0x8078 - t:1755 l:3698 pc:0x807c
+                o t:1717 l:3607 pc:0x8038 - t:1754 l:3697 pc:0x8050 : quicksort
+                  - t:1740 l:3655 pc:0x8078 - t:1748 l:3679 pc:0x807c
+                    o t:1741 l:3657 pc:0x8038 - t:1747 l:3678 pc:0x8050 : quicksort
       - t:1824 l:3841 pc:0x8078 - t:1832 l:3865 pc:0x807c
         o t:1825 l:3843 pc:0x8038 - t:1831 l:3864 pc:0x8050 : quicksort
       - t:1890 l:3978 pc:0x8078 - t:2021 l:4267 pc:0x807c
         o t:1891 l:3980 pc:0x8038 - t:2020 l:4266 pc:0x8050 : quicksort
-          - t:1894 l:3989 pc:0x8044 - t:1934 l:4074 pc:0x807c
-            o t:1895 l:3990 pc:0x8054 - t:1933 l:4073 pc:0x8050 : quicksort
+          - t:1926 l:4050 pc:0x8078 - t:1934 l:4074 pc:0x807c
+            o t:1927 l:4052 pc:0x8038 - t:1933 l:4073 pc:0x8050 : quicksort
           - t:1970 l:4145 pc:0x8078 - t:2014 l:4248 pc:0x807c
             o t:1971 l:4147 pc:0x8038 - t:2013 l:4247 pc:0x8050 : quicksort
-              - t:1974 l:4156 pc:0x8044 - t:2007 l:4229 pc:0x807c
-                o t:1975 l:4157 pc:0x8054 - t:2006 l:4228 pc:0x8050 : quicksort
+              - t:1999 l:4205 pc:0x8078 - t:2007 l:4229 pc:0x807c
+                o t:2000 l:4207 pc:0x8038 - t:2006 l:4228 pc:0x8050 : quicksort
   - t:2029 l:4288 pc:0x8028 - t:2034 l:4296 pc:0x802c
     o t:2030 l:4290 pc:0x80ec - t:2033 l:4295 pc:0x80f8 : sys_write0

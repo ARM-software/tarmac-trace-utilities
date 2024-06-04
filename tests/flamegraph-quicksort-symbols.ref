@@ -1,9 +1,9 @@
 _start 23
 _start;quicksort 481
-_start;quicksort;quicksort 340
-_start;quicksort;quicksort;quicksort 347
-_start;quicksort;quicksort;quicksort;quicksort 382
-_start;quicksort;quicksort;quicksort;quicksort;quicksort 253
-_start;quicksort;quicksort;quicksort;quicksort;quicksort;quicksort 165
-_start;quicksort;quicksort;quicksort;quicksort;quicksort;quicksort;quicksort 49
+_start;quicksort;quicksort 582
+_start;quicksort;quicksort;quicksort 361
+_start;quicksort;quicksort;quicksort;quicksort 301
+_start;quicksort;quicksort;quicksort;quicksort;quicksort 187
+_start;quicksort;quicksort;quicksort;quicksort;quicksort;quicksort 93
+_start;quicksort;quicksort;quicksort;quicksort;quicksort;quicksort;quicksort 12
 _start;sys_write0 3

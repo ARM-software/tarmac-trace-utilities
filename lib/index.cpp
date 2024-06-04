@@ -262,6 +262,10 @@ void Index::update_pc(unsigned long long pc, unsigned long long next_pc,
 
             pending_calls.insert(PendingCall(sp, lr, prev_lineno));
         }
+
+        // After a transfer of control, reset insns_since_lr_update to
+        // pretend lr hasn't been updated recently.
+        insns_since_lr_update = BRANCH_LR_WRITE_THRESHOLD;
     }
 
     curr_pc = pc;
