@@ -61,6 +61,10 @@ using std::string;
 using std::unique_ptr;
 using std::vector;
 
+// Smallest number of instructions that can elapse between setting LR and
+// branching for the branch to _not_ be considered a potential function call.
+static constexpr unsigned long long BRANCH_LR_WRITE_THRESHOLD = 8;
+
 struct PendingCall {
     unsigned long long sp, pc;
     unsigned call_line;
@@ -249,7 +253,7 @@ void Index::update_pc(unsigned long long pc, unsigned long long next_pc,
             found_callrets.insert(CallReturn(prev_lineno, -1));
             pending_calls.erase(it);
         } else if (read_memtree_reg(REG_lr(), &lr) &&
-                   insns_since_lr_update < 8 &&
+                   insns_since_lr_update < BRANCH_LR_WRITE_THRESHOLD &&
                    absdiff(lr, expected_next_lr) < 64) {
 
             if (idiags.debug_call_heuristics)
@@ -333,7 +337,8 @@ void Index::got_event(InstructionEvent &ev)
 {
     got_event_common(&ev, true);
 
-    insns_since_lr_update++;
+    if (insns_since_lr_update < BRANCH_LR_WRITE_THRESHOLD)
+        insns_since_lr_update++;
 
     Addr adjusted_pc = ev.pc | (ev.iset == THUMB ? 1 : 0);
 
