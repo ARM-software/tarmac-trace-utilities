@@ -78,9 +78,9 @@ class Profiler : public CallTreeVisitor {
             ostringstream addr;
             addr << "0x" << hex << p.first;
 
-            cout << left << setw(12) << addr.str();
-            cout << left << setw(12) << p.second.Count;
-            cout << left << setw(12) << p.second.CumulatedCycleCount;
+            cout << left << setw(11) << addr.str() << ' ';
+            cout << left << setw(11) << p.second.Count << ' ';
+            cout << left << setw(11) << p.second.CumulatedCycleCount << ' ';
             cout << left << CT.getFunctionName(p.first);
             cout << '\n';
         }
