@@ -1,0 +1,86 @@
+transfer of control @ 52, sp=ffffffffffffffff, pc=200b4
+transfer of control @ 60, sp=100000, pc=20108
+  inserting as pending call with sp=100000 lr=200c4
+transfer of control @ 67, sp=100000, pc=200c4
+  looks like return for call @ 60
+transfer of control @ 72, sp=100000, pc=20128
+  inserting as pending call with sp=100000 lr=200cc
+transfer of control @ 78, sp=ffff8, pc=20108
+  inserting as pending call with sp=ffff8 lr=20130
+transfer of control @ 85, sp=ffff8, pc=20130
+  looks like return for call @ 78
+transfer of control @ 87, sp=ffff8, pc=20118
+  inserting as pending call with sp=ffff8 lr=20134
+transfer of control @ 94, sp=ffff8, pc=20134
+  looks like return for call @ 87
+transfer of control @ 99, sp=100000, pc=200cc
+  looks like return for call @ 72
+transfer of control @ 105, sp=100000, pc=20138
+  inserting as pending call with sp=100000 lr=200d8
+transfer of control @ 111, sp=ffff8, pc=20118
+  inserting as pending call with sp=ffff8 lr=20140
+transfer of control @ 118, sp=ffff8, pc=20140
+  looks like return for call @ 111
+transfer of control @ 120, sp=ffff8, pc=20108
+  inserting as pending call with sp=ffff8 lr=20144
+transfer of control @ 127, sp=ffff8, pc=20144
+  looks like return for call @ 120
+transfer of control @ 134, sp=100000, pc=200d8
+  looks like return for call @ 105
+transfer of control @ 139, sp=100000, pc=2014c
+  inserting as pending call with sp=100000 lr=200e0
+transfer of control @ 140, sp=100000, pc=20118
+transfer of control @ 147, sp=100000, pc=200e0
+  looks like return for call @ 139
+transfer of control @ 156, sp=100000, pc=20108
+  inserting as pending call with sp=100000 lr=200e4
+transfer of control @ 163, sp=100000, pc=200e4
+  looks like return for call @ 156
+transfer of control @ 170, sp=100000, pc=20108
+  inserting as pending call with sp=100000 lr=200e4
+transfer of control @ 177, sp=100000, pc=200e4
+  looks like return for call @ 170
+transfer of control @ 184, sp=100000, pc=20108
+  inserting as pending call with sp=100000 lr=200e4
+transfer of control @ 191, sp=100000, pc=200e4
+  looks like return for call @ 184
+transfer of control @ 194, sp=100000, pc=200f4
+transfer of control @ 196, sp=100000, pc=20150
+  inserting as pending call with sp=100000 lr=200f8
+transfer of control @ 208, sp=ffff8, pc=20168
+  inserting as pending call with sp=ffff8 lr=20164
+transfer of control @ 219, sp=100000, pc=200f8
+  looks like return for call @ 196
+transfer of control @ 221, sp=100000, pc=20178
+  inserting as pending call with sp=100000 lr=200fc
+transfer of control @ 230, sp=ffff8, pc=201a0
+  inserting as pending call with sp=ffff8 lr=201a0
+transfer of control @ 240, sp=100000, pc=200fc
+  looks like return for call @ 221
+o t:1000000 l:52 pc:0x200b4 - t:94000000 l:245 pc:0x20104 : 
+  - t:4000000 l:58 pc:0x200c0 - t:9000000 l:67 pc:0x200c4
+    o t:5000000 l:60 pc:0x20108 - t:8000000 l:66 pc:0x20114 : leaf_bx_lr
+  - t:10000000 l:70 pc:0x200c8 - t:23000000 l:99 pc:0x200cc
+    o t:11000000 l:72 pc:0x20128 - t:22000000 l:94 pc:0x20134 : nonleaf_pop_pc
+      - t:12000000 l:76 pc:0x2012c - t:17000000 l:85 pc:0x20130
+        o t:13000000 l:78 pc:0x20108 - t:16000000 l:84 pc:0x20114 : leaf_bx_lr
+      - t:17000000 l:85 pc:0x20130 - t:22000000 l:94 pc:0x20134
+        o t:18000000 l:87 pc:0x20118 - t:21000000 l:93 pc:0x20124 : leaf_mov_pc_lr
+  - t:25000000 l:104 pc:0x200d4 - t:39000000 l:134 pc:0x200d8
+    o t:26000000 l:105 pc:0x20138 - t:38000000 l:133 pc:0x20148 : nonleaf_pop_lr
+      - t:27000000 l:109 pc:0x2013c - t:32000000 l:118 pc:0x20140
+        o t:28000000 l:111 pc:0x20118 - t:31000000 l:117 pc:0x20124 : leaf_mov_pc_lr
+      - t:32000000 l:118 pc:0x20140 - t:37000000 l:127 pc:0x20144
+        o t:33000000 l:120 pc:0x20108 - t:36000000 l:126 pc:0x20114 : leaf_bx_lr
+  - t:40000000 l:137 pc:0x200dc - t:46000000 l:147 pc:0x200e0
+    o t:41000000 l:139 pc:0x2014c - t:45000000 l:146 pc:0x20124 : call_via_r1
+  - t:50000000 l:155 pc:0x200f0 - t:55000000 l:163 pc:0x200e4
+    o t:51000000 l:156 pc:0x20108 - t:54000000 l:162 pc:0x20114 : leaf_bx_lr
+  - t:58000000 l:169 pc:0x200f0 - t:63000000 l:177 pc:0x200e4
+    o t:59000000 l:170 pc:0x20108 - t:62000000 l:176 pc:0x20114 : leaf_bx_lr
+  - t:66000000 l:183 pc:0x200f0 - t:71000000 l:191 pc:0x200e4
+    o t:67000000 l:184 pc:0x20108 - t:70000000 l:190 pc:0x20114 : leaf_bx_lr
+  - t:73000000 l:194 pc:0x200f4 - t:83000000 l:219 pc:0x200f8
+    o t:74000000 l:196 pc:0x20150 - t:82000000 l:214 pc:0x20174 : internal_bl
+  - t:83000000 l:219 pc:0x200f8 - t:92000000 l:240 pc:0x200fc
+    o t:84000000 l:221 pc:0x20178 - t:91000000 l:235 pc:0x201ac : internal_bx_lr

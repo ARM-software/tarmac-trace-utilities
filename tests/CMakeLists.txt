@@ -186,6 +186,20 @@ add_test(NAME vcd-date
       ${CMAKE_BINARY_DIR}/tarmac-vcd --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac -o quicksort-date.vcd
   )
 
+# Tests of call/return matching, by running tarmac-calltree with the
+# --debug=call_heuristics argument, and checking both the working
+# diagnostics and the final output against reference files.
+add_test(NAME call32
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltests/calltest32.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-calltree -q --debug=call_heuristics ${CMAKE_CURRENT_SOURCE_DIR}/calltests/calltest32.tarmac --image  ${CMAKE_CURRENT_SOURCE_DIR}/calltests/calltest32.elf
+  )
+add_test(NAME call64
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltests/calltest64.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-calltree -q --debug=call_heuristics ${CMAKE_CURRENT_SOURCE_DIR}/calltests/calltest64.tarmac --image  ${CMAKE_CURRENT_SOURCE_DIR}/calltests/calltest64.elf
+  )
+
 # Test class Argparse.
 add_test(NAME Argparse-help
   COMMAND ${test_driver_cmd}
