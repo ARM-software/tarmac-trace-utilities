@@ -27,11 +27,14 @@
 #include <memory>
 #include <stdlib.h>
 
+using std::cout;
 using std::make_shared;
 using std::string;
 
 TarmacUtilityBase::TarmacUtilityBase()
-    : verbose(is_interactive()), show_progress_meter(verbose) {}
+    : verbose(is_interactive()), show_progress_meter(verbose) {
+    idiags.diagnostics_stream = &cout;
+}
 
 void TarmacUtilityBase::add_options(Argparse &ap)
 {
@@ -76,6 +79,20 @@ void TarmacUtilityBase::add_options(Argparse &ap)
                 "trace records"),
                 [this]() {
                     thumbonly = true;
+                });
+    ap.optval({"--debug"}, _("TYPE"), _("enable diagnostics of type TYPE "
+                "(use --debug=list for a list)"),
+                [this](const string &s) {
+                    if (s == "list") {
+                        cout << _("List of diagnostic types:") << "\n"
+                             << "--debug=call_heuristics: "
+                             << _("debug call and return analysis") << "\n";
+                    } else if (s == "call_heuristics") {
+                        idiags.debug_call_heuristics = true;
+                    } else {
+                        throw ArgparseError(
+                            format(_("unknown diagnostic type '{}'"), s));
+                    }
                 });
     ap.optnoval({"-v", "--verbose"}, _("make tool more verbose"),
                 [this]() { verbose = true; });
@@ -201,7 +218,7 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
             pparams.iset_specified = true;
             pparams.iset = THUMB;
         }
-        run_indexer(trace, iparams, pparams);
+        run_indexer(trace, iparams, idiags, pparams);
     }
 }
 

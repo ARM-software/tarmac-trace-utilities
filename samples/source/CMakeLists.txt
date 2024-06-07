@@ -33,3 +33,5 @@ add_executable(hello-world entry.S semihosting.c hello-world.c)
 add_executable(quicksort entry.S semihosting.c quicksort.c)
 add_executable(calculator entry.S semihosting.c calculator.cpp)
 add_executable(fpregs entry.S semihosting.c fpregs.c)
+
+add_executable(calltest1 calltests/calltest1.S)

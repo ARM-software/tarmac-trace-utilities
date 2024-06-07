@@ -76,6 +76,7 @@ class TarmacUtilityBase {
     bool show_progress_meter;
 
     IndexerParams iparams;
+    IndexerDiagnostics idiags;
 
     void updateIndexIfNeeded(const TracePair &trace) const;
 

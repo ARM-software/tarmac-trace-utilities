@@ -49,6 +49,7 @@ using std::make_shared;
 using std::make_unique;
 using std::max;
 using std::min;
+using std::ostream;
 using std::ostringstream;
 using std::pair;
 using std::ref;
@@ -92,6 +93,7 @@ struct CallReturn {
 class Index : ParseReceiver {
     TracePair trace;
     IndexerParams iparams;
+    IndexerDiagnostics idiags;
     ParseParams pparams;
     OFF_T last_memroot, memroot, seqroot;
     unsigned long long last_sp, curr_sp, curr_pc, insns_since_lr_update;
@@ -133,8 +135,8 @@ class Index : ParseReceiver {
 
   public:
     Index(const TracePair &trace, const IndexerParams &iparams,
-          const ParseParams &pparams)
-        : trace(trace), iparams(iparams), pparams(pparams),
+          const IndexerDiagnostics &idiags, const ParseParams &pparams)
+        : trace(trace), iparams(iparams), idiags(idiags), pparams(pparams),
           expected_next_pc(KNOWN_INVALID_PC), arena(nullptr), memtree(nullptr),
           memsubtree(nullptr), seqtree(nullptr), aarch64_used(false),
           last_iset(ARM), parser(pparams, *this)
@@ -220,17 +222,17 @@ void Index::update_pc(unsigned long long pc, unsigned long long next_pc,
         if (!read_memtree_reg(REG_sp(), &sp))
             sp = ULLONG_MAX;
 
-#ifdef DEBUG_CALL_HEURISTICS
-        cout << "transfer of control @ " << prev_lineno << ", sp=" << hex << sp
-             << ", pc=" << pc << dec << endl;
-#endif
+        if (idiags.debug_call_heuristics)
+            idiags.diag()
+                << "transfer of control @ " << prev_lineno << ", sp=" << hex
+                << sp << ", pc=" << pc << dec << endl;
 
         auto it = pending_calls.find(PendingCall(sp, pc));
         if (it != pending_calls.end()) {
 
-#ifdef DEBUG_CALL_HEURISTICS
-            cout << "  looks like return for call @ " << it->call_line << endl;
-#endif
+            if (idiags.debug_call_heuristics)
+                idiags.diag() << "  looks like return for call @ "
+                              << it->call_line << endl;
 
             // it->call_line is the line number of the first
             // instruction of the called function, and
@@ -250,10 +252,9 @@ void Index::update_pc(unsigned long long pc, unsigned long long next_pc,
                    insns_since_lr_update < 8 &&
                    absdiff(lr, expected_next_lr) < 64) {
 
-#ifdef DEBUG_CALL_HEURISTICS
-            cout << "  inserting as pending call with sp=" << hex << sp
-                 << " lr=" << lr << dec << endl;
-#endif
+            if (idiags.debug_call_heuristics)
+                idiags.diag() << "  inserting as pending call with sp=" << hex
+                              << sp << " lr=" << lr << dec << endl;
 
             pending_calls.insert(PendingCall(sp, lr, prev_lineno));
         }
@@ -1109,9 +1110,9 @@ IndexHeaderState check_index_header(const string &index_filename)
 }
 
 void run_indexer(const TracePair &trace, const IndexerParams &iparams,
-                 const ParseParams &pparams)
+                 const IndexerDiagnostics &idiags, const ParseParams &pparams)
 {
-    Index index(trace, iparams, pparams);
+    Index index(trace, iparams, idiags, pparams);
     index.parse_tarmac_file();
 }
 

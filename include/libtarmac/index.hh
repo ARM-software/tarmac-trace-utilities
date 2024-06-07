@@ -31,8 +31,10 @@
 #include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
 
+#include <assert.h>
 #include <fstream>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -54,8 +56,19 @@ struct IndexerParams {
     }
 };
 
+// Parameters that tell run_indexer about desired diagnostics, and
+// where to send them
+struct IndexerDiagnostics {
+    std::ostream *diagnostics_stream = nullptr;
+    std::ostream &diag() {
+        assert(diagnostics_stream);
+        return *diagnostics_stream;
+    }
+    bool debug_call_heuristics = false;
+};
+
 void run_indexer(const TracePair &trace, const IndexerParams &iparams,
-                 const ParseParams &pparams);
+                 const IndexerDiagnostics &idiags, const ParseParams &pparams);
 
 enum class IndexHeaderState { OK, WrongMagic, Incomplete };
 IndexHeaderState check_index_header(const std::string &index_filename);
