@@ -33,7 +33,6 @@ struct Symbol {
 
     Addr addr;
     size_t size;
-    std::string name;
     int duplicateNr = 0;  // disambiguates the symbol name, if needed
     binding_type binding; // can be used for smarter symbol lookup
     kind_type kind;       // can be used for smarter symbol lookup
@@ -46,6 +45,15 @@ struct Symbol {
     std::string getName() const;
 
     bool operator<(const Symbol &other) const { return name < other.name; }
+
+  private:
+    // This is private so that clients call getName() instead, which
+    // annotates the symbol name to resolve ambiguities.
+    std::string name;
+
+    // But Image is allowed to access it, to set these structures up
+    // in the first place.
+    friend class Image;
 };
 
 class Image {

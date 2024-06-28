@@ -41,7 +41,7 @@ string CallTree::getFunctionName(Addr addr) const
 {
     if (IN.has_image())
         if (const Symbol *Symb = IN.get_image()->find_symbol(addr))
-            return Symb->name;
+            return Symb->getName();
     return string();
 }
 
