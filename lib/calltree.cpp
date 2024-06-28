@@ -34,14 +34,21 @@ using std::min;
 using std::ostream;
 using std::ostringstream;
 using std::pair;
+using std::showbase;
 using std::string;
 using std::vector;
 
 string CallTree::getFunctionName(Addr addr) const
 {
     if (IN.has_image())
-        if (const Symbol *Symb = IN.get_image()->find_symbol(addr))
-            return Symb->getName();
+        if (const Symbol *Symb = IN.get_image()->find_symbol(addr)) {
+            ostringstream oss;
+            oss << Symb->getName();
+            Addr offset = addr - Symb->addr;
+            if (offset)
+                oss << " + " << hex << showbase << addr;
+            return oss.str();
+        }
     return string();
 }
 
