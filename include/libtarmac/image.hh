@@ -33,7 +33,7 @@ struct Symbol {
 
     Addr addr;
     size_t size;
-    int duplicateNr = 0;  // disambiguates the symbol name, if needed
+    bool multiple = false; // are there multiple symbols with this name?
     binding_type binding; // can be used for smarter symbol lookup
     kind_type kind;       // can be used for smarter symbol lookup
 

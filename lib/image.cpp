@@ -32,9 +32,9 @@ using std::vector;
 
 string Symbol::getName() const
 {
-    if (duplicateNr != 0) {
+    if (multiple) {
         ostringstream oss;
-        oss << name << "#" << duplicateNr;
+        oss << name << "@0x" << std::hex << addr;
         return oss.str();
     }
     return name;
@@ -80,7 +80,24 @@ void Image::add_symbol(const Symbol &sym_)
 
     // name -> symbol map
     auto &dups = symtab[sym.name];
-    sym.duplicateNr = dups.size();
+    if (dups.size() > 0) {
+        // There's already at least one symbol with this name. Mark
+        // the new one as multiple, meaning it will need
+        // disambiguation when the address is printed later.
+        sym.multiple = true;
+        if (dups.size() == 1) {
+            // And if there was previously only one symbol with the
+            // same name, then that one isn't yet marked as multiple,
+            // so do that too.
+            //
+            // The symbol pointer in 'dups' is a const pointer, but we
+            // know it's also an element of the 'symbols' list, which
+            // we're allowed to mutate in this function (indeed we
+            // already have done). So it's safe to cast away the const
+            // and modify it.
+            const_cast<Symbol *>(dups.front())->multiple = true;
+        }
+    }
     dups.push_back(&sym);
 }
 
@@ -214,8 +231,9 @@ void Image::dump()
 {
     printf(_("Image '%s':\n"), image_filename.c_str());
     for (const auto &sym : symbols) {
-        printf(_("symbol '%s#%d' [0x%llx, 0x%llx)\n"), sym.name.c_str(),
-               sym.duplicateNr, sym.addr, sym.addr + sym.size);
+        std::string name = sym.getName();
+        printf(_("symbol '%s' [0x%llx, 0x%llx)\n"), name.c_str(),
+               sym.addr, sym.addr + sym.size);
     }
 }
 
