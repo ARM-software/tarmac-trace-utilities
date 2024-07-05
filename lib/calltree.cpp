@@ -16,8 +16,10 @@
  * This file is part of Tarmac Trace Utilities
  */
 
+#include "libtarmac/argparse.hh"
 #include "libtarmac/calltree.hh"
 #include "libtarmac/image.hh"
+#include "libtarmac/intl.hh"
 #include "libtarmac/misc.hh"
 
 #include <climits>
@@ -44,9 +46,11 @@ string CallTree::getFunctionName(Addr addr) const
         if (const Symbol *Symb = IN.get_image()->find_symbol(addr)) {
             ostringstream oss;
             oss << Symb->getName();
-            Addr offset = addr - Symb->addr;
-            if (offset)
-                oss << " + " << hex << showbase << addr;
+            if (options.show_offsets) {
+                Addr offset = addr - Symb->addr;
+                if (offset)
+                    oss << " + " << hex << showbase << addr;
+            }
             return oss.str();
         }
     return string();
@@ -255,4 +259,14 @@ CallTree::CallTree(const IndexNavigator &IN)
     (void)success; // squash compiler warning if asserts compiled out
     assert(success);
     tracker.finish(finalNode);
+}
+
+void CallTreeOptions::add_options(Argparse &ap)
+{
+    ap.optnoval(
+        {"--no-offsets"}, _("do not show an offset in call-tree records "
+                            "which start after the function entry point"),
+        [this]() {
+            show_offsets = false;
+        });
 }

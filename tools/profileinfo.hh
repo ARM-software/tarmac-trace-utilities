@@ -24,11 +24,12 @@
 
 #include <string>
 
+class CallTreeOptions;
 class ProfileInfo : public IndexNavigator {
     using IndexNavigator::IndexNavigator;
 
   public:
-    void run();
+    void run(const CallTreeOptions &);
 };
 
 #endif // TARMAC_PROFILEINFO_HH

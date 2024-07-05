@@ -31,7 +31,7 @@ class VCDWriter : public IndexNavigator {
     VCDWriter(const VCDWriter &) = delete;
 
     void run(const std::string &VCDFilename, bool NoDate,
-             bool UseTarmacTimestamp = false);
+             const CallTreeOptions &ctopts, bool UseTarmacTimestamp = false);
 };
 
 #endif // TARMAC_VCDWRITER_HH

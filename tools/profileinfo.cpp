@@ -87,9 +87,10 @@ class Profiler : public CallTreeVisitor {
     }
 };
 
-void ProfileInfo::run()
+void ProfileInfo::run(const CallTreeOptions &ctopts)
 {
     CallTree CT(*this);
+    CT.setOptions(ctopts);
     Profiler P(CT);
     CT.visit(P);
 
@@ -108,15 +109,18 @@ int main(int argc, char **argv)
     IndexerParams iparams;
     iparams.record_memory = false;
 
+    CallTreeOptions ctopts;
+
     Argparse ap("tarmac-profile", argc, argv);
     TarmacUtility tu;
     tu.set_indexer_params(iparams);
     tu.add_options(ap);
+    ctopts.add_options(ap);
     ap.parse();
     tu.setup();
 
     ProfileInfo PI(tu.trace, tu.image_filename, tu.load_offset);
-    PI.run();
+    PI.run(ctopts);
 
     return 0;
 }

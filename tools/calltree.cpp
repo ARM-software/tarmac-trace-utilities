@@ -31,14 +31,18 @@ int main(int argc, char **argv)
     IndexerParams iparams;
     iparams.record_memory = false;
 
+    CallTreeOptions ctopts;
+
     Argparse ap("tarmac-calltree", argc, argv);
     TarmacUtility tu;
     tu.set_indexer_params(iparams);
     tu.add_options(ap);
+    ctopts.add_options(ap);
     ap.parse();
     tu.setup();
 
     IndexNavigator IN(tu.trace, tu.image_filename, tu.load_offset);
     CallTree CT(IN);
+    CT.setOptions(ctopts);
     CT.dump();
 }

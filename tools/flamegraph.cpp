@@ -45,10 +45,13 @@ int main(int argc, char **argv)
     IndexerParams iparams;
     iparams.record_memory = false;
 
+    CallTreeOptions ctopts;
+
     Argparse ap("tarmac-flamegraph", argc, argv);
     TarmacUtility tu;
     tu.set_indexer_params(iparams);
     tu.add_options(ap);
+    ctopts.add_options(ap);
     ap.optval({"-o", "--output"}, _("OUTFILE"),
               _("write output to OUTFILE (default: standard output)"),
               [&](const string &s) { outfile = make_unique<string>(s); });
@@ -57,6 +60,7 @@ int main(int argc, char **argv)
 
     IndexNavigator IN(tu.trace, tu.image_filename, tu.load_offset);
     CallTree CT(IN);
+    CT.setOptions(ctopts);
 
     unique_ptr<ofstream> ofs;
     ostream *osp;

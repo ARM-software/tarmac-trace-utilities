@@ -100,6 +100,16 @@ class CallTreeVisitor {
     }
 };
 
+// Configuration options common to tools using a CallTree object.
+class Argparse;
+struct CallTreeOptions {
+    // When a record enters a function not at its start address, do we
+    // show it as 'function + 0xNNN', or just as 'function'?
+    bool show_offsets = true;
+
+    void add_options(Argparse &);
+};
+
 class CallTree {
     const IndexNavigator &IN;
 
@@ -114,6 +124,8 @@ class CallTree {
     std::vector<TarmacSite> resume_sites;
     // The calltrees of all functions called by this function call instance.
     std::vector<CallTree> call_trees;
+
+    CallTreeOptions options;
 
   public:
     CallTree(const IndexNavigator &IN);
@@ -141,6 +153,8 @@ class CallTree {
     {
         resume_sites.push_back(resume_site);
     }
+
+    void setOptions(const CallTreeOptions &options_) { options = options_; }
 
     std::string getFunctionName(Addr addr) const;
     std::string getFunctionName(const TarmacSite &site) const;
