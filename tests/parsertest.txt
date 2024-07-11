@@ -82,6 +82,8 @@
 2 clk cpu0 IT (2) 1000184c f2c30003 T thread_s : MOVT     r0,#0x3003
 2 clk cpu0 R r0 3003fe00
 
+180000140000 ps MR8 0000010006fffcc0:010116fffcc0_NS 00000100_05101000
+
 # ----------------------------------------------------------------------
 # Trace lines seen in multiple samples of broadly Cycle Models
 # flavoured Tarmac

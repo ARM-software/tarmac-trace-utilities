@@ -94,6 +94,8 @@ Parse warning: unsupported system operation 'AT'
 * InstructionEvent time=2 effect=executed pc=1000184c iset=Thumb width=32 instruction=f2c30003 disassembly="MOVT     r0,#0x3003"
 --- Tarmac line: 2 clk cpu0 R r0 3003fe00
 * RegisterEvent time=2 reg=r0 offset=0 bytes=30:03:fe:00
+--- Tarmac line: 180000140000 ps MR8 0000010006fffcc0:010116fffcc0_NS 00000100_05101000
+* MemoryEvent time=180000140000 read=true known=true addr=10006fffcc0 size=8 contents=10005101000
 --- Tarmac line: Tarmac Text Rev 3t
 --- Tarmac line:       17000 ns  ES  EXC [0x00] Reset
 * TextOnlyEvent time=17000 type="EXC" text="[0x00] Reset"

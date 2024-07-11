@@ -1027,7 +1027,7 @@ class TarmacLineParserImpl {
                  * virtual addresses, so we ignore the latter.
                  */
                 tok = lex();
-                if (!tok.ishex())
+                if (!tok.ishexwithoptionalnamespace())
                     parse_error(tok, _("expected physical memory address "
                                        "after ':'"));
                 tok = lex();
