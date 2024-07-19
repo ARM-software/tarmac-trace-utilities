@@ -39,7 +39,7 @@ struct Symbol {
 
     Symbol(Addr addr, size_t size, const std::string &name,
            binding_type binding, kind_type kind)
-        : addr(addr), size(size), name(name), binding(binding), kind(kind)
+        : addr(addr), size(size), binding(binding), kind(kind), name(name)
     {
     }
     std::string getName() const;

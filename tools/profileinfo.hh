@@ -24,7 +24,7 @@
 
 #include <string>
 
-class CallTreeOptions;
+struct CallTreeOptions;
 class ProfileInfo : public IndexNavigator {
     using IndexNavigator::IndexNavigator;
 
