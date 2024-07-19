@@ -43,6 +43,7 @@ if(DEFINED PDCURSES_ROOT)
   set_target_properties(pdcurses PROPERTIES
     IMPORTED_LOCATION ${PDCURSES_BUILD_DIR}/pdcurses.lib)
   set(CURSES_LIBRARIES pdcurses)
+  set(CURSES_HAVE_CURSES_H ON)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")

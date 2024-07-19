@@ -39,10 +39,14 @@
 #include <string>
 #include <vector>
 
-#ifdef WIN32
-#include <curses.h>
-#else
+#if CURSES_HAVE_NCURSES_H
 #include <ncurses.h>
+#elif CURSES_HAVE_NCURSES_NCURSES_H
+#include <ncurses/ncurses.h>
+#elif CURSES_HAVE_NCURSES_CURSES_H
+#include <ncurses/curses.h>
+#elif CURSES_HAVE_CURSES_H
+#include <curses.h>
 #endif
 
 using std::invalid_argument;
