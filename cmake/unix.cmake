@@ -19,7 +19,16 @@
 # dependencies to be installed centrally by a package manager, so we
 # can just run find_package in the obvious way.
 
-find_package(Curses ${REQUIRED_PACKAGE})
+# We'd rather use ncurses than vanilla curses, if we can get it. But
+# we're happy to use vanilla curses if that's all that's available. So
+# we set CURSES_NEED_NCURSES, and if that fails, try again without it.
+set(CURSES_NEED_NCURSES TRUE)
+find_package(Curses)
+if(NOT CURSES_FOUND)
+    set(CURSES_NEED_NCURSES FALSE)
+    find_package(Curses ${REQUIRED_PACKAGE})
+endif()
+
 find_package(PkgConfig ${REQUIRED_PACKAGE})
 
 include(GNUInstallDirs)
