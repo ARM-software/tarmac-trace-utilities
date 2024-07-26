@@ -418,10 +418,10 @@ class TarmacLineParserImpl {
             if (tok == "EXC" || tok == "Reset") {
                 // Sometimes used to report an exception event relating to the
                 // instruction, e.g. because it was illegal. We abandon parsing
-                // this as an instruction event, and decide it's text-only.
+                // this as an instruction event, and treat it as an exception.
                 tok = lex(); // now tok.startpos begins unparsed text
                 highlight(tok.startpos, line.size(), HL_TEXT_EVENT);
-                TextOnlyEvent ev(time, "EXC", line.substr(tok.startpos));
+                ExceptionEvent ev(time);
                 receiver->got_event(ev);
                 return;
             }
@@ -1177,6 +1177,38 @@ class TarmacLineParserImpl {
 
                     i = j;
                 }
+            }
+        } else if (tok == "EXC") {
+            // Trace event type that reports CPU exceptions in the
+            // ES-style format. Sometimes there's an ES token before
+            // it, which we handle above.
+            ExceptionEvent ev(time);
+            receiver->got_event(ev);
+        } else if (tok == "E") {
+            // Trace event type that reports (among other things) CPU
+            // exceptions in the IT-style format.
+            //
+            // For a CPU exception, the usual format seems to be
+            // [<time>] E <pc> [<extra>] <excid> CoreEvent_<description>
+            // but our ExceptionEvent doesn't have any fields to store any
+            // of that except the time.
+            //
+            // However, this event type is also used for things that
+            // aren't CPU exceptions. In particular, sometimes the "E"
+            // event type token is followed immediately by
+            // DebugEvent_<something>, with no intervening pc value or
+            // exception type, and we're not interested in those.
+
+            string type(tok.s);
+            tok = lex();
+
+            if (tok.starts_with("DebugEvent_")) {
+                // Not interesting enough to make an ExceptionEvent
+                TextOnlyEvent ev(time, type, line.substr(tok.startpos));
+                receiver->got_event(ev);
+            } else {
+                ExceptionEvent ev(time);
+                receiver->got_event(ev);
             }
         } else if (tok == "Tarmac") {
             // Header line seen at the start of some trace files. Typically

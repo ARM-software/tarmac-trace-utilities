@@ -222,7 +222,7 @@ Tarmac Text Rev 3t
 # in which the bytes written/read are not all contiguous. The parser
 # should generate multiple memory access events for each one.
 
-    1234567 cs E dummy header line to reset timestamp for next two lines
+    1234567 cs E DebugEvent_dummy to reset timestamp for next two lines
                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH
                     ST 000000009ffdb810 ....0000 ........ 88888888 88888888    S:009ffdb810    NM NSH IWTNA OWTNA
 
@@ -293,3 +293,10 @@ R SP_EL2 fedcba98 76543210
 # signs to fill X1.
 R X0 -------- --------
 R X1 --------
+
+# CPU exceptions. "E" is IT style; "ES EXC" and "EXC" are ES style.
+0 ps E 00000000 00000000 CoreEvent_Reset
+39000000 ps E 00008100 00000084 CoreEvent_CURRENT_SPx_SYNC
+          0 tic ES  EXC Reset
+                    EXC [0x200] Synchronous Current EL with SP_ELx
+

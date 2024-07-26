@@ -99,6 +99,11 @@ class TestReceiver : public ParseReceiver {
            << dec << " disassembly=\"" << ev.disassembly << "\"" << endl;
     }
 
+    void got_event(ExceptionEvent &ev)
+    {
+        os << "* ExceptionEvent" << " time=" << ev.time << endl;
+    }
+
     void got_event(TextOnlyEvent &ev)
     {
         os << "* TextOnlyEvent"

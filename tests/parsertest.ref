@@ -81,7 +81,7 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line: 0 clk cpu1 R r1 00000000
 * RegisterEvent time=0 reg=r1 offset=0 bytes=00:00:00:00
 --- Tarmac line: 0 clk cpu0 E 10001848 00000001 CoreEvent_RESET
-* TextOnlyEvent time=0 type="E" text="10001848 00000001 CoreEvent_RESET"
+* ExceptionEvent time=0
 --- Tarmac line: 0 clk cpu0 R r13_main_s 30040000
 * RegisterEvent time=0 reg=r13 offset=0 bytes=30:04:00:00
 --- Tarmac line: 0 clk cpu0 R MSP_S 30040000
@@ -98,7 +98,7 @@ Parse warning: unsupported system operation 'AT'
 * MemoryEvent time=180000140000 read=true known=true addr=10006fffcc0 size=8 contents=10005101000
 --- Tarmac line: Tarmac Text Rev 3t
 --- Tarmac line:       17000 ns  ES  EXC [0x00] Reset
-* TextOnlyEvent time=17000 type="EXC" text="[0x00] Reset"
+* ExceptionEvent time=17000
 --- Tarmac line:                     BR (00000000) A
 * TextOnlyEvent time=17000 type="BR" text="(00000000) A"
 --- Tarmac line:       41000 ns  ES  (00000000:e59ff018) A svc:            LDR      pc,{pc}+0x20 ; 0x20
@@ -152,7 +152,7 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=23233000 reg=v0 offset=0 bytes=77:66:55:44:33:22:11:00
 --- Tarmac line: Tarmac Text Rev 3t
 --- Tarmac line:      499294 ns  ES  EXC Reset
-* TextOnlyEvent time=499294 type="EXC" text="Reset"
+* ExceptionEvent time=499294
 --- Tarmac line:                     R CPSR 000003cd
 * RegisterEvent time=499294 reg=psr offset=0 bytes=00:00:03:cd
 --- Tarmac line:                     R SPSR_EL3 00000000000001cd
@@ -198,9 +198,9 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line:     6379085 cs W04 X ffffffbdc3c15c30 010c010b
 * MemoryEvent time=6379085 read=false known=true addr=ffffffbdc3c15c30 size=4 contents=10c010b
 --- Tarmac line:      12345 ns  ES  Reset
-* TextOnlyEvent time=12345 type="EXC" text=""
+* ExceptionEvent time=12345
 --- Tarmac line:                EXC [0x00] Reset
-* TextOnlyEvent time=12345 type="EXC" text="[0x00] Reset"
+* ExceptionEvent time=12345
 --- Tarmac line: 123 ns R Q0 -------- -------- 3ff6a09e 667f3bcd
 * RegisterEvent time=123 reg=q0 offset=0 bytes=3f:f6:a0:9e:66:7f:3b:cd
 --- Tarmac line: 124 ns R Q0 3ff428a2 f98d728b -------- --------
@@ -229,8 +229,8 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=16465 reg=v5 offset=0 bytes=00:00:00:00:00:00:00:00
 --- Tarmac line:                     R V5<127:64> 00000000
 * RegisterEvent time=16465 reg=v5 offset=8 bytes=00:00:00:00:00:00:00:00
---- Tarmac line:     1234567 cs E dummy header line to reset timestamp for next two lines
-* TextOnlyEvent time=1234567 type="E" text="dummy header line to reset timestamp for next two lines"
+--- Tarmac line:     1234567 cs E DebugEvent_dummy to reset timestamp for next two lines
+* TextOnlyEvent time=1234567 type="E" text="DebugEvent_dummy to reset timestamp for next two lines"
 --- Tarmac line:                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH
 * MemoryEvent time=1234567 read=true known=true addr=7ff80fe8 size=4 contents=44444444
 * MemoryEvent time=1234567 read=true known=true addr=7ff80fe2 size=2 contents=2222
@@ -257,7 +257,7 @@ Parse warning: unsupported system operation 'AT'
 --- Tarmac line: 608 clk R Q0 93c467e3 7db0c7a4 d1be3f81 0152cb56
 * RegisterEvent time=608 reg=q0 offset=0 bytes=93:c4:67:e3:7d:b0:c7:a4:d1:be:3f:81:01:52:cb:56
 --- Tarmac line:       15000 ps  ES  EXC [1] Reset
-* TextOnlyEvent time=15000 type="EXC" text="[1] Reset"
+* ExceptionEvent time=15000
 --- Tarmac line:                     R MSP_S 00000000
 * RegisterEvent time=15000 reg=r13 offset=0 bytes=00:00:00:00
 --- Tarmac line:                     R XPSR f9000000
@@ -286,3 +286,11 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=8677000000 reg=xsp offset=0 bytes=fe:dc:ba:98:76:54:32:10
 --- Tarmac line: R X0 -------- --------
 --- Tarmac line: R X1 --------
+--- Tarmac line: 0 ps E 00000000 00000000 CoreEvent_Reset
+* ExceptionEvent time=0
+--- Tarmac line: 39000000 ps E 00008100 00000084 CoreEvent_CURRENT_SPx_SYNC
+* ExceptionEvent time=39000000
+--- Tarmac line:           0 tic ES  EXC Reset
+* ExceptionEvent time=0
+--- Tarmac line:                     EXC [0x200] Synchronous Current EL with SP_ELx
+* ExceptionEvent time=0

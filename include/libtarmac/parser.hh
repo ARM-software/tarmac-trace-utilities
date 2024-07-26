@@ -114,6 +114,11 @@ struct MemoryEvent : TarmacEvent {
     }
 };
 
+struct ExceptionEvent : TarmacEvent {
+    ExceptionEvent(Time time) : TarmacEvent(time) {}
+    ~ExceptionEvent() {}
+};
+
 struct TextOnlyEvent : TarmacEvent {
     std::string type, msg;
     TextOnlyEvent(Time time, const std::string &type, const std::string &msg)
@@ -134,6 +139,7 @@ class ParseReceiver {
     virtual void got_event(RegisterEvent &) {}
     virtual void got_event(MemoryEvent &) {}
     virtual void got_event(TextOnlyEvent &) {}
+    virtual void got_event(ExceptionEvent &) {}
 
     // start and end describe a half-open interval of locations in the
     // input string, i.e. including line[start] and not including
