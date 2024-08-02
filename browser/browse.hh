@@ -111,6 +111,7 @@ class Browser : public IndexNavigator {
         bool goto_visline(unsigned line);
         bool goto_buffer_limit(bool end);
         bool goto_pc(unsigned long long pc, int dir);
+        bool goto_cpu_exception(int dir);
 
         bool position_hidden();
         bool get_current_pc(unsigned long long &pc);

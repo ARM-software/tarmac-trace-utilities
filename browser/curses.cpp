@@ -781,6 +781,15 @@ class TraceBuffer : public Window {
         }
     }
 
+    void goto_cpu_exception(int dir)
+    {
+        if (vu.goto_cpu_exception(dir)) {
+            selected_event = UINT_MAX;
+            update_scrtop(false, 1, 2);
+            update_other_windows();
+        }
+    }
+
     void draw(int x, int y, cursorpos *cp)
     {
         cp->visible = false;
@@ -867,6 +876,7 @@ class TraceBuffer : public Window {
             {"t", _("Jump to a specified time position")},
             {"l", _("Jump to a specified line number of the trace file")},
             {"p, P", _("Jump to the next / previous visit to a PC location")},
+            {"e, E", _("Jump to the next / previous CPU exception, if any")},
             {"", ""},
             {"r", _("Toggle display of the core registers")},
             {"S, D", _("Toggle display of the single / double FP registers")},
@@ -1079,6 +1089,9 @@ class TraceBuffer : public Window {
             unsigned long long pc;
             if (vu.get_current_pc(pc))
                 goto_pc(pc, c == 'n' ? +1 : -1);
+            return true;
+        } else if (c == 'e' || c == 'E') {
+            goto_cpu_exception(c == 'e' ? +1 : -1);
             return true;
         } else if (c == 'r') {
             // Toggle core register display window on/off

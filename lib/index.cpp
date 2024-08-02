@@ -108,6 +108,7 @@ class Index : ParseReceiver {
     AVLDisk<SeqOrderPayload, SeqOrderAnnotation> *seqtree;
     Time current_time;
     bool seen_instruction_at_current_time;
+    bool seen_cpu_exception_at_current_line;
     set<PendingCall> pending_calls;
     set<CallReturn> found_callrets;
     bool aarch64_used;
@@ -444,10 +445,13 @@ void Index::got_event(ExceptionEvent &ev)
 {
     got_event_common(&ev, false);
 
-    ByPCPayload bypcp;
-    bypcp.trace_file_firstline = prev_lineno;
-    bypcp.pc = CPU_EXCEPTION_PC;
-    bypcroot = bypctree->insert(bypcroot, bypcp);
+    if (!seen_cpu_exception_at_current_line) {
+        ByPCPayload bypcp;
+        bypcp.trace_file_firstline = prev_lineno;
+        bypcp.pc = CPU_EXCEPTION_PC;
+        bypcroot = bypctree->insert(bypcroot, bypcp);
+        seen_cpu_exception_at_current_line = true;
+    }
 }
 
 void Index::delete_from_memtree(char type, Addr addr, size_t size)
@@ -922,6 +926,7 @@ void Index::got_event_common(TarmacEvent *event, bool is_instruction)
 
         prev_lineno = lineno;
         seen_any_event = true;
+        seen_cpu_exception_at_current_line = false;
     }
 
     if (is_instruction)
@@ -982,6 +987,7 @@ void Index::open_trace_file()
     last_memroot = memroot;
     current_time = -(Time)1;
     seen_instruction_at_current_time = false;
+    seen_cpu_exception_at_current_line = false;
     bypcroot = 0;
     true_lineno = 0;
     lineno = 1;

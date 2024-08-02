@@ -1725,6 +1725,7 @@ class TraceWindow : public TextViewWindow {
     void pcedit_unfocused(wxFocusEvent &event);
     void reset_pcedit();
     template <int direction> void pc_nextprev(wxCommandEvent &event);
+    template <int direction> void exc_nextprev(wxCommandEvent &event);
 
     virtual bool keypress(wxKeyEvent &event) override;
 
@@ -1851,6 +1852,8 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
     wxWindowID mi_newneonreg = NewControlId();
     wxWindowID mi_newmvereg = NewControlId();
     wxWindowID mi_recentre = NewControlId();
+    wxWindowID mi_nextexc = NewControlId();
+    wxWindowID mi_prevexc = NewControlId();
     mi_calldepth = NewControlId();
     mi_highlight = NewControlId();
     mi_branchtarget = wxID_NONE;
@@ -1874,6 +1877,12 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
     newmenu->Append(mi_newneonreg, _("Neon vector reg view"));
     newmenu->Append(mi_newmvereg, _("MVE vector reg view"));
     filemenu->InsertSeparator(pos++);
+
+    newmenu = new wxMenu;
+    editmenu->AppendSeparator();
+    editmenu->Append(wxID_ANY, _("Find CPU exception..."), newmenu);
+    newmenu->Append(mi_nextexc, _("Next"));
+    newmenu->Append(mi_prevexc, _("Previous"));
 
     wxMenu *viewmenu = new wxMenu;
     menubar->Append(viewmenu, _("&View"));
@@ -1903,6 +1912,8 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
     if (mi_branchtarget != wxID_NONE)
         Bind(wxEVT_MENU, &TraceWindow::branchtarget_menuaction, this,
              mi_branchtarget);
+    Bind(wxEVT_MENU, &TraceWindow::exc_nextprev<+1>, this, mi_nextexc);
+    Bind(wxEVT_MENU, &TraceWindow::exc_nextprev<-1>, this, mi_prevexc);
 
     menubar->Check(mi_calldepth, depth_indentation);
     menubar->Check(mi_highlight, syntax_highlight);
@@ -2606,6 +2617,15 @@ template <int direction> void TraceWindow::pc_nextprev(wxCommandEvent &event)
 {
     unsigned long long pc;
     if (vu.get_current_pc(pc) && vu.goto_pc(pc, direction)) {
+        update_location(UpdateLocationType::NewVis);
+        keep_visnode_in_view();
+    }
+    drawing_area->Refresh();
+}
+
+template <int direction> void TraceWindow::exc_nextprev(wxCommandEvent &event)
+{
+    if (vu.goto_cpu_exception(direction)) {
         update_location(UpdateLocationType::NewVis);
         keep_visnode_in_view();
     }

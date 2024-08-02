@@ -640,6 +640,11 @@ bool Browser::TraceView::goto_pc(unsigned long long pc, int dir)
     return goto_physline(target_line);
 }
 
+bool Browser::TraceView::goto_cpu_exception(int dir)
+{
+    return goto_pc(CPU_EXCEPTION_PC, dir);
+}
+
 struct TraceParseContext : ParseContext {
     Browser &br;
     TraceParseContext(Browser &br) : br(br) {}
