@@ -50,7 +50,24 @@ void type_extend(std::string &typ, const std::string &str, char padvalue);
 std::string float_btod(unsigned val);
 std::string double_btod(unsigned long long val);
 
+// A value used to represent that the program counter is unknown. No
+// value congruent to 2 mod 4 can be the value of pc in this
+// application, because in A32 or A64 the pc is always a multiple of
+// 4, and in Thumb we represent the pc with its low bit set, so the
+// residue mod 4 is either 1 or 3.
+//
+// So KNOWN_INVALID_PC is used in situations where there isn't a pc
+// available at all, such as trace lines seen before the first
+// instruction is executed, where there is no pc to associate with the
+// event.
 constexpr unsigned long long KNOWN_INVALID_PC = 2;
+
+// Another value that can't be a legal PC, used to represent the event
+// of a CPU exception taking place. CPU exception events are stored in
+// the by-PC tree of the trace index under this value, and you can
+// find the next or previous CPU exception in the trace browser by
+// searching for it.
+constexpr unsigned long long CPU_EXCEPTION_PC = 6;
 
 // A class that provides a cmp() method (used by this library's tree
 // searching APIs) to compare it with a type of your choice, and which

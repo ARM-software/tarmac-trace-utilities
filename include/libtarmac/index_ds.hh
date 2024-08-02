@@ -365,6 +365,13 @@ The sorting order is primarily by PC, and secondarily by timestamp. So
 you can list all the visits to a function entry point in order, or
 find the next or previous one.
 
+The special value 6 in the PC field indicates that a CPU exception
+event is happening. This allows browsing tools to locate CPU
+exceptions efficiently. 6 cannot be a legal PC value because legal PC
+values are all congruent to 0 mod 4 (A32 and A64) or 1 or 3 mod 4
+(Thumb, since we use the 'low bit set' representation understood by
+BX).
+
  */
 
 /* ----------------------------------------------------------------------

@@ -182,6 +182,7 @@ class Index : ParseReceiver {
     void got_event(MemoryEvent &ev);
     void got_event(InstructionEvent &ev);
     void got_event(TextOnlyEvent &ev);
+    void got_event(ExceptionEvent &ev);
 
     void open_index_file();
     void open_trace_file();
@@ -438,6 +439,16 @@ void Index::got_event(InstructionEvent &ev)
 }
 
 void Index::got_event(TextOnlyEvent &ev) { got_event_common(&ev, false); }
+
+void Index::got_event(ExceptionEvent &ev)
+{
+    got_event_common(&ev, false);
+
+    ByPCPayload bypcp;
+    bypcp.trace_file_firstline = prev_lineno;
+    bypcp.pc = CPU_EXCEPTION_PC;
+    bypcroot = bypctree->insert(bypcroot, bypcp);
+}
 
 void Index::delete_from_memtree(char type, Addr addr, size_t size)
 {
