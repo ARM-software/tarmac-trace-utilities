@@ -110,6 +110,7 @@ class IndexReader {
 
     bool isBigEndian() const { return bigend; }
     bool isAArch64() const { return aarch64_used; }
+    bool isThumbOnly() const { return thumbonly; }
     ParseParams parseParams() const;
 };
 
