@@ -92,6 +92,8 @@ struct CPUDescription {
                 break;
             case RegPrefix::v:
             case RegPrefix::q:
+            case RegPrefix::z:
+            case RegPrefix::p:
             case RegPrefix::vpr:
             case RegPrefix::pc:
                 // Not yet used by any CPUDescription::getFoo() function.

@@ -20,6 +20,6 @@
 
 #include <cstring>
 
-const char MagicNumber::reference_copy[16 + 1] = "TarmacIndexV0015";
+const char MagicNumber::reference_copy[16 + 1] = "TarmacIndexV0016";
 void MagicNumber::setup() { memcpy(magic, reference_copy, 16); }
 bool MagicNumber::check() { return memcmp(magic, reference_copy, 16) == 0; }

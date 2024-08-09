@@ -45,10 +45,12 @@
     X(x, 8, 8, 31)                                                             \
     Y(wsp, 4, 8, 1)                                                            \
     X(xsp, 8, 8, 1)                                                            \
-    Y(v, 16, 16, 32)                                                           \
-    X(q, 16, 16, 32)                                                           \
+    Y(v, 16, 256, 32) /* vN overlaps low 128 bits of SVE zN */                 \
+    Y(q, 16, 256, 32)                                                          \
     Y(d, 8, 0, 32) /* dN and sN overlap qN differently */                      \
     Y(s, 4, 0, 32) /*      between AArch64 and AArch32 */                      \
+    X(z, 256, 256, 32) /* SVE z register maximum length is 2048 bits */        \
+    X(p, 16, 16, 32)   /* SVE p registers are 1/8 the size of z registers */   \
     X(psr, 4, 4, 1)                                                            \
     X(fpscr, 4, 4, 1)                                                          \
     X(fpcr, 4, 4, 1)                                                           \

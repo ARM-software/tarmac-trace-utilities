@@ -796,7 +796,12 @@ class TarmacLineParserImpl {
                 }
                 size_t data_start_pos = contents.size();
                 while (contents.size() < hex_digits_expected) {
-                    if (tok.iseol() &&
+                    if (tok.iseol() && (reg.prefix == RegPrefix::z ||
+                                        reg.prefix == RegPrefix::p)) {
+                        // SVE vector or predicate registers are variable-
+                        // length, so we must accept a short write to them.
+                        break;
+                    } else if (tok.iseol() &&
                         contents.find_first_not_of('0', data_start_pos) ==
                             string::npos) {
                         // Special case: if the line ends with fewer

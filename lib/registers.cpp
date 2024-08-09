@@ -171,10 +171,16 @@ Addr reg_offset(const RegisterId &reg, unsigned iflags)
     const RegPrefixInfo &pfx = reg_prefixes[(size_t)reg.prefix];
     if (reg.prefix == RegPrefix::s || reg.prefix == RegPrefix::d) {
         const RegPrefixInfo &vpfx = reg_prefixes[(size_t)RegPrefix::q];
-        if (iflags & IFLAG_AARCH64)
+        if (iflags & IFLAG_AARCH64) {
+            // Each sN and dN overlaps the low end of the corresponding qN
             return vpfx.offset + reg.index * vpfx.disp;
-        else
-            return vpfx.offset + reg.index * pfx.size;
+        } else {
+            // Each qN is overlapped by two dN or four sN
+            unsigned regs_per_v = vpfx.size / pfx.size;
+            unsigned vindex = reg.index / regs_per_v;
+            unsigned subindex = reg.index % regs_per_v;
+            return vpfx.offset + vindex * vpfx.disp + subindex * pfx.size;
+        }
     } else {
         return reg_offset(reg);
     }
