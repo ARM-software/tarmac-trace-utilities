@@ -100,6 +100,12 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=27678000000 reg=z0 offset=0 bytes=40:1c:00:00:00:00:00:00:40:18:00:00:00:00:00:00:40:14:00:00:00:00:00:00:40:10:00:00:00:00:00:00:40:08:00:00:00:00:00:00:40:00:00:00:00:00:00:00:3f:f0:00:00:00:00:00:00:00:00:00:00:00:00:00:00
 --- Tarmac line: 27679000000 ps R P1 01010101_01010101
 * RegisterEvent time=27679000000 reg=p1 offset=0 bytes=01:01:01:01:01:01:01:01
+--- Tarmac line: 72415 clk MR16 400171e0 400f731b40000000 3ff87cc460000000
+* MemoryEvent time=72415 read=true known=true addr=400171e0 size=8 contents=3ff87cc460000000
+* MemoryEvent time=72415 read=true known=true addr=400171e8 size=8 contents=400f731b40000000
+--- Tarmac line: 72419 clk MW16 4001c440 4050d645c8ac92fc c04ce8c2677550b4
+* MemoryEvent time=72419 read=false known=true addr=4001c440 size=8 contents=c04ce8c2677550b4
+* MemoryEvent time=72419 read=false known=true addr=4001c448 size=8 contents=4050d645c8ac92fc
 --- Tarmac line: 97703 clk R Z3 40437ae4_3f9b5c75_403f687a_3fe1f6c0
 * RegisterEvent time=97703 reg=z3 offset=0 bytes=40:43:7a:e4:3f:9b:5c:75:40:3f:68:7a:3f:e1:f6:c0
 --- Tarmac line: 97711 clk R Z1 42a6fb1c_c28000a6_42a2af83_c2813814

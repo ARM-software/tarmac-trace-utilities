@@ -1067,24 +1067,49 @@ class TarmacLineParserImpl {
             tok.remove_chars("_");
             if (!tok.ishex())
                 parse_error(tok, _("expected memory contents in hex"));
-            uint64_t contents = tok.hexvalue();
 
-            if (expect_memory_order && !params.bigend) {
-                // If we're looking at a memory access we believe to be in
-                // memory order (i.e. byte at lowest address is written first),
-                // and we believe it's a trace of a little-endian system, then
-                // we have to byte-reverse our data so that it ends up in
-                // logical order.
-                uint64_t new_contents = 0;
-                for (unsigned i = 0; i < size; i++) {
-                    uint64_t byte = 0xFF & (contents >> (i*8));
-                    new_contents |= byte << ((size-i-1) * 8);
+            auto gen_event = [=](Addr addr, size_t size, uint64_t contents) {
+                if (expect_memory_order && !params.bigend) {
+                    // If we're looking at a memory access we believe to be in
+                    // memory order (i.e. byte at lowest address is written
+                    // first), and we believe it's a trace of a little-endian
+                    // system, then we have to byte-reverse our data so that it
+                    // ends up in logical order.
+                    uint64_t new_contents = 0;
+                    for (unsigned i = 0; i < size; i++) {
+                        uint64_t byte = 0xFF & (contents >> (i*8));
+                        new_contents |= byte << ((size-i-1) * 8);
+                    }
+                    contents = new_contents;
                 }
-                contents = new_contents;
+
+                MemoryEvent ev(time, read, size, addr, true, contents);
+                receiver->got_event(ev);
+            };
+
+            if (size <= 8) {
+                // This read is small enough to be one MemoryEvent.
+                gen_event(addr, size, tok.hexvalue());
+            } else if (size == 16) {
+                // This is an MW16 or MR16 event, seen in some AArch64 trace
+                // sources in response to LDP/STP instructions or vector loads
+                // and stores.
+                //
+                // We expect the memory contents to appear in two separate
+                // tokens (separated by a space). The word written first in
+                // memory is given second in the trace, as if the whole thing
+                // was a 128-bit little-endian integer.
+                Token tok2 = lex();
+                if (!tok2.ishex())
+                    parse_error(tok, _("expected second word of memory contents"));
+                gen_event(addr, 8, tok2.hexvalue());
+                gen_event(addr + 8, 8, tok.hexvalue());
+            } else {
+                parse_error(tok,
+                            format(_("unexpected memory access size: {} bytes"),
+                                   size));
             }
 
-            MemoryEvent ev(time, read, size, addr, true, contents);
-            receiver->got_event(ev);
         } else if (tok == "LD" || tok == "ST") {
             // Diagrammatic memory access event.
 

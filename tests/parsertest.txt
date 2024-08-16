@@ -90,6 +90,9 @@
 # ----------------------------------------------------------------------
 # Trace lines seen in other broadly Fast Models flavoured Tarmac
 
+72415 clk MR16 400171e0 400f731b40000000 3ff87cc460000000
+72419 clk MW16 4001c440 4050d645c8ac92fc c04ce8c2677550b4
+
 97703 clk R Z3 40437ae4_3f9b5c75_403f687a_3fe1f6c0
 97711 clk R Z1 42a6fb1c_c28000a6_42a2af83_c2813814
 26230 clk R P0 a682
