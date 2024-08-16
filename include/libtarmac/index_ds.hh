@@ -411,6 +411,13 @@ struct FileHeader {
 #define FLAG_COMPLETE 0x00000004U // index generation completed successfully
 #define FLAG_THUMB_ONLY 0x00000008U // trace assumes everything is Thumb
 
+// Four flag bits to indicate the maximum size of an SVE vector register. The
+// format is the same as the LEN field of SMCR_ELx: the length is measured in
+// units of 128 bits, and offset by 1 so that the value 0 represents 1*128 bits
+// instead of 0*128 bits. So 0xF corresponds to 2048 bits, the maximum.
+#define FLAG_SVELEN_MASK 0x000000F0U
+#define FLAG_SVELEN_UNIT 0x00000010U
+
 /* ----------------------------------------------------------------------
  * Payload and annotation formats for the top-level sequential order tree
  */

@@ -79,6 +79,7 @@ class IndexReader {
     std::shared_ptr<Arena> arena;
     mutable std::ifstream tarmac;
     bool bigend, thumbonly, aarch64_used;
+    unsigned max_sve_bits;
 
     std::string read_tarmac(OFF_T pos, OFF_T len) const;
 
@@ -111,6 +112,7 @@ class IndexReader {
     bool isBigEndian() const { return bigend; }
     bool isAArch64() const { return aarch64_used; }
     bool isThumbOnly() const { return thumbonly; }
+    unsigned maxSVEBits() const { return max_sve_bits; }
     ParseParams parseParams() const;
 };
 

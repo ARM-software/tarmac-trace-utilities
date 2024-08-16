@@ -610,6 +610,8 @@ int main(int argc, char **argv)
              << (IN.index.isAArch64() ? "AArch64" : "AArch32") << endl;
         cout << _("Thumb only: ")
              << (IN.index.isThumbOnly() ? "yes" : "no") << endl;
+        cout << _("Largest SVE vector register access: ")
+             << IN.index.maxSVEBits() << " bits" << endl;
         cout << _("Root of sequential order tree: ") << IN.index.seqroot
              << endl;
         cout << _("Root of by-PC tree: ") << IN.index.bypcroot << endl;

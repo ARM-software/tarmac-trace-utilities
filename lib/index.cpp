@@ -114,6 +114,7 @@ class Index : ParseReceiver {
     bool aarch64_used;
     ISet last_iset;
     unsigned curr_iflags;
+    size_t max_sve_bits;
 
     void delete_from_memtree(char type, Addr addr, size_t size);
 
@@ -317,6 +318,17 @@ void Index::got_event(RegisterEvent &ev)
         if (read_memtree_value('r', reg_offset(REG_sp(), curr_iflags),
                                reg_size(REG_sp()), &new_sp_value))
             update_sp(new_sp_value);
+    }
+
+    if (reg.prefix == RegPrefix::z) {
+        // 1 byte of SVE z-register contents = 8 bits
+        max_sve_bits = max(max_sve_bits, size * 8);
+    } else if (reg.prefix == RegPrefix::p) {
+        // 1 byte of SVE p-register contents contains 8 predicate bits, each
+        // corresponding to one byte of the z-register, i.e. 8 bits of vector.
+        //
+        // So 1 _byte_ of p-register per 64 _bits_ of z-register.
+        max_sve_bits = max(max_sve_bits, size * 64);
     }
 
     if (reg_update_overwrites_reg(offset, size, REG_lr(), curr_iflags))
@@ -996,6 +1008,7 @@ void Index::open_trace_file()
     seen_any_event = false;
     prev_lineno = lineno;
     curr_pc = KNOWN_INVALID_PC;
+    max_sve_bits = 128;
 
     ifs->seekg(0, ios::end);
     reporter->indexing_start(ifs->tellg());
@@ -1103,6 +1116,11 @@ void Index::finalise_index()
         flags |= FLAG_THUMB_ONLY;
     if (aarch64_used)
         flags |= FLAG_AARCH64_USED;
+
+    unsigned svelen_flag = ((max_sve_bits + 127) / 128 - 1) * FLAG_SVELEN_UNIT;
+    assert((svelen_flag & ~FLAG_SVELEN_MASK) == 0);
+    flags |= svelen_flag;
+
     flags |= FLAG_COMPLETE;
     hdr.flags = flags;
 
@@ -1168,6 +1186,8 @@ IndexReader::IndexReader(const TracePair &trace)
     bigend = (hdr.flags & FLAG_BIGEND);
     aarch64_used = (hdr.flags & FLAG_AARCH64_USED);
     thumbonly = (hdr.flags & FLAG_THUMB_ONLY);
+    max_sve_bits =
+        128 * (((hdr.flags & FLAG_SVELEN_MASK) / FLAG_SVELEN_UNIT) + 1);
     lineno_offset = hdr.lineno_offset;
 }
 
