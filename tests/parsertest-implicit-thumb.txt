@@ -11,3 +11,26 @@
 
 354ns IT 00000350 490d        LDR      r1,[pc,#52]  ; [0x388]
 
+# ----------------------------------------------------------------------
+# Trace lines as output by Cadence Incisive for a Cortex M0+
+# This trace format uses us-level timestamps as floating point numbers.
+# CORTEXM0PLUS TARMAC 00000001
+# hw_top.u_tarmac
+         10.356000us R CONTROL 00000000
+         10.356000us R PRIMASK 00000000
+         10.356000us R PSR f1000003
+         10.356000us E HRESETn 0
+         10.356000us E LOCKUP 0
+         10.356000us E HALTED 0
+         10.356000us E INT_READY 0
+         10.356000us E ATOMIC 1
+       1166.141000us E HRESETn 1
+       1166.177000us MR4_D 00000000 00204800
+       1166.177000us R MSP 00204800
+       1166.187000us MR4_D 00000004 0000010b
+       1166.196000us R PSR f1000000
+       1166.196000us E ATOMIC 0
+       1166.205000us MR2_I 0000010a b5100000
+       1166.214000us MR4_I 0000010c ffdaf7ff
+       1166.214000us IT 0000010a b510        PUSH     {r4,lr}
+

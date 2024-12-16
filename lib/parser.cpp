@@ -29,6 +29,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <cmath>
 #include <set>
 #include <sstream>
 #include <string>
@@ -69,6 +70,7 @@ static bool contains_only(const std::string &str, const char *permitted_chars)
 
 struct Token {
     static constexpr const char *decimal_digits = "0123456789";
+    static constexpr const char *float_chars = "0123456789.";
     static constexpr const char *hex_digits = "0123456789ABCDEFabcdef";
     static constexpr const char *regvalue_chars = "0123456789ABCDEFabcdef_-";
 
@@ -98,6 +100,14 @@ struct Token {
     {
         assert(isdecimal());
         return stoull(s, NULL, 10);
+    }
+    inline bool isfloat() const { return isword(float_chars); }
+    inline uint64_t decimalvaluefromfloat() const
+    {
+        assert(isfloat());
+        // Timestamp encountered as xxx.yyyyyyyyus - just multiply by 1e6
+        // to make them an integer.
+        return static_cast<uint64_t>(round(stold(s, NULL) * 1000000.f));
     }
     inline bool ishex() const { return isword(hex_digits); }
     inline bool isregvalue() const { return isword(regvalue_chars); }
@@ -365,18 +375,32 @@ class TarmacLineParserImpl {
                 if (tok.isword() && (known_timestamp_units.find(tok.s) !=
                                      known_timestamp_units.end()))
                     tok = lex();
+            } else if (tok.isfloat()) {
+                time = tok.decimalvaluefromfloat();
+                highlight(tok, HL_TIMESTAMP);
+                tok = lex();
+
+                if (tok.isword() && (known_timestamp_units.find(tok.s) !=
+                                     known_timestamp_units.end()))
+                    tok = lex();
             } else {
                 // Another possibility is that the timestamp and its unit
                 // are smushed together in a single token, with no
                 // intervening space.
                 if (tok.isword()) {
                     size_t end_of_digits =
-                        tok.s.find_first_not_of(Token::decimal_digits);
+                        tok.s.find_first_not_of(Token::float_chars);
                     if (end_of_digits > 0 && end_of_digits != string::npos &&
                         (known_timestamp_units.find(tok.s.substr(
                              end_of_digits)) != known_timestamp_units.end())) {
                         auto pair = tok.split(end_of_digits);
-                        time = pair.first.decimalvalue();
+                        if (pair.first.isdecimal()) {
+                            time = pair.first.decimalvalue();
+                        }
+                        else {
+                            // Float
+                            time = pair.first.decimalvaluefromfloat();
+                        }
                         highlight(pair.first, HL_TIMESTAMP);
                         tok = lex();
                     }
@@ -1296,5 +1320,5 @@ TarmacLineParser::~TarmacLineParser() { delete pImpl; }
 void TarmacLineParser::parse(const string &s) const { pImpl->parse(s); }
 
 set<string> TarmacLineParserImpl::known_timestamp_units = {
-    "clk", "ns", "cs", "cyc", "tic", "ps",
+    "clk", "ns", "cs", "cyc", "tic", "ps", "us",
 };
