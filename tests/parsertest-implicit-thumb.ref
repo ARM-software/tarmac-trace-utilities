@@ -1,2 +1,34 @@
 --- Tarmac line: 354ns IT 00000350 490d        LDR      r1,[pc,#52]  ; [0x388]
 * InstructionEvent time=354 effect=executed pc=350 iset=Thumb width=16 instruction=490d disassembly="LDR      r1,[pc,#52]  ; [0x388]"
+--- Tarmac line:          10.356000us R CONTROL 00000000
+--- Tarmac line:          10.356000us R PRIMASK 00000000
+--- Tarmac line:          10.356000us R PSR f1000003
+* RegisterEvent time=10356000 reg=psr offset=0 bytes=f1:00:00:03
+--- Tarmac line:          10.356000us E HRESETn 0
+* ExceptionEvent time=10356000
+--- Tarmac line:          10.356000us E LOCKUP 0
+* ExceptionEvent time=10356000
+--- Tarmac line:          10.356000us E HALTED 0
+* ExceptionEvent time=10356000
+--- Tarmac line:          10.356000us E INT_READY 0
+* ExceptionEvent time=10356000
+--- Tarmac line:          10.356000us E ATOMIC 1
+* ExceptionEvent time=10356000
+--- Tarmac line:        1166.141000us E HRESETn 1
+* ExceptionEvent time=1166141000
+--- Tarmac line:        1166.177000us MR4_D 00000000 00204800
+* MemoryEvent time=1166177000 read=true known=true addr=0 size=4 contents=204800
+--- Tarmac line:        1166.177000us R MSP 00204800
+* RegisterEvent time=1166177000 reg=r13 offset=0 bytes=00:20:48:00
+--- Tarmac line:        1166.187000us MR4_D 00000004 0000010b
+* MemoryEvent time=1166187000 read=true known=true addr=4 size=4 contents=10b
+--- Tarmac line:        1166.196000us R PSR f1000000
+* RegisterEvent time=1166196000 reg=psr offset=0 bytes=f1:00:00:00
+--- Tarmac line:        1166.196000us E ATOMIC 0
+* ExceptionEvent time=1166196000
+--- Tarmac line:        1166.205000us MR2_I 0000010a b5100000
+* MemoryEvent time=1166205000 read=true known=true addr=10a size=2 contents=b5100000
+--- Tarmac line:        1166.214000us MR4_I 0000010c ffdaf7ff
+* MemoryEvent time=1166214000 read=true known=true addr=10c size=4 contents=ffdaf7ff
+--- Tarmac line:        1166.214000us IT 0000010a b510        PUSH     {r4,lr}
+* InstructionEvent time=1166214000 effect=executed pc=10a iset=Thumb width=16 instruction=b510 disassembly="PUSH     {r4,lr}"
