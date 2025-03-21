@@ -50,7 +50,7 @@ void TarmacUtilityBase::add_options(Argparse &ap)
                       load_offset = stoull(s, nullptr, 0);
                   });
     }
-    if (index_on_disk) {
+    if (does_indexing() && index_on_disk) {
         ap.optnoval({"--only-index"}, _("generate index and do nothing else"),
                     [this]() {
                         indexing = Troolean::Yes;
@@ -80,27 +80,35 @@ void TarmacUtilityBase::add_options(Argparse &ap)
                 [this]() {
                     thumbonly = true;
                 });
-    ap.optval({"--debug"}, _("TYPE"), _("enable diagnostics of type TYPE "
-                "(use --debug=list for a list)"),
-                [this](const string &s) {
-                    if (s == "list") {
-                        cout << _("List of diagnostic types:") << "\n"
-                             << "--debug=call_heuristics: "
-                             << _("debug call and return analysis") << "\n";
-                    } else if (s == "call_heuristics") {
-                        idiags.debug_call_heuristics = true;
-                    } else {
-                        throw ArgparseError(
-                            format(_("unknown diagnostic type '{}'"), s));
-                    }
-                });
+    // Future extensions: if any debug types are added later which
+    // don't relate to indexing at all, then we should make
+    // --debug=TYPE unconditional and make the individual diagnostic
+    // options conditional on does_indexing().
+    if (does_indexing()) {
+        ap.optval({"--debug"}, _("TYPE"), _("enable diagnostics of type TYPE "
+                                            "(use --debug=list for a list)"),
+                  [this](const string &s) {
+                      if (s == "list") {
+                          cout << _("List of diagnostic types:") << "\n"
+                               << "--debug=call_heuristics: "
+                               << _("debug call and return analysis") << "\n";
+                      } else if (s == "call_heuristics") {
+                          idiags.debug_call_heuristics = true;
+                      } else {
+                          throw ArgparseError(
+                              format(_("unknown diagnostic type '{}'"), s));
+                      }
+                  });
+    }
     ap.optnoval({"-v", "--verbose"}, _("make tool more verbose"),
                 [this]() { verbose = true; });
     ap.optnoval({"-q", "--quiet"}, _("make tool quiet"),
                 [this]() { verbose = show_progress_meter = false; });
-    ap.optnoval({"--show-progress-meter"},
-                _("force display of the progress meter"),
-                [this]() { show_progress_meter = true; });
+    if (does_indexing()) {
+        ap.optnoval({"--show-progress-meter"},
+                    _("force display of the progress meter"),
+                    [this]() { show_progress_meter = true; });
+    }
 }
 
 void TarmacUtility::add_options(Argparse &ap)
@@ -246,4 +254,30 @@ std::shared_ptr<Image> TarmacUtilityBase::load_image()
     }
 
     return image;
+}
+
+TarmacUtilityNoIndex::TarmacUtilityNoIndex()
+{
+    index_on_disk = false;
+
+    // We assume that utilities that read a trace file without
+    // indexing it will be happy to read from standard input, so we
+    // set tarmac_filename by default to the special string "-" that
+    // indicates stdin.
+    tarmac_filename = "-";
+}
+
+void TarmacUtilityNoIndex::add_options(Argparse &ap)
+{
+    TarmacUtilityBase::add_options(ap);
+
+    ap.positional(_("TRACEFILE"), _("Tarmac trace file to read"),
+                  [this](const string &s) { tarmac_filename = s; },
+                  false);
+}
+
+void TarmacUtilityNoIndex::postProcessOptions()
+{
+    indexing = Troolean::No;
+    load_image();
 }

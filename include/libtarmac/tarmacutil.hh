@@ -92,6 +92,7 @@ class TarmacUtilityBase {
 
   private:
     // Subclass-dependent functionality.
+    virtual bool does_indexing() { return true; };
     virtual void postProcessOptions() = 0;
     virtual void setupIndex() const = 0;
 };
@@ -131,6 +132,22 @@ struct TarmacUtilityMT : public TarmacUtilityBase {
         for (const TracePair &trace : traces)
             updateIndexIfNeeded(trace);
     }
+};
+
+/*
+ * Class describing a variant form which doesn't build or use any kind
+ * of an index to the Tarmac file at all, because it's simple enough
+ * that it only needs to read and parse, and can keep any state it
+ * needs in an ad-hoc manner.
+ */
+struct TarmacUtilityNoIndex : public TarmacUtilityBase {
+    std::string tarmac_filename;
+
+    TarmacUtilityNoIndex();
+    virtual bool does_indexing() override { return false; };
+    virtual void add_options(Argparse &ap) override;
+    virtual void postProcessOptions() override;
+    virtual void setupIndex() const override {}
 };
 
 #endif // TARMAC_MAIN_COMMON_HH
