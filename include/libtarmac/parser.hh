@@ -126,6 +126,10 @@ struct TextOnlyEvent : TarmacEvent {
     {
     }
     ~TextOnlyEvent() {}
+
+    bool equal_apart_from_timestamp(const TextOnlyEvent &rhs) const {
+        return type == rhs.type && msg == rhs.msg;
+    }
 };
 
 struct TarmacParseError : std::exception {

@@ -1,0 +1,4 @@
+1000000 ps IT (1) 000200b4 e3a0007b A svc_s : MOV      r0,#0x7b
+1000000 ps R r0 0000007b
+2000000 ps IT (2) 000200b8 eafffffd A svc_s : B        {pc}-4 ; 0x200b4
+3000000 ps IT (3) 000200b4 e3a0007b A svc_s : MOV      r0,#0x7b

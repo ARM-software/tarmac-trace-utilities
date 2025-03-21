@@ -1,0 +1,37 @@
+1000000 ps IT (1) 000200b4 e3a00002 A svc_s : MOV      r0,#2
+1000000 ps R r0 00000002
+2000000 ps IT (2) 000200b8 e890000e A svc_s : LDM      r0,{r1-r3}
+2000000 ps MR4 00000002 (ABORTED)
+2000000 ps MR4 00000006 (ABORTED)
+2000000 ps MR4 0000000a (ABORTED)
+2000000 ps E 000200b8 abt 00000019 CoreEvent_ModeChange
+2000000 ps E 000200b8 00000005 CoreEvent_handleDataAbort
+2000000 ps R r14_abt 000200c0
+2000000 ps R cpsr 000001d7
+2000000 ps R spsr_abt 000001d3
+2000000 ps R DFSR_S 00000001
+2000000 ps R DFAR_S 00000002
+2000000 ps R SPSR_abt 000001d3
+3000000 ps IS (3) 00000010 dfdfdfcf A abt_s : SVCLE    #0xdfdfcf
+4000000 ps IT (4) 00000014 cfdfdfdf A abt_s : SVCGT    #0xdfdfdf
+4000000 ps E 00000014 svc 00000019 CoreEvent_ModeChange
+4000000 ps E 00000014 00dfdfdf00000003 CoreEvent_SWI
+4000000 ps R r14_svc 00000018
+4000000 ps R cpsr 000001d3
+4000000 ps R spsr_svc 000001d7
+4000000 ps R SPSR_svc 000001d7
+5000000 ps IS (5) 00000008 dfdfdfcf A svc_s : SVCLE    #0xdfdfcf
+6000000 ps IT (6) 0000000c cfdfdfdf A svc_s : SVCGT    #0xdfdfdf
+6000000 ps E 0000000c 00dfdfdf00000003 CoreEvent_SWI
+6000000 ps R r14_svc 00000010
+6000000 ps R cpsr 000001d3
+6000000 ps R spsr_svc 000001d3
+6000000 ps R SPSR_svc 000001d3
+7000000 ps IS (7) 00000008 dfdfdfcf A svc_s : SVCLE    #0xdfdfcf
+8000000 ps IT (8) 0000000c cfdfdfdf A svc_s : SVCGT    #0xdfdfdf
+8000000 ps E 0000000c 00dfdfdf00000003 CoreEvent_SWI
+8000000 ps R r14_svc 00000010
+8000000 ps R cpsr 000001d3
+8000000 ps R spsr_svc 000001d3
+8000000 ps R SPSR_svc 000001d3
+9000000 ps IS (9) 00000008 dfdfdfcf A svc_s : SVCLE    #0xdfdfcf

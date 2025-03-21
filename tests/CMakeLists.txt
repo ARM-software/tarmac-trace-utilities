@@ -177,6 +177,24 @@ add_test(NAME vcd-no-date
       ${CMAKE_BINARY_DIR}/tarmac-vcd --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac --no-date -o quicksort-nodate.vcd
   )
 
+# Tests of tarmac-truncate.
+add_test(NAME truncate-crash32
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/truncate/crash32.ref outfile:crash32.truncated
+      ${CMAKE_BINARY_DIR}/tarmac-truncate ${CMAKE_CURRENT_SOURCE_DIR}/truncate/crash32.tarmac -o crash32.truncated)
+add_test(NAME truncate-crash32m
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/truncate/crash32m.ref outfile:crash32m.truncated
+      ${CMAKE_BINARY_DIR}/tarmac-truncate ${CMAKE_CURRENT_SOURCE_DIR}/truncate/crash32m.tarmac -o crash32m.truncated)
+add_test(NAME truncate-crash64
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/truncate/crash64.ref outfile:crash64.truncated
+      ${CMAKE_BINARY_DIR}/tarmac-truncate ${CMAKE_CURRENT_SOURCE_DIR}/truncate/crash64.tarmac -o crash64.truncated)
+add_test(NAME truncate-loop
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/truncate/loop.ref outfile:loop.truncated
+      ${CMAKE_BINARY_DIR}/tarmac-truncate ${CMAKE_CURRENT_SOURCE_DIR}/truncate/loop.tarmac -o loop.truncated)
+
 # Test the missing piece: if tarmac-vcd is not given the --no-date
 # option, it should emit a $date line into the output.
 add_test(NAME vcd-date

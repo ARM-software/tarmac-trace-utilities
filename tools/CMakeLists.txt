@@ -31,6 +31,9 @@ standard_target_configuration(tarmac-flamegraph)
 add_executable(tarmac-profile profileinfo.cpp ${EXTRA_FILES})
 standard_target_configuration(tarmac-profile)
 
+add_executable(tarmac-truncate truncate.cpp ${EXTRA_FILES})
+standard_target_configuration(tarmac-truncate)
+
 add_executable(tarmac-vcd vcdwriter.cpp vcd.cpp ${EXTRA_FILES})
 standard_target_configuration(tarmac-vcd)
 

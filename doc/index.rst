@@ -569,6 +569,59 @@ containing variables corresponding to:
   currently being accessed, the data being transferred, and a one-bit
   indicator of the direction of transfer.
 
+tarmac-truncate
+---------------
+
+``tarmac-truncate`` reads a trace file and writes out a truncated
+version of it, stopping at the point where the trace appears to have
+become 'uninteresting': either in a tight loop of instructions, or a
+tight loop of CPU exception states.
+
+Programs running on embedded targets, or under emulation, can often go
+into states of this kind. Some embedded C libraries deliberately enter
+a tight loop if ``main()`` returns, because they have no operating
+system to exit to in the usual sense. A fault in a CPU exception
+handler, or failure to set one up in the first place, can cause a CPU
+exception to enter a loop of recursively invoking further CPU
+exceptions.
+
+If a trace shows a program getting into one of those stuck states, it
+might happen quite early in the trace, so that (for example) 10% of
+the trace is useful information and the remaining 90% is just
+repeating the same loop. In that situation, it's a waste of time and
+disk space to feed the _whole_ trace to any of the Tarmac Trace
+Utilities tools -- particularly the interactive browsers, if you
+wanted to debug what the traced program was doing and how it got
+stuck. So instead you might trim the trace using ``tarmac-truncate``,
+so that it shows the program running only up to the point where it
+_reached_ the stuck state.
+
+Better still, if you can arrange for the trace data to be written to a
+pipe rather than a file, then you can pipe it directly into
+``tarmac-truncate`` before writing it to disk, so that you only save
+the interesting part of the trace in the first place. Since
+``tarmac-truncate`` exits immediately once it stops reading the input
+file, this might also have the useful effect of automatically
+terminating the emulator generating the trace!
+
+The command-line syntax of ``tarmac-truncate`` looks like this:
+  ``tarmac-truncate`` [ *options* ] [ *trace-file-name* ]
+
+The trace file name is optional. If omitted, ``tarmac-truncate`` will
+read from standard input.
+
+This tool supports the ``--li``, ``--bi`` and ``--implicit-thumb``
+options in `Options to control interpretation of the trace`_, but not
+any of the other common options, because it has no need to interpret
+the trace with reference to an ELF image, and does not perform any
+indexing.
+
+This tool also recognizes the following additional options:
+
+``-o`` *filename* or ``--output=``\ *filename*
+  Tells the tool to write the truncated trace data to the specified
+  file. By default, it will write to standard output.
+
 Interactive browsing tools
 ==========================
 
