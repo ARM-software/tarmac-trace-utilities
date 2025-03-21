@@ -26,6 +26,8 @@
 #include <string>
 #include <vector>
 
+struct ParseParams;
+
 class TarmacUtilityBase {
   public:
     TarmacUtilityBase();
@@ -49,6 +51,8 @@ class TarmacUtilityBase {
 
     bool only_index() const { return onlyIndex; }
     bool is_verbose() const { return verbose; }
+
+    ParseParams get_parse_params() const;
 
     // Functions that clients can call before add_options(), to signal
     // which functionality is present and/or relevant in this tool, so

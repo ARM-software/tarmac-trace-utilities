@@ -197,15 +197,19 @@ void TarmacUtilityBase::updateIndexIfNeeded(const TracePair &trace) const
         reporter->indexing_status(trace, IndexUpdateCheck::Forced);
     }
 
-    if (doIndexing == Troolean::Yes) {
-        ParseParams pparams;
-        pparams.bigend = bigend;
-        if (thumbonly) {
-            pparams.iset_specified = true;
-            pparams.iset = THUMB;
-        }
-        run_indexer(trace, iparams, idiags, pparams);
+    if (doIndexing == Troolean::Yes)
+        run_indexer(trace, iparams, idiags, get_parse_params());
+}
+
+ParseParams TarmacUtilityBase::get_parse_params() const
+{
+    ParseParams pparams;
+    pparams.bigend = bigend;
+    if (thumbonly) {
+        pparams.iset_specified = true;
+        pparams.iset = THUMB;
     }
+    return pparams;
 }
 
 void TarmacUtilityBase::setup_noexit()
