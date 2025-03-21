@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Arm Limited. All rights reserved.
+ * Copyright 2016-2023,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,21 +135,7 @@ void TarmacUtility::postProcessOptions()
         trace.memory_index = make_shared<MemArena>();
     }
 
-    std::shared_ptr<Image> image =
-        image_filename.empty() ? nullptr
-                               : std::make_shared<Image>(image_filename);
-
-    if (image) {
-        bool is_big_endian = image->is_big_endian();
-        if (bigend_explicit) {
-            if (bigend != is_big_endian) {
-                reporter->warnx(_("Endianness mismatch between image and "
-                                  "provided endianness"));
-            }
-        } else {
-            bigend = is_big_endian;
-        }
-    }
+    load_image();
 }
 
 void TarmacUtilityMT::add_options(Argparse &ap)
@@ -235,4 +221,25 @@ void TarmacUtilityBase::setup()
 
     if (onlyIndex)
         exit(0);
+}
+
+std::shared_ptr<Image> TarmacUtilityBase::load_image()
+{
+    std::shared_ptr<Image> image =
+        image_filename.empty() ? nullptr
+                               : std::make_shared<Image>(image_filename);
+
+    if (image) {
+        bool is_big_endian = image->is_big_endian();
+        if (bigend_explicit) {
+            if (bigend != is_big_endian) {
+                reporter->warnx(_("Endianness mismatch between image and "
+                                  "provided endianness"));
+            }
+        } else {
+            bigend = is_big_endian;
+        }
+    }
+
+    return image;
 }

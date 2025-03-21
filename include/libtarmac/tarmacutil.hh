@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,6 +79,12 @@ class TarmacUtilityBase {
     IndexerDiagnostics idiags;
 
     void updateIndexIfNeeded(const TracePair &trace) const;
+
+    // Try to load the specified ELF image, if any. This has the side
+    // effect of checking its endiannness, and using that to either
+    // set the trace endianness, or complain if an explicitly
+    // specified trace endianness doesn't match it.
+    std::shared_ptr<Image> load_image();
 
   private:
     // Subclass-dependent functionality.
