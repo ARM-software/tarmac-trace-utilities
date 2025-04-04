@@ -1,4 +1,3 @@
-transfer of control @ 164, sp=ffffffffffffffff, pc=210120
 transfer of control @ 172, sp=100000, pc=210174
   inserting as pending call with sp=100000 lr=210130
 transfer of control @ 179, sp=100000, pc=210130

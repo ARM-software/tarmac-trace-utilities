@@ -143,7 +143,8 @@ class Index : ParseReceiver {
     Index(const TracePair &trace, const IndexerParams &iparams,
           const IndexerDiagnostics &idiags, const ParseParams &pparams)
         : trace(trace), iparams(iparams), idiags(idiags), pparams(pparams),
-          expected_next_pc(KNOWN_INVALID_PC), arena(nullptr), memtree(nullptr),
+          expected_next_pc(KNOWN_INVALID_PC),
+          expected_next_lr(KNOWN_INVALID_PC), arena(nullptr), memtree(nullptr),
           memsubtree(nullptr), seqtree(nullptr), aarch64_used(false),
           last_iset(ARM), parser(pparams, *this)
     {
@@ -216,7 +217,8 @@ void Index::update_pc(unsigned long long pc, unsigned long long next_pc,
     if (iset == A64)
         aarch64_used = true;
 
-    if (iparams.record_calls && ((pc ^ expected_next_pc) & ~1ULL) != 0) {
+    if (iparams.record_calls && expected_next_pc != KNOWN_INVALID_PC &&
+        ((pc ^ expected_next_pc) & ~1ULL) != 0) {
         // The last instruction transferred control to somewhere other
         // than the obvious next memory location. See if the obvious
         // next location - or something near it - was also left in lr.
@@ -255,7 +257,8 @@ void Index::update_pc(unsigned long long pc, unsigned long long next_pc,
             found_callrets.insert(CallReturn(it->call_line, +1));
             found_callrets.insert(CallReturn(prev_lineno, -1));
             pending_calls.erase(it);
-        } else if (read_memtree_reg(REG_lr(), &lr) &&
+        } else if (expected_next_lr != KNOWN_INVALID_PC &&
+                   read_memtree_reg(REG_lr(), &lr) &&
                    insns_since_lr_update < BRANCH_LR_WRITE_THRESHOLD &&
                    absdiff(lr, expected_next_lr) < 64) {
 
