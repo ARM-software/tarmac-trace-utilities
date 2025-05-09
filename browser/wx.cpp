@@ -2265,7 +2265,10 @@ void TraceWindow::clipboard_get_paste_data(ostream &os, LogicalPos start,
             pos.y1 = 0;
         }
 
-        string &s = node_lines[pos.y1];
+        HighlightedLine hl(node_lines[pos.y1], br.index.parseParams());
+        if (br.has_image() && substitute_branch_targets)
+            hl.replace_instruction(br);
+        string &s = hl.text;
 
         if (pos.y0 == end.y0 && pos.y1 == end.y1) {
             s = s.substr(0, min((size_t)end.char_index + 1, s.size()));
