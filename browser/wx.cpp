@@ -1061,11 +1061,9 @@ TextViewWindow::TextViewWindow(GuiTarmacBrowserApp *app, unsigned defcols,
 
     drawing_area->Bind(wxEVT_KEY_DOWN, &TextViewWindow::key_event, this);
 
-    auto *sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->Add(drawing_area, wxSizerFlags().Expand());
-    SetSizerAndFit(sizer);
-
     drawing_area->SetFocus();
+
+    Fit();
 }
 
 void TextViewWindow::close_menuaction(wxCommandEvent &event) { Close(true); }
@@ -2813,7 +2811,7 @@ void RegisterWindow::provenance_query(RegisterId r)
 
 void RegisterWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
 {
-    for (unsigned line = line_start; line < line_limit; line++) {
+    for (unsigned line = line_start; line < line_limit && line < rows; line++) {
         for (unsigned col = 0; line + col * rows < regs.size(); col++) {
             unsigned regindex = line + col * rows;
             const RegisterId &r = regs[regindex];
