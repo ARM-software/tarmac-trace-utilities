@@ -193,6 +193,15 @@ Tarmac Text Rev 3t
 
 # ----------------------------------------------------------------------
 
+# Trace lines seen in the output of a different Cortex-M4 RTL
+# simulator, showing the use of 'x' and 'X' in place of the more usual
+# '_' for an indeterminate part of the register value.
+
+         10 ns R psr xx0xxXxx
+         10 ns R fpscr xXX000Xx
+
+# ----------------------------------------------------------------------
+
 # Trace lines seen in the output of the Tarmac RTL module from
 # Cortex-M0-AT510-r0p0-00rel0 (RTL development kit). These don't have
 # a space between the timestamp and the unit ("271ns", not "271 ns").

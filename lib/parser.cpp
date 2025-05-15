@@ -72,7 +72,7 @@ struct Token {
     static constexpr const char *decimal_digits = "0123456789";
     static constexpr const char *float_chars = "0123456789.";
     static constexpr const char *hex_digits = "0123456789ABCDEFabcdef";
-    static constexpr const char *regvalue_chars = "0123456789ABCDEFabcdef_-";
+    static constexpr const char *regvalue_chars = "0123456789ABCDEFabcdef_-xX";
 
     size_t startpos, endpos;
     char c;   // '\0' if this is a word/EOL, otherwise a single punct character
@@ -718,7 +718,7 @@ class TarmacLineParserImpl {
             string contents;
             auto consume_register_contents = [&contents](Token &tok) {
                 copy_if(begin(tok.s), end(tok.s), back_inserter(contents),
-                        [](char c) { return c != '_'; });
+                        [](char c) { return c != '_' && c != 'x' && c != 'X'; });
             };
 
             // In most cases, lookup_reg_name will tell us how wide we

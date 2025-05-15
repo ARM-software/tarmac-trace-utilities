@@ -239,6 +239,10 @@ Parse warning: unsupported system operation 'AT'
 * MemoryEvent time=3039 read=false known=true addr=2002fa00 size=4 contents=beefbeef
 --- Tarmac line:       3037 cyc MNR4O__I 00022ae4 f7ffffcb
 * TextOnlyEvent time=3037 type="MNR4O__I" text="MNR4O__I 00022ae4 f7ffffcb"
+--- Tarmac line:          10 ns R psr xx0xxXxx
+* RegisterEvent time=10 reg=psr offset=0 bytes=00:00:00:00
+--- Tarmac line:          10 ns R fpscr xXX000Xx
+* RegisterEvent time=10 reg=fpscr offset=0 bytes=00:00:00:00
 --- Tarmac line: 271ns R r13 20001fff (MSP)
 * RegisterEvent time=271 reg=r13 offset=0 bytes=20:00:1f:ff
 --- Tarmac line:      307754 tic ES  (0000aaaaabaf59f0:--------) O el0t_ns:
