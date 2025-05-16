@@ -62,7 +62,7 @@ class Reader : ParseReceiver {
     TarmacLineParser parser;
 
     size_t pc_loop_limit = 16;
-    size_t text_event_loop_limit = 16;
+    size_t text_event_loop_limit = 32;
 
     vector<uint8_t> register_space;
 
@@ -133,13 +133,19 @@ class Reader : ParseReceiver {
         // the hare moving 2 spaces per iteration and the tortoise 1,
         // and at each step we compare the intervals [start,tortoise)
         // and [tortoise,hare).
+        //
+        // To avoid some known false positive cases from real Tarmac
+        // producers in which a small number of lines are repeated
+        // twice and then sensible output resumes, we insist on the
+        // total amount of repeated text being at least a certain size.
         auto tortoise = previous_text_events.rbegin(),
              hare = previous_text_events.rbegin();
-
+        size_t repeated_len = 0;
         while (hare != previous_text_events.rend() &&
                ++hare != previous_text_events.rend() &&
                ++hare != previous_text_events.rend()) {
             ++tortoise;
+            repeated_len += 2;
             auto p = previous_text_events.rbegin(), q = tortoise;
             while (q != hare) {
                 if (!p->equal_apart_from_timestamp(*q))
@@ -147,8 +153,10 @@ class Reader : ParseReceiver {
                 ++p;
                 ++q;
             }
-            still_reading = false;
-            return;
+            if (repeated_len >= text_event_loop_limit/2) {
+                still_reading = false;
+                return;
+            }
         no_match:;
         }
     }

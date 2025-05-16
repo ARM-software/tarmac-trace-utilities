@@ -194,6 +194,13 @@ add_test(NAME truncate-loop
   COMMAND ${test_driver_cmd}
       --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/truncate/loop.ref outfile:loop.truncated
       ${CMAKE_BINARY_DIR}/tarmac-truncate ${CMAKE_CURRENT_SOURCE_DIR}/truncate/loop.tarmac -o loop.truncated)
+# Test of a file that _shouldn't_ be truncated. We don't need a
+# separate .ref file for this, because the input file should be the
+# same as the output file.
+add_test(NAME truncate-nontruncate
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/truncate/nontruncate.tarmac outfile:nontruncate.truncated
+      ${CMAKE_BINARY_DIR}/tarmac-truncate ${CMAKE_CURRENT_SOURCE_DIR}/truncate/nontruncate.tarmac -o nontruncate.truncated)
 
 # Test the missing piece: if tarmac-vcd is not given the --no-date
 # option, it should emit a $date line into the output.
