@@ -69,8 +69,6 @@ class Reader : ParseReceiver {
     deque<Addr> previous_pcs;
     deque<TextOnlyEvent> previous_text_events;
 
-    Addr last_pc = KNOWN_INVALID_PC;
-    bool reg_change_since_last_insn = false;
     bool still_reading = true;
     unsigned iflags;
 
