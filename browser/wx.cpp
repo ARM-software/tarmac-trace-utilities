@@ -2122,6 +2122,7 @@ void TraceWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
                     fnrange.set_to_callee(node)) {
                     ctrl.callback = [this, fnrange]() {
                         unfold_ui_action(fnrange, false);
+                        update_location(UpdateLocationType::NewLog);
                     };
                     controls.push_back(std::move(ctrl));
                 }
