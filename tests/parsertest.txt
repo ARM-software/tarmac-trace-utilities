@@ -180,6 +180,10 @@ Tarmac Text Rev 3t
 123 ns R Q0 -------- -------- 3ff6a09e 667f3bcd
 124 ns R Q0 3ff428a2 f98d728b -------- --------
 
+# Trace lines seen in the output of a Cortex-M3 RTL simulator
+
+     109570 ns MSW4___D 201fffec xxxxxxxx
+
 # ----------------------------------------------------------------------
 
 # Trace lines seen in the output of a Cortex-M4 RTL simulator. Note

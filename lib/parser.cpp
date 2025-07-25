@@ -1088,11 +1088,20 @@ class TarmacLineParserImpl {
             // by underscores if it's more than 8 bytes long. We want
             // to retrieve it as a single integer, so we just strip
             // those out.
+            //
+            // Also, it may be full of 'x', indicating unknown data.
             tok.remove_chars("_");
-            if (!tok.ishex())
+            if (!tok.isword() && !tok.isword("xX"))
                 parse_error(tok, _("expected memory contents in hex"));
 
-            auto gen_event = [=](Addr addr, size_t size, uint64_t contents) {
+            auto gen_event = [=](Addr addr, size_t size, const Token &tok) {
+                bool known = false;
+                uint64_t contents = 0;
+                if (tok.ishex()) {
+                    contents = tok.hexvalue();
+                    known = true;
+                }
+
                 if (expect_memory_order && !params.bigend) {
                     // If we're looking at a memory access we believe to be in
                     // memory order (i.e. byte at lowest address is written
@@ -1107,13 +1116,13 @@ class TarmacLineParserImpl {
                     contents = new_contents;
                 }
 
-                MemoryEvent ev(time, read, size, addr, true, contents);
+                MemoryEvent ev(time, read, size, addr, known, contents);
                 receiver->got_event(ev);
             };
 
             if (size <= 8) {
                 // This read is small enough to be one MemoryEvent.
-                gen_event(addr, size, tok.hexvalue());
+                gen_event(addr, size, tok);
             } else if (size == 16) {
                 // This is an MW16 or MR16 event, seen in some AArch64 trace
                 // sources in response to LDP/STP instructions or vector loads
@@ -1126,8 +1135,8 @@ class TarmacLineParserImpl {
                 Token tok2 = lex();
                 if (!tok2.ishex())
                     parse_error(tok, _("expected second word of memory contents"));
-                gen_event(addr, 8, tok2.hexvalue());
-                gen_event(addr + 8, 8, tok.hexvalue());
+                gen_event(addr, 8, tok2);
+                gen_event(addr + 8, 8, tok);
             } else {
                 parse_error(tok,
                             format(_("unexpected memory access size: {} bytes"),

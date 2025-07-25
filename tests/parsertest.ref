@@ -233,6 +233,8 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=123 reg=q0 offset=0 bytes=3f:f6:a0:9e:66:7f:3b:cd
 --- Tarmac line: 124 ns R Q0 3ff428a2 f98d728b -------- --------
 * RegisterEvent time=124 reg=q0 offset=8 bytes=3f:f4:28:a2:f9:8d:72:8b
+--- Tarmac line:      109570 ns MSW4___D 201fffec xxxxxxxx
+* MemoryEvent time=109570 read=false known=false addr=201fffec size=4 contents=0
 --- Tarmac line:       3041 cyc IT (00022a7c:00000006) 00022a7c     48f6 T16 LDR      r0,[pc,#984]  ; [0x22e58]
 * InstructionEvent time=3041 effect=executed pc=22a7c iset=Thumb width=16 instruction=48f6 disassembly="LDR      r0,[pc,#984]  ; [0x22e58]"
 --- Tarmac line:       3039 cyc MNW4___D 2002fa00 efbeefbe
