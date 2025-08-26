@@ -39,7 +39,8 @@ int main(int argc, char *argv[])
     enum Action {
         DEBUG_DUMP,
         FIND_SYMBOL_BY_ADDR,
-        FIND_SYMBOL_BY_NAME
+        FIND_SYMBOL_BY_NAME,
+        LIST_SEGMENTS,
     } action = DEBUG_DUMP;
     Addr symbol_addr;
     string symbol_name;
@@ -60,6 +61,8 @@ int main(int argc, char *argv[])
                   action = FIND_SYMBOL_BY_NAME;
                   symbol_name = arg;
               });
+    ap.optnoval({"--list-segments"}, "list memory segments from the image file",
+                [&]() { action = LIST_SEGMENTS; });
     ap.positional("image", "ELF image file to examine",
                   [&](const std::string &arg) { image_filename = arg; });
     ap.parse();
@@ -92,5 +95,14 @@ int main(int argc, char *argv[])
             cout << "No symbol found with name '" << symbol_name << "'\n";
             return EXIT_FAILURE;
         }
+    case LIST_SEGMENTS:
+        for (const Segment &seg : image.get_segments()) {
+            cout << "Segment at 0x" << std::hex << seg.addr;
+            cout << " size:" << std::dec << seg.size;
+            cout << " R:" << seg.readable;
+            cout << " W:" << seg.writable;
+            cout << " X:" << seg.executable << "\n";
+        }
+        return EXIT_SUCCESS;
     }
 }

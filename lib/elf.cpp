@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,6 +160,28 @@ class ElfCommon : public ElfCommonBase {
         return true;
     }
 
+    bool read_program_header(uint64_t offset, ElfProgramHeader &phdr) const
+    {
+        uint8_t data[8 + 6 * AddrSize];
+        if (!read(offset, sizeof(data), data))
+            return false;
+
+        const uint8_t *p = data;
+        phdr.p_type = ByteOrder::get(&p, 4);
+        if (AddrSize == 8)
+            phdr.p_flags = ByteOrder::get(&p, 4);
+        phdr.p_offset = ByteOrder::get(&p, AddrSize);
+        phdr.p_vaddr = ByteOrder::get(&p, AddrSize);
+        phdr.p_paddr = ByteOrder::get(&p, AddrSize);
+        phdr.p_filesz = ByteOrder::get(&p, AddrSize);
+        phdr.p_memsz = ByteOrder::get(&p, AddrSize);
+        if (AddrSize == 4)
+            phdr.p_flags = ByteOrder::get(&p, 4);
+        phdr.p_align = ByteOrder::get(&p, AddrSize);
+        assert(p == data + sizeof(data));
+        return true;
+    }
+
     // Symtab entry format is so different that it has to be devolved
     // to the 32/64 bit specific subclasses
     virtual bool read_symbol(uint64_t offset, ElfSymbol &sym) const = 0;
@@ -181,6 +203,15 @@ class ElfCommon : public ElfCommonBase {
         if (index >= hdr.e_shnum)
             return false;
         return read_section_header(hdr.e_shoff + hdr.e_shentsize * index, out);
+    }
+
+    unsigned nsegments() const override { return hdr.e_phnum; }
+
+    bool program_header(unsigned index, ElfProgramHeader &out) const override
+    {
+        if (index >= hdr.e_phnum)
+            return false;
+        return read_program_header(hdr.e_phoff + index * hdr.e_phentsize, out);
     }
 
     bool symbol(const ElfSectionHeader &shdr, unsigned symbolindex,

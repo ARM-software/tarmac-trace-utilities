@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,24 @@ struct Symbol {
     friend class Image;
 };
 
+struct Segment {
+    Addr addr;
+    size_t size;
+    bool executable;
+    bool writable;
+    bool readable;
+
+    // Get a friendly kind name for the segment kind.
+    const char *getKindName() const;
+
+    Segment(Addr addr, size_t size, bool readable, bool writable,
+            bool executable)
+        : addr(addr), size(size), writable(writable), executable(executable),
+          readable(readable)
+    {
+    }
+};
+
 class Image {
     std::unique_ptr<ElfFile> elf_file;
     const std::string image_filename;
@@ -63,6 +81,7 @@ class Image {
     std::forward_list<Symbol> symbols;
     std::map<Addr, std::vector<const Symbol *>> addrtab;
     std::map<std::string, std::vector<const Symbol *>> symtab;
+    mutable std::vector<Segment> segments;
 
     void add_symbol(const Symbol &sym);
     void load_headers();
@@ -94,6 +113,8 @@ class Image {
                 res.insert(res.end(), it.second.begin(), it.second.end());
         return res;
     }
+
+    const std::vector<Segment> &get_segments() const;
 
     Image(const std::string &image_filename);
     ~Image();
