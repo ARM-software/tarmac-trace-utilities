@@ -110,12 +110,9 @@ struct ByteOrder {
 
 template <class ByteOrder, unsigned AddrSize>
 class ElfCommon : public ElfCommonBase {
-    bool got_hdr = false;
     ElfHeader hdr;
 
-  private:
     using ElfCommonBase::ElfCommonBase;
-    bool is_big_endian() const override { return ByteOrder::is_big_endian; }
 
     bool read_header()
     {
@@ -166,7 +163,6 @@ class ElfCommon : public ElfCommonBase {
     // Symtab entry format is so different that it has to be devolved
     // to the 32/64 bit specific subclasses
     virtual bool read_symbol(uint64_t offset, ElfSymbol &sym) const = 0;
-    ;
 
     bool setup() override
     {
@@ -174,6 +170,9 @@ class ElfCommon : public ElfCommonBase {
             return false;
         return true;
     }
+
+  public:
+    bool is_big_endian() const override { return ByteOrder::is_big_endian; }
 
     unsigned nsections() const override { return hdr.e_shnum; }
 
