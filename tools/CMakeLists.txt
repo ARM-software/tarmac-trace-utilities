@@ -1,4 +1,4 @@
-# Copyright 2016-2021,2023,2024 Arm Limited. All rights reserved.
+# Copyright 2016-2021,2023-2025 Arm Limited. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,3 +65,6 @@ standard_target_configuration(avltest)
 
 add_executable(formattest formattest.cpp)
 standard_target_configuration(formattest)
+
+add_executable(imagetest imagetest.cpp)
+standard_target_configuration(imagetest)

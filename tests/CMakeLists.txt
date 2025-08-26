@@ -1,4 +1,4 @@
-# Copyright 2016-2021,2023,2024 Arm Limited. All rights reserved.
+# Copyright 2016-2021,2023-2025 Arm Limited. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -80,6 +80,23 @@ add_test(NAME indextest-bi
       --tempfile indextest.tarmac.index
       --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/indextest-bi.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-indextool --index indextest.tarmac.index --omit-index-offsets --seq-with-mem ${CMAKE_CURRENT_SOURCE_DIR}/indextest.tarmac --bi
+  )
+
+# Tests of the Image class.
+add_test(NAME imagetest-find-symbol-by-name
+  COMMAND ${test_driver_cmd}
+      --match stdout "Symbol 'quicksort' found at address 0x8038 \\(144 bytes\\)"
+      ${CMAKE_BINARY_DIR}/imagetest --symbol-name quicksort ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf
+  )
+add_test(NAME imagetest-find-symbol-by-exact-address
+  COMMAND ${test_driver_cmd}
+      --match stdout "Symbol at address 0x8038: 'quicksort \\[0x8038, 0x80c8\\) \\(144 bytes\\)"
+      ${CMAKE_BINARY_DIR}/imagetest --symbol-addr 0x8038 ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf
+  )
+add_test(NAME imagetest-find-symbol-by-address
+  COMMAND ${test_driver_cmd}
+      --match stdout "Symbol at address 0x803c: 'quicksort \\[0x8038, 0x80c8\\) \\(144 bytes\\)"
+      ${CMAKE_BINARY_DIR}/imagetest --symbol-addr 0x803C ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf
   )
 
 # Tests of tarmac-callinfo, using the sample trace file
