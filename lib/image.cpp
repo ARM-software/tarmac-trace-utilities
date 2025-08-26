@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,6 +213,25 @@ const Symbol *Image::find_symbol(const string &name, int index) const
         } catch (std::out_of_range e) {
         }
     return nullptr;
+}
+
+const vector<Segment> &Image::get_segments() const
+{
+    // Lazy initialization of segments.
+    if (segments.empty()) {
+        // Find .shstrtab.
+        for (unsigned idx = 0; idx < elf_file->nsegments(); idx++) {
+            ElfProgramHeader phdr;
+            if (!elf_file->program_header(idx, phdr))
+                continue;
+
+            Segment seg(phdr.p_vaddr, phdr.p_memsz, phdr.p_flags & PF_R,
+                        phdr.p_flags & PF_W, phdr.p_flags & PF_X);
+            segments.push_back(seg);
+        }
+    }
+
+    return segments;
 }
 
 Image::Image(const string &image_filename) : image_filename(image_filename)

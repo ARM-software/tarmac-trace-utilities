@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,10 @@ static constexpr unsigned STT_NOTYPE = 0;
 static constexpr unsigned STT_OBJECT = 1;
 static constexpr unsigned STT_FUNC = 2;
 
+static constexpr unsigned PF_X = 1;
+static constexpr unsigned PF_W = 2;
+static constexpr unsigned PF_R = 4;
+
 /*
  * These structures don't reflect the precise ELF layout; that's dealt
  * with at load time (including normalising out endianness). As a
@@ -59,6 +63,12 @@ struct ElfSectionHeader {
     uint64_t entries() const;
 };
 
+struct ElfProgramHeader {
+    uint32_t p_type, p_flags;
+    uint64_t p_offset, p_vaddr, p_paddr;
+    uint64_t p_filesz, p_memsz, p_align;
+};
+
 struct ElfSymbol {
     uint32_t st_name;
     uint8_t st_bind, st_type; // physically, both stored in st_info
@@ -73,6 +83,8 @@ class ElfFile {
     virtual bool is_big_endian() const = 0;
     virtual unsigned nsections() const = 0;
     virtual bool section_header(unsigned index, ElfSectionHeader &) const = 0;
+    virtual unsigned nsegments() const = 0;
+    virtual bool program_header(unsigned index, ElfProgramHeader &) const = 0;
     virtual bool symbol(const ElfSectionHeader &shdr, unsigned symbolindex,
                         ElfSymbol &) const = 0;
     virtual std::string strtab_string(const ElfSectionHeader &shdr,
