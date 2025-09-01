@@ -215,20 +215,18 @@ const Symbol *Image::find_symbol(const string &name, int index) const
     return nullptr;
 }
 
-const vector<Segment> &Image::get_segments() const
+std::vector<Segment> Image::get_segments(bool use_paddr) const
 {
-    // Lazy initialization of segments.
-    if (segments.empty()) {
-        // Find .shstrtab.
-        for (unsigned idx = 0; idx < elf_file->nsegments(); idx++) {
-            ElfProgramHeader phdr;
-            if (!elf_file->program_header(idx, phdr))
-                continue;
+    std::vector<Segment> segments;
+    for (unsigned idx = 0; idx < elf_file->nsegments(); idx++) {
+        ElfProgramHeader phdr;
+        if (!elf_file->program_header(idx, phdr))
+            continue;
 
-            Segment seg(phdr.p_vaddr, phdr.p_memsz, phdr.p_flags & PF_R,
-                        phdr.p_flags & PF_W, phdr.p_flags & PF_X);
-            segments.push_back(seg);
-        }
+        Segment seg(use_paddr ? phdr.p_paddr : phdr.p_vaddr, phdr.p_memsz,
+                    phdr.p_flags & PF_R, phdr.p_flags & PF_W,
+                    phdr.p_flags & PF_X);
+        segments.push_back(seg);
     }
 
     return segments;

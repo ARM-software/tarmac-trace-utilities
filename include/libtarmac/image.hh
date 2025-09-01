@@ -81,7 +81,6 @@ class Image {
     std::forward_list<Symbol> symbols;
     std::map<Addr, std::vector<const Symbol *>> addrtab;
     std::map<std::string, std::vector<const Symbol *>> symtab;
-    mutable std::vector<Segment> segments;
 
     void add_symbol(const Symbol &sym);
     void load_headers();
@@ -114,7 +113,7 @@ class Image {
         return res;
     }
 
-    const std::vector<Segment> &get_segments() const;
+    std::vector<Segment> get_segments(bool use_paddr = false) const;
 
     Image(const std::string &image_filename);
     ~Image();
