@@ -84,17 +84,16 @@ class TarmacUtilityBase {
 
     void updateIndexIfNeeded(const TracePair &trace) const;
 
-    // Try to load the specified ELF image, if any. This has the side
-    // effect of checking its endiannness, and using that to either
-    // set the trace endianness, or complain if an explicitly
-    // specified trace endianness doesn't match it.
-    std::shared_ptr<Image> load_image();
-
   private:
     // Subclass-dependent functionality.
     virtual bool does_indexing() { return true; };
     virtual void postProcessOptions() = 0;
     virtual void setupIndex() const = 0;
+
+    // Load the specified ELF image, if any, and check its endianness, then use
+    // that to either set the trace endianness, or complain if an explicitly
+    // specified trace endianness doesn't match it.
+    void load_image();
 };
 
 /*
