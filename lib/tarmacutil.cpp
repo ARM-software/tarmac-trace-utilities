@@ -29,7 +29,9 @@
 
 using std::cout;
 using std::make_shared;
+using std::make_unique;
 using std::string;
+using std::unique_ptr;
 
 TarmacUtilityBase::TarmacUtilityBase()
     : verbose(is_interactive()), show_progress_meter(verbose) {
@@ -142,8 +144,6 @@ void TarmacUtility::postProcessOptions()
         indexing = Troolean::Yes;
         trace.memory_index = make_shared<MemArena>();
     }
-
-    load_image();
 }
 
 void TarmacUtilityMT::add_options(Argparse &ap)
@@ -222,7 +222,10 @@ ParseParams TarmacUtilityBase::get_parse_params() const
 
 void TarmacUtilityBase::setup_noexit()
 {
+    load_image();
+
     postProcessOptions();
+
     if (indexing != Troolean::No)
         setupIndex();
 }
@@ -235,25 +238,22 @@ void TarmacUtilityBase::setup()
         exit(0);
 }
 
-std::shared_ptr<Image> TarmacUtilityBase::load_image()
+void TarmacUtilityBase::load_image()
 {
-    std::shared_ptr<Image> image =
-        image_filename.empty() ? nullptr
-                               : std::make_shared<Image>(image_filename);
+    unique_ptr<Image> image;
+    if (!image_filename.empty())
+        image = make_unique<Image>(image_filename);
 
     if (image) {
-        bool is_big_endian = image->is_big_endian();
         if (bigend_explicit) {
-            if (bigend != is_big_endian) {
+            if (bigend != image->is_big_endian()) {
                 reporter->warnx(_("Endianness mismatch between image and "
                                   "provided endianness"));
             }
         } else {
-            bigend = is_big_endian;
+            bigend = image->is_big_endian();
         }
     }
-
-    return image;
 }
 
 TarmacUtilityNoIndex::TarmacUtilityNoIndex()
@@ -279,5 +279,4 @@ void TarmacUtilityNoIndex::add_options(Argparse &ap)
 void TarmacUtilityNoIndex::postProcessOptions()
 {
     indexing = Troolean::No;
-    load_image();
 }
