@@ -58,7 +58,8 @@ struct Symbol {
 
 struct Segment {
     Addr addr;
-    size_t size;
+    size_t memsize;
+    size_t filesize;
     bool executable;
     bool writable;
     bool readable;
@@ -66,10 +67,10 @@ struct Segment {
     // Get a friendly kind name for the segment kind.
     const char *getKindName() const;
 
-    Segment(Addr addr, size_t size, bool readable, bool writable,
-            bool executable)
-        : addr(addr), size(size), writable(writable), executable(executable),
-          readable(readable)
+    Segment(Addr addr, size_t memsize, size_t filesize, bool readable,
+            bool writable, bool executable)
+        : addr(addr), memsize(memsize), filesize(filesize), writable(writable),
+          executable(executable), readable(readable)
     {
     }
 };

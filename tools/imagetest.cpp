@@ -97,8 +97,9 @@ int main(int argc, char *argv[])
         }
     case LIST_SEGMENTS:
         for (const Segment &seg : image.get_segments()) {
-            cout << "Segment at 0x" << std::hex << seg.addr;
-            cout << " size:" << std::dec << seg.size;
+            cout << "Segment at 0x" << std::hex << seg.addr << std::dec;
+            cout << " memsize:"  << seg.memsize;
+            cout << " filesize:" << seg.filesize;
             cout << " R:" << seg.readable;
             cout << " W:" << seg.writable;
             cout << " X:" << seg.executable << "\n";

@@ -220,13 +220,11 @@ std::vector<Segment> Image::get_segments(bool use_paddr) const
     std::vector<Segment> segments;
     for (unsigned idx = 0; idx < elf_file->nsegments(); idx++) {
         ElfProgramHeader phdr;
-        if (!elf_file->program_header(idx, phdr))
-            continue;
-
-        Segment seg(use_paddr ? phdr.p_paddr : phdr.p_vaddr, phdr.p_memsz,
-                    phdr.p_flags & PF_R, phdr.p_flags & PF_W,
-                    phdr.p_flags & PF_X);
-        segments.push_back(seg);
+        if (elf_file->program_header(idx, phdr))
+            segments.emplace_back(use_paddr ? phdr.p_paddr : phdr.p_vaddr,
+                                  phdr.p_memsz, phdr.p_filesz,
+                                  phdr.p_flags & PF_R, phdr.p_flags & PF_W,
+                                  phdr.p_flags & PF_X);
     }
 
     return segments;
