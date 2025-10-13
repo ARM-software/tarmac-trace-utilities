@@ -215,19 +215,29 @@ const Symbol *Image::find_symbol(const string &name, int index) const
     return nullptr;
 }
 
-std::vector<Segment> Image::get_segments(bool use_paddr) const
+vector<Segment> Image::get_segments(bool use_paddr) const
 {
-    std::vector<Segment> segments;
+    vector<Segment> segments;
     for (unsigned idx = 0; idx < elf_file->nsegments(); idx++) {
         ElfProgramHeader phdr;
         if (elf_file->program_header(idx, phdr))
-            segments.emplace_back(use_paddr ? phdr.p_paddr : phdr.p_vaddr,
+            segments.emplace_back(idx, use_paddr ? phdr.p_paddr : phdr.p_vaddr,
                                   phdr.p_memsz, phdr.p_filesz,
                                   phdr.p_flags & PF_R, phdr.p_flags & PF_W,
                                   phdr.p_flags & PF_X);
     }
 
     return segments;
+}
+
+vector<uint8_t> Image::get_segment_content(const Segment &segment) const
+{
+    vector<uint8_t> content;
+
+    if (!elf_file->segment_loadable_content(segment.index, content))
+        content.clear();
+
+    return content;
 }
 
 Image::Image(const string &image_filename) : image_filename(image_filename)

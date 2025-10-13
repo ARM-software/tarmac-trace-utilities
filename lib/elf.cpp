@@ -32,6 +32,7 @@
 
 using std::ostringstream;
 using std::string;
+using std::vector;
 
 static constexpr unsigned EI_MAG0 = 0;
 static constexpr unsigned EI_MAG1 = 1;
@@ -212,6 +213,34 @@ class ElfCommon : public ElfCommonBase {
         if (index >= hdr.e_phnum)
             return false;
         return read_program_header(hdr.e_phoff + index * hdr.e_phentsize, out);
+    }
+
+    bool segment_loadable_content(unsigned index,
+                                  vector<uint8_t> &out) const override
+    {
+        out.clear();
+        if (index >= hdr.e_phnum)
+            return false;
+
+        ElfProgramHeader phdr;
+        if (!read_program_header(hdr.e_phoff + index * hdr.e_phentsize, phdr))
+            return false;
+
+        // Not a loadable segment.
+        if (phdr.p_type != PT_LOAD)
+            return false;
+
+        // No data to load for this segment.
+        if (phdr.p_filesz == 0)
+            return true;
+
+        out.resize(phdr.p_filesz);
+        if (!read(phdr.p_offset, phdr.p_filesz, out.data())) {
+            out.clear();
+            return false;
+        }
+
+        return true;
     }
 
     bool symbol(const ElfSectionHeader &shdr, unsigned symbolindex,
