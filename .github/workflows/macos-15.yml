@@ -15,8 +15,10 @@ jobs:
   configure_build_test:
     name: "Configure, build and test"
     runs-on: macos-15
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Configure
       run: CC=clang CXX=clang++ cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE:STRING=${{env.CMAKE_BUILD_TYPE}}
     - name: Build
