@@ -1,5 +1,5 @@
 ..
-  Copyright 2016-2024 Arm Limited. All rights reserved.
+  Copyright 2016-2025 Arm Limited. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 
   This file is part of Tarmac Trace Utilities
 
-|CIUbuntu2204| |CIUbuntu2404| |CImacOS13| |CImacOS14|
+|CIUbuntu2204| |CIUbuntu2404| |CImacOS14| |CImacOS15|
 
 .. |CIUbuntu2204| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2204.yml/badge.svg
    :alt: Last build status on Ubuntu 22.04 (gcc + clang)
@@ -25,13 +25,13 @@
    :alt: Last build status on Ubuntu 24.04 (gcc + clang)
    :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/ubuntu-2404.yml
 
-.. |CImacOS13| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-13.yml/badge.svg
-   :alt: Last build status on macOS 13 (Ventura)
-   :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-13.yml
-
 .. |CImacOS14| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-14.yml/badge.svg
    :alt: Last build status on macOS 14 (Sonoma)
    :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-14.yml
+
+.. |CImacOS15| image:: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-15.yml/badge.svg
+   :alt: Last build status on macOS 15 (Sequoia)
+   :target: https://github.com/ARM-software/tarmac-trace-utilities/actions/workflows/macos-15.yml
 
 Tarmac Trace Utilities
 ~~~~~~~~~~~~~~~~~~~~~~
