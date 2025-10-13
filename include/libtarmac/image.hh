@@ -64,9 +64,6 @@ struct Segment {
     bool writable;
     bool readable;
 
-    // Get a friendly kind name for the segment kind.
-    const char *getKindName() const;
-
     Segment(Addr addr, size_t memsize, size_t filesize, bool readable,
             bool writable, bool executable)
         : addr(addr), memsize(memsize), filesize(filesize), writable(writable),
