@@ -57,6 +57,7 @@ struct Symbol {
 };
 
 struct Segment {
+    unsigned index;
     Addr addr;
     size_t memsize;
     size_t filesize;
@@ -64,10 +65,10 @@ struct Segment {
     bool writable;
     bool readable;
 
-    Segment(Addr addr, size_t memsize, size_t filesize, bool readable,
-            bool writable, bool executable)
-        : addr(addr), memsize(memsize), filesize(filesize), writable(writable),
-          executable(executable), readable(readable)
+    Segment(unsigned index, Addr addr, size_t memsize, size_t filesize,
+            bool readable, bool writable, bool executable)
+        : index(index), addr(addr), memsize(memsize), filesize(filesize),
+          writable(writable), executable(executable), readable(readable)
     {
     }
 };
@@ -112,6 +113,7 @@ class Image {
     }
 
     std::vector<Segment> get_segments(bool use_paddr = false) const;
+    std::vector<uint8_t> get_segment_content(const Segment &segment) const;
 
     Image(const std::string &image_filename);
     ~Image();

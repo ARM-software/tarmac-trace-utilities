@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 static constexpr unsigned EI_NIDENT = 16;
 
@@ -38,6 +39,8 @@ static constexpr unsigned STT_FUNC = 2;
 static constexpr unsigned PF_X = 1;
 static constexpr unsigned PF_W = 2;
 static constexpr unsigned PF_R = 4;
+
+static constexpr unsigned PT_LOAD = 1;
 
 /*
  * These structures don't reflect the precise ELF layout; that's dealt
@@ -85,6 +88,8 @@ class ElfFile {
     virtual bool section_header(unsigned index, ElfSectionHeader &) const = 0;
     virtual unsigned nsegments() const = 0;
     virtual bool program_header(unsigned index, ElfProgramHeader &) const = 0;
+    virtual bool segment_loadable_content(unsigned index,
+                                          std::vector<uint8_t> &) const = 0;
     virtual bool symbol(const ElfSectionHeader &shdr, unsigned symbolindex,
                         ElfSymbol &) const = 0;
     virtual std::string strtab_string(const ElfSectionHeader &shdr,

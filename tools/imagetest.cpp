@@ -16,22 +16,46 @@
  * This file is part of Tarmac Trace Utilities
  */
 
-#include "libtarmac/argparse.hh"
-#include "libtarmac/misc.hh"
 #include "libtarmac/image.hh"
+#include "libtarmac/argparse.hh"
 #include "libtarmac/misc.hh"
 #include "libtarmac/reporter.hh"
 
+#include <cstdint>
 #include <cstdlib>
+#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 using std::cout;
-using std::unique_ptr;
 using std::string;
+using std::unique_ptr;
+using std::vector;
 
 unique_ptr<Reporter> reporter = make_cli_reporter();
+
+void hexdump(std::ostream &os, const vector<uint8_t> &bytes, size_t N)
+{
+    // Save stream state.
+    std::ios oldState(nullptr);
+    oldState.copyfmt(os);
+    os << std::setfill('0');
+    for (size_t i = 0; i < N; i++) {
+        if (i % 16 == 0)
+            os << (i == 0 ? " " : "\n ");
+        else if (i % 8 == 0)
+            os << "  ";
+        else
+            os << ' ';
+        os << ' ' << std::setw(2) << (unsigned)bytes[i];
+    }
+    if (bytes.size() > N)
+        os << "\n  ...";
+    os << '\n' << std::dec;
+    os.copyfmt(oldState); // Restore previous state.
+}
 
 int main(int argc, char *argv[])
 {
@@ -41,10 +65,12 @@ int main(int argc, char *argv[])
         FIND_SYMBOL_BY_ADDR,
         FIND_SYMBOL_BY_NAME,
         LIST_SEGMENTS,
+        DUMP_SEGMENTS_CONTENT,
     } action = DEBUG_DUMP;
     Addr symbol_addr;
     string symbol_name;
     string image_filename;
+    size_t content_length;
 
     Argparse ap("imagetest", argc, argv);
     ap.optnoval({"-v", "--verbose"}, "print verbose diagnostics during tests",
@@ -63,6 +89,12 @@ int main(int argc, char *argv[])
               });
     ap.optnoval({"--list-segments"}, "list memory segments from the image file",
                 [&]() { action = LIST_SEGMENTS; });
+    ap.optval({"--dump-segments-content"}, "CONTENT_LENGTH",
+              "show CONTENT_LENGTH bytes from the start of each segment",
+              [&](const string &arg) {
+                  action = DUMP_SEGMENTS_CONTENT;
+                  content_length = std::stoul(arg, nullptr, 0);
+              });
     ap.positional("image", "ELF image file to examine",
                   [&](const std::string &arg) { image_filename = arg; });
     ap.parse();
@@ -98,11 +130,21 @@ int main(int argc, char *argv[])
     case LIST_SEGMENTS:
         for (const Segment &seg : image.get_segments()) {
             cout << "Segment at 0x" << std::hex << seg.addr << std::dec;
-            cout << " memsize:"  << seg.memsize;
+            cout << " memsize:" << seg.memsize;
             cout << " filesize:" << seg.filesize;
             cout << " R:" << seg.readable;
             cout << " W:" << seg.writable;
             cout << " X:" << seg.executable << "\n";
+        }
+        return EXIT_SUCCESS;
+    case DUMP_SEGMENTS_CONTENT:
+        for (const Segment &seg : image.get_segments()) {
+            const vector<uint8_t> content = image.get_segment_content(seg);
+            if (!content.empty()) {
+                cout << "Segment at 0x" << std::hex << seg.addr << ":\n";
+                hexdump(cout, content,
+                        std::min(content_length, content.size()));
+            }
         }
         return EXIT_SUCCESS;
     }

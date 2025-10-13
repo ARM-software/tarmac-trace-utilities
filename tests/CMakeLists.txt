@@ -103,6 +103,11 @@ add_test(NAME imagetest-list-segments
       --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/imagetest-segments.ref stdout
       ${CMAKE_BINARY_DIR}/imagetest --list-segments ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf
   )
+add_test(NAME imagetest-dump-segments-content
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/imagetest-segments-content.ref stdout
+      ${CMAKE_BINARY_DIR}/imagetest --dump-segments-content 32 ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf
+  )
 
 # Tests of tarmac-callinfo, using the sample trace file
 # quicksort.tarmac, made from quicksort.elf. These three tests all ask
