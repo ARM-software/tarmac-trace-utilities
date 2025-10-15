@@ -1,5 +1,5 @@
 ..
-  Copyright 2016-2021,2023,2024 Arm Limited. All rights reserved.
+  Copyright 2016-2021,2023-2025 Arm Limited. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -528,7 +528,7 @@ contain 'don't know' or 'unset' values as well as ordinary data.
 
 VCD format can be consumed in turn by various software tools. An
 open-source example of such a tool is `GTKWave
-<http://gtkwave.sourceforge.net/>`_, which allows interactive browsing
+<https://github.com/gtkwave/gtkwave>`_, which allows interactive browsing
 of a VCD file.
 
 The command-line syntax of ``tarmac-vcd`` looks like this:
@@ -568,6 +568,14 @@ containing variables corresponding to:
 * a simple simulation of a memory bus, with variables for the address
   currently being accessed, the data being transferred, and a one-bit
   indicator of the direction of transfer.
+
+Limitations:
+
+* ``tarmac-vcd`` assumes one instruction is executed at a time and that they
+  have different timestamps. If the trace file has coarser timestamps, so that
+  multiple instructions have the same timestamp. The default is not to use the
+  timestamps in the trace file and assume that each instruction takes one time
+  unit. You can override this using the `--use-tarmac-timestamps`_ option.
 
 tarmac-truncate
 ---------------
@@ -1183,7 +1191,7 @@ where the fields are as follows:
   * ``cs``
   * ``cyc``
   * ``tic``
-  
+
   No processing performed by Tarmac Trace Utilities attaches any
   semantic significance to the choice of unit.
 
@@ -1882,7 +1890,7 @@ Using Arm Tarmac Trace Utilities in your own project
 ====================================================
 
 If your own downstream project is using CMake, it is extremely easy to use
-the Arm Tarmac Trace Utilities as it takes advantage of CMake to export 
+the Arm Tarmac Trace Utilities as it takes advantage of CMake to export
 package information. This information can be used thanks to CMake's
 ``find_package``. Linking against the ``tarmac`` library (from the
 ``TarmacTraceUtilities`` namespace) will set the proper search path as well
@@ -1929,7 +1937,7 @@ Adding a translation
 
 A new translation can be easily added. Let's walk this thru an example,
 adding the French translation ``fr_FR``. This assumes that you have
-``gettext`` available on your machine. 
+``gettext`` available on your machine.
 
 .. code-block:: bash
 
@@ -1972,7 +1980,7 @@ favorite text editor to translate all strings from
 
 In case you want to test the translation, the easiest is to install the tarmac trace
 utilities as some additional (and required !) steps are performed only at installation. In
-order not to pollute your system, you can set the cmake installation prefix with 
+order not to pollute your system, you can set the cmake installation prefix with
 ``-DCMAKE_INSTALL_PREFIX:PATH=/some/where``.
 
 The translation can then be locally tested by setting the ``LANGUAGE`` environment variable.

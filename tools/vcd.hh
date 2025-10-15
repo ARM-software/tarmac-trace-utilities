@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,7 +109,7 @@ class VCDFile {
     friend VCDScope;
 
   public:
-    enum class TimeScale { PS, NS, US, MS, S };
+    enum class TimeScale { FS, PS, NS, US, MS, S };
 
     VCDFile() = delete;
     VCDFile(const VCDFile &) = delete;

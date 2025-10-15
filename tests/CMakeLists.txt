@@ -193,15 +193,27 @@ add_test(NAME profile-symbols
       ${CMAKE_BINARY_DIR}/tarmac-profile --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 
-# Test of tarmac-vcd. Expected output is in vcd-quicksort-nodate.ref.
-# Here we use --no-date to avoid putting the file's creation date
+# Tests of tarmac-vcd.
+# We use --no-date to avoid putting the file's creation date
 # inside the file (which would make the output different every time
 # and harder to test).
 add_test(NAME vcd-no-date
   COMMAND ${test_driver_cmd}
       --tempfile quicksort.tarmac.index
-      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/vcd-quicksort-nodate.ref outfile:quicksort-nodate.vcd
-      ${CMAKE_BINARY_DIR}/tarmac-vcd --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac --no-date -o quicksort-nodate.vcd
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/vcd-quicksort.ref outfile:quicksort.vcd
+      ${CMAKE_BINARY_DIR}/tarmac-vcd --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac --no-date -o quicksort.vcd
+  )
+add_test(NAME vcd-function-no-date
+  COMMAND ${test_driver_cmd}
+      --tempfile quicksort.tarmac.index
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/vcd-quicksort-function.ref outfile:quicksort-function.vcd
+      ${CMAKE_BINARY_DIR}/tarmac-vcd --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac --no-date -o quicksort-function.vcd
+  )
+add_test(NAME vcd-function-timestamp-no-date
+  COMMAND ${test_driver_cmd}
+      --tempfile quicksort.tarmac.index
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/vcd-quicksort-function-timestamp.ref outfile:quicksort-function-timestamp.vcd
+      ${CMAKE_BINARY_DIR}/tarmac-vcd --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac --use-tarmac-timestamps --no-date -o quicksort-function-timestamp.vcd
   )
 
 # Tests of tarmac-truncate.

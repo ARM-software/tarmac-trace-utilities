@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tarmac Trace Utilities\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-26 15:50+0000\n"
+"POT-Creation-Date: 2025-10-16 10:28+0200\n"
 "PO-Revision-Date: 2024-01-29 16:55+0100\n"
 "Last-Translator: Arnaud de Grandmaison <arnaud.degrandmaison@arm.com>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -19,457 +19,488 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: browser/browse.cpp:600
+#, c++-format
 msgid "register {} is not defined"
 msgstr "le registre {} n'est pas défini"
 
-#: browser/curses.cpp:249
+#: browser/curses.cpp:253
 msgid "(scroll up for more)"
 msgstr "(défiler vers le haut pour plus)"
 
-#: browser/curses.cpp:253
+#: browser/curses.cpp:257
 msgid "(scroll down for more)"
 msgstr "faire défiler vers le bas pour plus"
 
-#: browser/curses.cpp:456
+#: browser/curses.cpp:460
 msgid "Erase the last character"
 msgstr "Efface le dernier caractère"
 
-#: browser/curses.cpp:457
+#: browser/curses.cpp:461
 msgid "Erase the last word of the input line"
 msgstr "Efface le dernier mot de la ligne d'entrée"
 
-#: browser/curses.cpp:458
+#: browser/curses.cpp:462
 msgid "Erase the whole input line"
 msgstr "Efface toute la ligne d'entrée "
 
-#: browser/curses.cpp:459
+#: browser/curses.cpp:463
 msgid "Cancel the minibuffer input operation"
 msgstr "Annule l'opération d'entrée sur le mini-tampon"
 
-#: browser/curses.cpp:460
+#: browser/curses.cpp:464
 msgid "Accept the current minibuffer contents"
 msgstr "Accepte le contenu du mini-tampon"
 
-#: browser/curses.cpp:786
+#: browser/curses.cpp:799
 msgid "Tarmac file: "
 msgstr "fichier Tarmac: "
 
-#: browser/curses.cpp:787
+#: browser/curses.cpp:800
 msgid "   Time:"
 msgstr "   Temps:"
 
-#: browser/curses.cpp:788
+#: browser/curses.cpp:801
 msgid "   Line:"
 msgstr "   Ligne:"
 
-#: browser/curses.cpp:858
+#: browser/curses.cpp:871
 msgid "Step by one visible instruction"
 msgstr "Avance d'une instruction visible"
 
-#: browser/curses.cpp:859
+#: browser/curses.cpp:872
 msgid "Move by a screenful of visible trace"
 msgstr "Avance d'un écran de la trace visible"
 
-#: browser/curses.cpp:860
+#: browser/curses.cpp:873
 msgid "Jump to the start or end of the trace"
 msgstr "Saute au début ou à la fin de la trace"
 
-#: browser/curses.cpp:861
+#: browser/curses.cpp:874
 msgid "Scroll to cycle the current location between middle, top and bottom"
 msgstr "Faire défiler pour alterner entre le milieu, le dessus et le dessous"
 
-#: browser/curses.cpp:863
+#: browser/curses.cpp:876
 msgid "Jump to a specified time position"
 msgstr "Saute à une position à un temps spécifié"
 
-#: browser/curses.cpp:864
+#: browser/curses.cpp:877
 msgid "Jump to a specified line number of the trace file"
 msgstr "Saute à une ligne spécifiée dans le fichier de trace"
 
-#: browser/curses.cpp:865
+#: browser/curses.cpp:878
 msgid "Jump to the next / previous visit to a PC location"
 msgstr "Saute à la prochaine / précédente visite d'une valeur du PC"
 
-#: browser/curses.cpp:867
+#: browser/curses.cpp:879
+#, fuzzy
+msgid "Jump to the next / previous CPU exception, if any"
+msgstr "Saute à la prochaine / précédente visite d'une valeur du PC"
+
+#: browser/curses.cpp:881
 msgid "Toggle display of the core registers"
 msgstr "Active / désactive l'affichage des registres du cœur"
 
-#: browser/curses.cpp:868
+#: browser/curses.cpp:882
 msgid "Toggle display of the single / double FP registers"
 msgstr "Active / désactive l'affichage des registres simple / double précision"
 
-#: browser/curses.cpp:869
+#: browser/curses.cpp:883
 msgid "Open a memory view at a specified address"
 msgstr "Ouvre une vue de la mémoire à une adresse spécifiée"
 
-#: browser/curses.cpp:871
+#: browser/curses.cpp:885
 msgid "Highlight a single event within the current time"
 msgstr "Surligne un évènement au temps présent"
 
-#: browser/curses.cpp:872
+#: browser/curses.cpp:886
 msgid ""
 "Jump to the previous change to the memory accessed by the highlighted event"
-msgstr "Saute au changement précédent de la mémoire accédée par l'évènement surligné"
+msgstr ""
+"Saute au changement précédent de la mémoire accédée par l'évènement surligné"
 
-#: browser/curses.cpp:876
+#: browser/curses.cpp:890
 msgid "Fold the innermost unfolded function call at this _position"
 msgstr "Plie l'appel de fonction non plié le plus profond at cette _position"
 
-#: browser/curses.cpp:878
+#: browser/curses.cpp:892
 msgid "Unfold the outermost folded function call at this position"
-msgstr "Déplie l'appel de fonction plié le plus à l'extérieur de cette position"
+msgstr ""
+"Déplie l'appel de fonction plié le plus à l'extérieur de cette position"
 
-#: browser/curses.cpp:879
+#: browser/curses.cpp:893
 msgid ""
 "Fold / unfold everything nested inside the innermost unfolded function call "
 "at this position"
 msgstr ""
+"Plie / déplie tout ce qui est niché à l'intérieur de l'appel de fonction "
+"dépliée le plus profond"
 
-#: browser/curses.cpp:881
+#: browser/curses.cpp:895
 msgid "Maximally fold / unfold the entire trace buffer"
 msgstr "Plie / déplie de façon maximale le tampon entier de trace"
 
-#: browser/curses.cpp:883
+#: browser/curses.cpp:897
 msgid "Toggle syntax highlighting"
 msgstr "Active / désactive la coloration syntaxique"
 
-#: browser/curses.cpp:884
+#: browser/curses.cpp:898
 msgid "Toggle symbolic display of branch targets"
 msgstr "Active / désactive l'affichage symbolique des cibles de branchement"
 
-#: browser/curses.cpp:980
+#: browser/curses.cpp:994
 msgid "No function call to fold up here"
 msgstr "Aucun appel de fonction à piler"
 
-#: browser/curses.cpp:1006
+#: browser/curses.cpp:1020
 msgid "No function call to unfold here"
 msgstr "Aucun appel de fonction à déplier"
 
-#: browser/curses.cpp:1056
+#: browser/curses.cpp:1070
 msgid "Go to time: "
 msgstr "Aller au temps: "
 
-#: browser/curses.cpp:1060
+#: browser/curses.cpp:1074
 msgid "Go to line: "
 msgstr "Aller à la ligne: "
 
-#: browser/curses.cpp:1066
+#: browser/curses.cpp:1080
 msgid "Go to previous visit to PC: "
 msgstr "Aller à la précédente visite du PC: "
 
-#: browser/curses.cpp:1067
+#: browser/curses.cpp:1081
 msgid "Go to next visit to PC: "
 msgstr "Aller à prochaine visite du PC: "
 
-#: browser/curses.cpp:1071
+#: browser/curses.cpp:1085
 msgid "Show memory at address: "
 msgstr "Afficher le contenu de la mémoire à l'adresse: "
 
-#: browser/curses.cpp:1114
+#: browser/curses.cpp:1131
 msgid "Syntax highlighting on"
 msgstr "Coloration syntaxique activée"
 
-#: browser/curses.cpp:1115
+#: browser/curses.cpp:1132
 msgid "Syntax highlighting off"
 msgstr "Coloration syntaxique désactivée"
 
-#: browser/curses.cpp:1120
+#: browser/curses.cpp:1137
 msgid "No image to look up symbolic branch targets"
-msgstr "Pas d'image dans laquelle rechercher les symboles des cibles des branchements"
+msgstr ""
+"Pas d'image dans laquelle rechercher les symboles des cibles des branchements"
 
-#: browser/curses.cpp:1125
+#: browser/curses.cpp:1142
 msgid "Symbolic branch-target display on"
 msgstr "Affichage symbolique des cibles des branchements activé"
 
-#: browser/curses.cpp:1126
+#: browser/curses.cpp:1143
 msgid "Symbolic branch-target display off"
 msgstr "Affichage symbolique des cibles des branchements désactivé"
 
-#: browser/curses.cpp:1158 browser/wx.cpp:2430 browser/wx.cpp:3255
+#: browser/curses.cpp:1175 browser/wx.cpp:2443 browser/wx.cpp:3277
+#, c++-format
 msgid "Error parsing expression: {}"
 msgstr "Erreur lors de l'analyse de l'expression: {}"
 
-#: browser/curses.cpp:1164
+#: browser/curses.cpp:1181
 msgid "Invalid format for parameter"
 msgstr "Format invalide pour le paramètre"
 
-#: browser/curses.cpp:2270
+#: browser/curses.cpp:2287
 msgid "use colour in the terminal"
 msgstr "Utilise la couleur dans le terminal"
 
-#: browser/curses.cpp:2273
+#: browser/curses.cpp:2290
 msgid "don't use colour in the terminal"
 msgstr "n'utilise pas la couleur dans le terminal"
 
 #: browser/wx.cpp:309
+#, c++-format
 msgid "{}: {}: unable to parse colour '{}'"
 msgstr "{}: {}: impossible d'analyser la couleur '{}'"
 
 #: browser/wx.cpp:315
+#, c++-format
 msgid "{}: {}: unrecognised config directive '{}'"
 msgstr "{}: {}: option de configuration non reconnue '{}'"
 
-#: browser/wx.cpp:1752
+#: browser/wx.cpp:1751
 msgid "Locked to: "
 msgstr "Verrouillé à: "
 
-#: browser/wx.cpp:1824
+#: browser/wx.cpp:1823
 msgid "None"
 msgstr "Vide"
 
-#: browser/wx.cpp:1861
+#: browser/wx.cpp:1862
 msgid "New trace view"
 msgstr "Vue d'une nouvelle trace"
 
-#: browser/wx.cpp:1865
+#: browser/wx.cpp:1866
 msgid "New..."
 msgstr "Nouvelle..."
 
-#: browser/wx.cpp:1868
+#: browser/wx.cpp:1869
 msgid "Memory view"
 msgstr "Vue mémoire"
 
-#: browser/wx.cpp:1870
+#: browser/wx.cpp:1871
 msgid "Stack view"
 msgstr "Vue de la pile"
 
-#: browser/wx.cpp:1871
+#: browser/wx.cpp:1872
 msgid "Core register view"
 msgstr "Vue des registres du cœur"
 
-#: browser/wx.cpp:1872
+#: browser/wx.cpp:1873
 msgid "Single-precision FP reg view"
 msgstr "Vue des registres simple précision"
 
-#: browser/wx.cpp:1873
+#: browser/wx.cpp:1874
 msgid "Double-precision FP reg view"
 msgstr "Vue des registres double précision"
 
-#: browser/wx.cpp:1874
+#: browser/wx.cpp:1875
 msgid "Neon vector reg view"
 msgstr "Vue des registre vecteur Neon"
 
-#: browser/wx.cpp:1875
+#: browser/wx.cpp:1876
 msgid "MVE vector reg view"
 msgstr "Vue des registres vecteur MVE"
 
-#: browser/wx.cpp:1879
-msgid "&View"
-msgstr "&Vue"
+#: browser/wx.cpp:1881
+msgid "Find CPU exception..."
+msgstr "Trouve l'exception CPU..."
 
-#: browser/wx.cpp:1882
-msgid "Re-centre"
-msgstr "Re-centre"
-
-#: browser/wx.cpp:1885
-msgid "Call-depth indentation"
-msgstr "Indentation suivant la profondeur d'appel"
-
-#: browser/wx.cpp:1886
-msgid "Syntax highlighting"
-msgstr "Coloration syntaxique"
-
-#: browser/wx.cpp:1889
-msgid "Symbolic branch targets"
-msgstr "Affichage symbolique des branchements"
-
-#: browser/wx.cpp:1912
-msgid "Time: "
-msgstr "Temps: "
-
-#: browser/wx.cpp:1922
-msgid "Prev"
-msgstr "Précédent"
-
-#: browser/wx.cpp:1924
+#: browser/wx.cpp:1882 browser/wx.cpp:1933
 msgid "Next"
 msgstr "Suivant"
 
-#: browser/wx.cpp:2134
+#: browser/wx.cpp:1883
+#, fuzzy
+msgid "Previous"
+msgstr "Précédent"
+
+#: browser/wx.cpp:1886
+msgid "&View"
+msgstr "&Vue"
+
+#: browser/wx.cpp:1889
+msgid "Re-centre"
+msgstr "Re-centre"
+
+#: browser/wx.cpp:1892
+msgid "Call-depth indentation"
+msgstr "Indentation suivant la profondeur d'appel"
+
+#: browser/wx.cpp:1893
+msgid "Syntax highlighting"
+msgstr "Coloration syntaxique"
+
+#: browser/wx.cpp:1896
+msgid "Symbolic branch targets"
+msgstr "Affichage symbolique des branchements"
+
+#: browser/wx.cpp:1921
+msgid "Time: "
+msgstr "Temps: "
+
+#: browser/wx.cpp:1931
+msgid "Prev"
+msgstr "Précédent"
+
+#: browser/wx.cpp:2144
 msgid "Fold all"
 msgstr "Tout plier"
 
-#: browser/wx.cpp:2135
+#: browser/wx.cpp:2145
 msgid "Unfold all"
 msgstr "Tout déplier"
 
-#: browser/wx.cpp:2143
+#: browser/wx.cpp:2153
+#, c++-format
 msgid "Containing call (lines {}–{} to {})"
 msgstr "Appel parent (lignes {}–{} à {})"
 
-#: browser/wx.cpp:2153
+#: browser/wx.cpp:2163
 msgid "Fold up"
 msgstr "Replier"
 
-#: browser/wx.cpp:2154
+#: browser/wx.cpp:2164
 msgid "Fold all subroutines"
 msgstr "Plier tous les fonctions appelées"
 
-#: browser/wx.cpp:2155 browser/wx.cpp:2172
+#: browser/wx.cpp:2165 browser/wx.cpp:2182
 msgid "Unfold completely"
 msgstr "Déplier complètement"
 
-#: browser/wx.cpp:2161
+#: browser/wx.cpp:2171
+#, c++-format
 msgid "Folded call (lines {}–{} to {})"
 msgstr "Appels pliés (lignes {}–{} à {})"
 
-#: browser/wx.cpp:2171
+#: browser/wx.cpp:2181
 msgid "Unfold one level"
 msgstr "Déplier d'un niveau"
 
-#: browser/wx.cpp:2185
+#: browser/wx.cpp:2195
+#, c++-format
 msgid "Memory access: {0} bytes at 0x{1:x}"
 msgstr "Accès mémoire: {0} octets à 0x{1:x}"
 
-#: browser/wx.cpp:2193 browser/wx.cpp:2207
+#: browser/wx.cpp:2203 browser/wx.cpp:2217
 msgid "Go to previous write"
 msgstr "Aller à l'écriture précédente"
 
-#: browser/wx.cpp:2194
+#: browser/wx.cpp:2204
 msgid "Open a memory window here"
 msgstr "Ouvre une vue mémoire ici"
 
-#: browser/wx.cpp:2198
+#: browser/wx.cpp:2208
+#, c++-format
 msgid "Register access: {}"
 msgstr "Accès registre: {}"
 
-#: browser/wx.cpp:2378
+#: browser/wx.cpp:2391
 msgid "Open memory window"
 msgstr "Ouvre une vue mémoire"
 
-#: browser/wx.cpp:2383
+#: browser/wx.cpp:2396
 msgid "Enter memory address to display"
 msgstr "Fournir l'adresse mémoire à afficher"
 
-#: browser/wx.cpp:2771
+#: browser/wx.cpp:2793
+#, c++-format
 msgid "Register {}"
 msgstr "Registre {}"
 
-#: browser/wx.cpp:2774
+#: browser/wx.cpp:2796
 msgid "Go to last write to this register"
 msgstr "Aller à la dernière écriture de ce registre"
 
-#: browser/wx.cpp:2848 browser/wx.cpp:2865
+#: browser/wx.cpp:2870 browser/wx.cpp:2887
 msgid "Core regs"
 msgstr "Registres du cœur"
 
-#: browser/wx.cpp:2880
+#: browser/wx.cpp:2902
 msgid "FP regs (single precision)"
 msgstr "Registres flottant (précision simple)"
 
-#: browser/wx.cpp:2895
+#: browser/wx.cpp:2917
 msgid "FP regs (double precision)"
 msgstr "Registres flottants (précision double)"
 
-#: browser/wx.cpp:2910
+#: browser/wx.cpp:2932
 msgid "Vector regs (Neon)"
 msgstr "Registres vecteur (Neon)"
 
-#: browser/wx.cpp:2926
+#: browser/wx.cpp:2948
 msgid "Vector regs (MVE)"
 msgstr "Registres vecteur (MVE)"
 
-#: browser/wx.cpp:2945
+#: browser/wx.cpp:2967
 msgid "Memory"
 msgstr "Mémoire"
 
-#: browser/wx.cpp:2964
+#: browser/wx.cpp:2986
 msgid "Address: "
 msgstr "Adresse"
 
-#: browser/wx.cpp:3136
+#: browser/wx.cpp:3158
+#, c++-format
 msgid "{0}-byte region at address 0x{1:x}"
 msgstr "région de {0}-octets à l'adresse 0x{1:x}"
 
-#: browser/wx.cpp:3139
+#: browser/wx.cpp:3161
 msgid "Go to last write to this region"
 msgstr "Aller à la dernière écriture dans cette région"
 
-#: browser/wx.cpp:3405 browser/wx.cpp:3417
+#: browser/wx.cpp:3427 browser/wx.cpp:3439
 msgid "tarmac-gui-browser fatal error"
 msgstr "erreur fatale dans tarmac-gui-browser"
 
-#: browser/wx.cpp:3430 browser/wx.cpp:3441
+#: browser/wx.cpp:3452 browser/wx.cpp:3463
 msgid "tarmac-gui-browser warning"
 msgstr "avertissement dans tarmac-gui-browser"
 
-#: browser/wx.cpp:3451
+#: browser/wx.cpp:3473
+#, c++-format
 msgid "Indexing trace file {0} to index file {1}"
 msgstr "Indexation du fichier de trace {0} vers le ficher d'index {1}"
 
-#: browser/wx.cpp:3454
+#: browser/wx.cpp:3476
+#, c++-format
 msgid "Indexing trace file {0}"
 msgstr "Indexation du fichier de trace {0}"
 
-#: browser/wx.cpp:3461
+#: browser/wx.cpp:3483
 msgid "(new index file)"
 msgstr "(nouveau fichier d'index)"
 
-#: browser/wx.cpp:3464
+#: browser/wx.cpp:3486
 msgid "(index file was older than trace file)"
 msgstr "(le fichier d'index était plus ancien que le fichier de trace)"
 
-#: browser/wx.cpp:3468
+#: browser/wx.cpp:3490
 msgid "(index file was not generated by this version of the tool)"
 msgstr "(le fichier d'index n'a pas été généré par cette version de l'outil)"
 
-#: browser/wx.cpp:3471
+#: browser/wx.cpp:3493
 msgid "(previous index file generation was not completed)"
 msgstr "(le fichier d'index précédent était incomplet)"
 
-#: browser/wx.cpp:3474
+#: browser/wx.cpp:3496
 msgid "(not actually indexing)"
 msgstr "(pas d'indexation)"
 
-#: browser/wx.cpp:3515
+#: browser/wx.cpp:3537
 msgid "tarmac-gui-browser indexing"
 msgstr "tarmac-gui-browser indexation"
 
-#: browser/wx.cpp:3573
+#: browser/wx.cpp:3596
 msgid "tarmac-gui-browser setup"
 msgstr "tarmac-gui-browser configuration"
 
-#: browser/wx.cpp:3577
+#: browser/wx.cpp:3600
 msgid "Trace file to view (required)"
 msgstr "Fichier de trace à afficher (requis)"
 
-#: browser/wx.cpp:3580
+#: browser/wx.cpp:3603
 msgid "Select a trace file to view"
 msgstr "Sélectionner un fichier de trace à afficher"
 
-#: browser/wx.cpp:3585
+#: browser/wx.cpp:3608
 msgid "ELF image matching the trace"
 msgstr "Fichier image ELF correspondant à la trace"
 
-#: browser/wx.cpp:3588
+#: browser/wx.cpp:3611
 msgid "Select an ELF image to use"
 msgstr "Sélectionner un fichier image ELF à utiliser"
 
-#: browser/wx.cpp:3593
+#: browser/wx.cpp:3616
 msgid "Re-index the trace file?"
 msgstr "Ré-indexation du fichier de trace ?"
 
-#: browser/wx.cpp:3597 browser/wx.cpp:3600
+#: browser/wx.cpp:3620 browser/wx.cpp:3623
 msgid "If necessary"
 msgstr "Si nécessaire"
 
-#: browser/wx.cpp:3601
+#: browser/wx.cpp:3624
 msgid "Always"
 msgstr "Toujours"
 
-#: browser/wx.cpp:3602
+#: browser/wx.cpp:3625
 msgid "Never"
 msgstr "Jamais"
 
-#: browser/wx.cpp:3606
+#: browser/wx.cpp:3629
 msgid "Trace is from a big-endian system"
 msgstr "La trace provient d'un system grand-boutiste"
 
-#: browser/wx.cpp:3730
+#: browser/wx.cpp:3753
 msgid "Unable to parse font description:\n"
 msgstr "Impossible d'analyser la description de fonte:\n"
 
-#: browser/wx.cpp:3731
+#: browser/wx.cpp:3754
 msgid "Setup error"
 msgstr "Erreur de configuration"
 
@@ -478,74 +509,95 @@ msgid "Option name should be of the form '--foo' or '-f'"
 msgstr "Le nom de l'option doit être de la forme '--foo' ou '-f'"
 
 #: lib/argparse.cpp:156
+#, c++-format
 msgid "'--{}': unrecognised option name"
 msgstr "'--{}': nom d'option non reconnu"
 
 #: lib/argparse.cpp:169
+#, c++-format
 msgid "'--{}': option expects a value"
 msgstr "'--{}': l'option requiert une valeur"
 
 #: lib/argparse.cpp:176
+#, c++-format
 msgid "'--{}': option expects no value"
 msgstr "'--{}': l'option ne requiert aucune valeur"
 
 #: lib/argparse.cpp:188
+#, c++-format
 msgid "'-{}': unrecognised option name"
 msgstr "'-{}': nom d'option non reconnu"
 
 #: lib/argparse.cpp:202
+#, c++-format
 msgid "'-{}': option expects a value"
 msgstr "'-{}': l'option requiert une valeur"
 
 #: lib/argparse.cpp:212
+#, c++-format
 msgid "'{}': badly formatted option"
 msgstr "'{}': option mal formatée"
 
 #: lib/argparse.cpp:223
+#, c++-format
 msgid "'{}': unexpected positional argument"
 msgstr "'{}': argument positionnel inattendu"
 
 #: lib/argparse.cpp:232
+#, c++-format
 msgid "expected additional arguments (starting with '{}')"
 msgstr "d'autres arguments sont attendus (à partir de '{}')"
 
 #: lib/argparse.cpp:246
+#, c++-format
 msgid "try '{} --help' for help"
 msgstr "'{} --help' pour afficher l'aide"
 
-#: lib/argparse.cpp:328
+#: lib/argparse.cpp:334
 msgid "usage: "
 msgstr "usage: "
 
-#: lib/argparse.cpp:369
+#: lib/argparse.cpp:377
 msgid "options:"
 msgstr "options:"
 
-#: lib/argparse.cpp:395
+#: lib/argparse.cpp:403
 msgid "positional arguments:"
 msgstr "arguments positionnels:"
 
-#: lib/argparse.cpp:407
+#: lib/argparse.cpp:415
 msgid "also:"
 msgstr "aussi:"
 
-#: lib/argparse.cpp:408
+#: lib/argparse.cpp:416
 msgid "display this text"
 msgstr "affiche ce texte"
 
 #: lib/callinfo.cpp:106
+#, c++-format
 msgid "No image, symbol '{}' can not be looked up !\n"
 msgstr "Pas d'image, le symbol '{}' ne peut être recherché !\n"
 
 #: lib/callinfo.cpp:114
+#, c++-format
 msgid "Symbol '{}' not found !\n"
 msgstr "Symbole '{}' non trouve !\n"
 
 #: lib/callinfo.cpp:118
+#, c++-format
 msgid "Symbol '{0}' at 0x{1:x} ({2} bytes) called from :\n"
 msgstr "Symbole '{0}' à 0x{1:x} ({2} octets) appelé depuis :\n"
 
+#: lib/calltree.cpp:267
+msgid ""
+"do not show an offset in call-tree records which start after the function "
+"entry point"
+msgstr ""
+"ne montre pas d'offset dans les enregistrements de l'arbre d'appel après "
+"l'appel du point d'entrée"
+
 #: lib/expr.cpp:135
+#, c++-format
 msgid "register name '{}'"
 msgstr "nom du registre '{}'"
 
@@ -554,18 +606,22 @@ msgid "expected an identifier after '::'"
 msgstr "identifiant requis après '::'"
 
 #: lib/expr.cpp:279
+#, c++-format
 msgid "unrecognised register name '{}'"
 msgstr "nom de registre '{}' non reconnu"
 
 #: lib/expr.cpp:283
+#, c++-format
 msgid "unrecognised symbol name '{}'"
 msgstr "nom de symbole '{}' non reconnu"
 
 #: lib/expr.cpp:286
+#, c++-format
 msgid "unrecognised identifier scope '{}'"
 msgstr "identifiant de portée '{}' non reconnu"
 
 #: lib/expr.cpp:295
+#, c++-format
 msgid "unrecognised identifier name '{}'"
 msgstr "nom d'identifiant '{}' non reconnu"
 
@@ -585,315 +641,375 @@ msgstr "token inattendu"
 msgid "unexpected tokens after expression"
 msgstr "tokens inattendus après l'expression"
 
-#: lib/image.cpp:205
+#: lib/image.cpp:247
 #, c-format
 msgid "Cannot open ELF file \"%s\""
 msgstr "Impossible d'ouvrir l'image ELF \"%s\""
 
-#: lib/image.cpp:215
+#: lib/image.cpp:257
 #, c-format
 msgid "Image '%s':\n"
 msgstr "Image '%s':\n"
 
-#: lib/image.cpp:217
-#, c-format
-msgid "symbol '%s#%d' [0x%llx, 0x%llx)\n"
+#: lib/image.cpp:260
+#, fuzzy, c-format
+msgid "symbol '%s' [0x%llx, 0x%llx)\n"
 msgstr "symbole '%s#%d' [0x%llx, 0x%llx)\n"
 
-#: lib/index.cpp:1006
+#: lib/index.cpp:1051 tools/truncate.cpp:184
 msgid "ignoring parse error on partial last line (trace truncated?)"
-msgstr "l'erreur d'analyze de la dernière ligne est ignorée (fichier de trace tronqué ?)"
+msgstr ""
+"l'erreur d'analyze de la dernière ligne est ignorée (fichier de trace "
+"tronqué ?)"
 
-#: lib/index.cpp:1131
+#: lib/index.cpp:1184
 #, c-format
 msgid "%s: magic number did not match"
 msgstr "%s: le nombre magique ne correspond pas"
 
-#: lib/misc.cpp:131
+#: lib/misc.cpp:132
+#, c++-format
 msgid "index file {} does not exist; building it"
 msgstr "le fichier d'index {} n'existe pas; démarrage de sa construction"
 
-#: lib/misc.cpp:136
+#: lib/misc.cpp:137
+#, c++-format
 msgid "index file {} is older than trace file {}; rebuilding it"
-msgstr "le fichier d'index {} est plus ancien que le fichier de trace {}; démarrage de sa reconstruction"
+msgstr ""
+"le fichier d'index {} est plus ancien que le fichier de trace {}; démarrage "
+"de sa reconstruction"
 
-#: lib/misc.cpp:142
+#: lib/misc.cpp:143
+#, c++-format
 msgid ""
 "index file {} was not generated by this version of the tool; rebuilding it"
-msgstr "le fichier d'index {} n'a pas été généré avec cette version de l'outil; démarrage de sa reconstruction"
+msgstr ""
+"le fichier d'index {} n'a pas été généré avec cette version de l'outil; "
+"démarrage de sa reconstruction"
 
-#: lib/misc.cpp:148
+#: lib/misc.cpp:149
+#, fuzzy, c++-format
 msgid "previous generation of index file {} was not completed; rebuilding it"
-msgstr "le fichier d'index n'avait pas été complètement généré; démarrage de sa reconstruction"
+msgstr ""
+"le fichier d'index n'avait pas été complètement généré; démarrage de sa "
+"reconstruction"
 
-#: lib/misc.cpp:154
+#: lib/misc.cpp:155
+#, c++-format
 msgid "index file {} looks ok; not rebuilding it"
 msgstr "le fichier d'index {} semble OK; il ne sera pas reconstruit"
 
-#: lib/misc.cpp:192
+#: lib/misc.cpp:193
+#, c++-format
 msgid "Reading trace file ({}%)"
 msgstr "Lecture du fichier de trace ({}%)"
 
-#: lib/misc.cpp:202
+#: lib/misc.cpp:203
 msgid "Reading trace file (finished)"
 msgstr "Lecture du fichier de trace (terminé)"
 
-#: lib/misc.cpp:226
+#: lib/misc.cpp:227
 msgid "Out of memory"
 msgstr "Plus de mémoire"
 
-#: lib/parser.cpp:429
+#: lib/parser.cpp:465
 msgid "expected '(' to introduce instruction address and bit pattern"
-msgstr "'(' est attendu pour introduire une adresse d'instruction et un modèle de bits"
+msgstr ""
+"'(' est attendu pour introduire une adresse d'instruction et un modèle de "
+"bits"
 
-#: lib/parser.cpp:434
+#: lib/parser.cpp:470
 msgid "expected a hex instruction address"
 msgstr "une adresse d'instruction au format hexadécimal est requise"
 
-#: lib/parser.cpp:440
+#: lib/parser.cpp:476
 msgid "expected ':' between instruction address and bit pattern"
 msgstr "':' est requis entre une adresse d'instruction et un modèle de bits"
 
-#: lib/parser.cpp:454 lib/parser.cpp:566
+#: lib/parser.cpp:490 lib/parser.cpp:602
 msgid "expected a hex instruction bit pattern"
 msgstr "un modèle de bit au format hexadécimal est requis pour une instruction"
 
-#: lib/parser.cpp:464
+#: lib/parser.cpp:500
 msgid "expected ')' after instruction address and bit pattern"
-msgstr "une ')' est requise après une adresse d'instruction et un modèle de bits"
+msgstr ""
+"une ')' est requise après une adresse d'instruction et un modèle de bits"
 
-#: lib/parser.cpp:497 lib/parser.cpp:508
+#: lib/parser.cpp:533 lib/parser.cpp:544
 msgid "expected a hex or decimal number"
 msgstr "un nombre au format hexadécimal ou décimal est requis"
 
-#: lib/parser.cpp:515
+#: lib/parser.cpp:551
 msgid "expected ')' after bracketed value"
 msgstr "une ')' est requise après une valeur entre parenthèses"
 
-#: lib/parser.cpp:520
+#: lib/parser.cpp:556
 msgid "expected a hex value"
 msgstr "une valeur au format hexadécimale est requise"
 
-#: lib/parser.cpp:535
+#: lib/parser.cpp:571
 msgid "expected a hex address after ':'"
 msgstr "une adresse au format hexadécimal est requise après ':'"
 
-#: lib/parser.cpp:546
+#: lib/parser.cpp:582
 msgid "expected a hex address after ','"
 msgstr "une adresse au format hexadecimal est requis après ','"
 
-#: lib/parser.cpp:587
+#: lib/parser.cpp:623
 msgid "expected instruction-set state"
 msgstr "un état du jeu d'instruction est requis"
 
-#: lib/parser.cpp:612
+#: lib/parser.cpp:648
 msgid "expected CPU mode"
 msgstr "mode du CPU requis"
 
-#: lib/parser.cpp:620
+#: lib/parser.cpp:656
 msgid "expected ':' before instruction"
 msgstr "un ':' est requis avant l'instruction"
 
-#: lib/parser.cpp:647
+#: lib/parser.cpp:683
 msgid "expected register name"
 msgstr "un nom de registre est attendu"
 
-#: lib/parser.cpp:656
+#: lib/parser.cpp:692
+#, c++-format
 msgid "unsupported system operation '{}'"
 msgstr "opération système non supportée '{}'"
 
-#: lib/parser.cpp:671
+#: lib/parser.cpp:707
 msgid "expected extra register identification details"
 msgstr "des détails d'identification supplémentaire du registre sont requis"
 
-#: lib/parser.cpp:677
+#: lib/parser.cpp:713
 msgid "expected ')' after extra register identification details"
-msgstr "une ')' est requise après les détails d'identification supplémentaire d'un registre"
+msgstr ""
+"une ')' est requise après les détails d'identification supplémentaire d'un "
+"registre"
 
-#: lib/parser.cpp:726
+#: lib/parser.cpp:764
 msgid "cannot handle register bit range for this register"
 msgstr "impossible de gérer l'interval de bits pour ce registre"
 
-#: lib/parser.cpp:733 lib/parser.cpp:750
+#: lib/parser.cpp:771 lib/parser.cpp:788
 msgid "expected bit offset within register"
 msgstr "un offset de bit dans le registre est requis"
 
-#: lib/parser.cpp:736
+#: lib/parser.cpp:774
 msgid "expected high bit offset within register to be at the top of a byte"
-msgstr "l'offset haut des bits du registre doit concerner l'octet le plus significatif"
+msgstr ""
+"l'offset haut des bits du registre doit concerner l'octet le plus "
+"significatif"
 
-#: lib/parser.cpp:740
+#: lib/parser.cpp:778
 msgid "high bit offset is larger than containing register"
 msgstr "l'offset haut des bits est plus grand que le registre"
 
-#: lib/parser.cpp:745
+#: lib/parser.cpp:783
 msgid "expected ':' separating bit offsets in register bit range"
-msgstr "un ':' est requis pour séparer les offsets de bit dans l'interval de bit d'un registre"
+msgstr ""
+"un ':' est requis pour séparer les offsets de bit dans l'interval de bit "
+"d'un registre"
 
-#: lib/parser.cpp:754
+#: lib/parser.cpp:792
 msgid "expected low bit offset within register to be at the bottom of a byte"
-msgstr "l'offset bas des bits du registre doit concerner l'octet le moins significatif"
+msgstr ""
+"l'offset bas des bits du registre doit concerner l'octet le moins "
+"significatif"
 
-#: lib/parser.cpp:758
+#: lib/parser.cpp:796
 msgid "low bit offset is higher than high bit offset"
 msgstr "l'offset bas des bits est supérieur à l'offset haut des bits"
 
-#: lib/parser.cpp:764
+#: lib/parser.cpp:802
 msgid "expected '>' after register bit range"
 msgstr "un '>' est requis après l'interval de bits d'un registre"
 
-#: lib/parser.cpp:785 lib/parser.cpp:803
+#: lib/parser.cpp:849 lib/parser.cpp:873
 msgid "expected register contents"
 msgstr "le contenu du registre est requis"
 
-#: lib/parser.cpp:810
+#: lib/parser.cpp:880
 msgid "expected additional register contents after ':'"
 msgstr "contenu additionnel du registre requis après ':'"
 
-#: lib/parser.cpp:838
+#: lib/parser.cpp:925
 msgid "expected register contents to be an integer number of bytes"
 msgstr "le contenu d'un registre doit être un nombre entier d'octets"
 
-#: lib/parser.cpp:867
+#: lib/parser.cpp:954
+#, c++-format
 msgid "unrecognised {0}-bit register '{1}'"
 msgstr "registre {1} de {0} bit(s) non reconnu"
 
-#: lib/parser.cpp:960
+#: lib/parser.cpp:1047
 msgid "expected memory address"
 msgstr "adresse mémoire requise"
 
-#: lib/parser.cpp:973
+#: lib/parser.cpp:1060
 msgid "expected physical memory address after ':'"
 msgstr "adresse mémoire physique requise après ':'"
 
-#: lib/parser.cpp:989
+#: lib/parser.cpp:1076
 msgid "expected closing parenthesis"
 msgstr "parenthèse fermante requise"
 
-#: lib/parser.cpp:996
+#: lib/parser.cpp:1083
 msgid "unrecognised parenthesised keyword"
 msgstr "mot clé parenthésé non reconnu"
 
-#: lib/parser.cpp:1006
+#: lib/parser.cpp:1095
 msgid "expected memory contents in hex"
 msgstr "contenu de la mémoire requis au format hexadécimal"
 
-#: lib/parser.cpp:1038
+#: lib/parser.cpp:1137
+#, fuzzy
+msgid "expected second word of memory contents"
+msgstr "contenu de la mémoire requis au format hexadécimal"
+
+#: lib/parser.cpp:1142
+#, fuzzy, c++-format
+msgid "unexpected memory access size: {} bytes"
+msgstr "contenu de la mémoire requis au format hexadécimal"
+
+#: lib/parser.cpp:1159
 msgid "expected load/store memory address"
 msgstr "une adresse de lecture/écriture en mémoire est attendue"
 
-#: lib/parser.cpp:1051
+#: lib/parser.cpp:1172
 msgid "expected a word of data bytes, '.' and '#'"
 msgstr "un mot d'octets de données est attendu, '.' et '#'"
 
-#: lib/parser.cpp:1054
+#: lib/parser.cpp:1175
 msgid "expected data word to cover a whole number of bytes"
 msgstr "le mot de donnée doit couvrir le nombre entier d'octets"
 
-#: lib/parser.cpp:1063
+#: lib/parser.cpp:1184
 msgid "expected exactly 16 data bytes"
 msgstr "exactement 16 octets de données sont requis"
 
-#: lib/parser.cpp:1072
+#: lib/parser.cpp:1193
 msgid "expected each byte to be only one of '.', '#' and hex"
 msgstr "chacun des octets doit être '.', '#' ou hex"
 
-#: lib/parser.cpp:1155
+#: lib/parser.cpp:1308
+#, c++-format
 msgid "unknown Tarmac event type '{}'"
 msgstr "évènement Tarmac de type '{}' inconnu"
 
-#: lib/tarmacutil.cpp:42
+#: lib/tarmacutil.cpp:47
 msgid "IMAGEFILE"
 msgstr "FICHIERIMAGE"
 
-#: lib/tarmacutil.cpp:42
+#: lib/tarmacutil.cpp:47
 msgid "image file name"
 msgstr "nom du fichier contenant l'image"
 
-#: lib/tarmacutil.cpp:44 tools/indextool.cpp:528 tools/indextool.cpp:534
+#: lib/tarmacutil.cpp:49 tools/indextool.cpp:528 tools/indextool.cpp:534
 #: tools/indextool.cpp:540 tools/indextool.cpp:547 tools/indextool.cpp:569
 msgid "OFFSET"
 msgstr "OFFSET"
 
-#: lib/tarmacutil.cpp:44
+#: lib/tarmacutil.cpp:49
 msgid "offset from addresses in the image file to addresses in the trace"
 msgstr "décalage des addresses dans l'image par rapport à celles de la trace"
 
-#: lib/tarmacutil.cpp:51
+#: lib/tarmacutil.cpp:56
 msgid "generate index and do nothing else"
 msgstr "génère uniquement l'index"
 
-#: lib/tarmacutil.cpp:56
+#: lib/tarmacutil.cpp:61
 msgid "regenerate index unconditionally"
 msgstr "re-génère l'index inconditionnellement"
 
-#: lib/tarmacutil.cpp:58
+#: lib/tarmacutil.cpp:63
 msgid "do not regenerate index"
 msgstr "ne pas générer l'index"
 
-#: lib/tarmacutil.cpp:61
+#: lib/tarmacutil.cpp:66
 msgid "keep index in memory instead of on disk"
 msgstr "garde l'index en mémoire plutôt que sur le disque"
 
-#: lib/tarmacutil.cpp:64
+#: lib/tarmacutil.cpp:69
 msgid "assume trace is from a little-endian platform"
 msgstr "suppose que la trace provient d'une plateforme petit-boutiste"
 
-#: lib/tarmacutil.cpp:69
+#: lib/tarmacutil.cpp:74
 msgid "assume trace is from a big-endian platform"
 msgstr "suppose que la trace provient d'une plateforme grand-boutiste"
 
-#: lib/tarmacutil.cpp:74
+#: lib/tarmacutil.cpp:79
 msgid ""
 "assume trace is from a Thumb-only platform and might omit the instruction "
 "set state from trace records"
 msgstr ""
-"considère que la trace provient d'une plateforme uniquement Thumb et "
-"peut omettre l'état du jeu d'instruction dans la trace"
+"considère que la trace provient d'une plateforme uniquement Thumb et peut "
+"omettre l'état du jeu d'instruction dans la trace"
 
-#: lib/tarmacutil.cpp:80
+#: lib/tarmacutil.cpp:90
+msgid "TYPE"
+msgstr "TYPE"
+
+#: lib/tarmacutil.cpp:90
+msgid "enable diagnostics of type TYPE (use --debug=list for a list)"
+msgstr ""
+"permet les diagnostiques de type TYPE (--debug=list pour avoir la liste)"
+
+#: lib/tarmacutil.cpp:94
+msgid "List of diagnostic types:"
+msgstr "Liste des types de dignostiques"
+
+#: lib/tarmacutil.cpp:96
+msgid "debug call and return analysis"
+msgstr "debug l'analyze des appels et retour"
+
+#: lib/tarmacutil.cpp:101
+#, fuzzy, c++-format
+msgid "unknown diagnostic type '{}'"
+msgstr "évènement Tarmac de type '{}' inconnu"
+
+#: lib/tarmacutil.cpp:105
 msgid "make tool more verbose"
 msgstr "rend l'outil plus verbeux"
 
-#: lib/tarmacutil.cpp:82
+#: lib/tarmacutil.cpp:107
 msgid "make tool quiet"
 msgstr "rend l'outil plus silencieux"
 
-#: lib/tarmacutil.cpp:85
+#: lib/tarmacutil.cpp:111
 msgid "force display of the progress meter"
 msgstr "force l'affichage de la barre de progression"
 
-#: lib/tarmacutil.cpp:93
+#: lib/tarmacutil.cpp:120
 msgid "INDEXFILE"
 msgstr "FICHIERINDEX"
 
-#: lib/tarmacutil.cpp:93
+#: lib/tarmacutil.cpp:120
 msgid "index file name"
 msgstr "nom du fichier d'index"
 
-#: lib/tarmacutil.cpp:95 lib/tarmacutil.cpp:150
+#: lib/tarmacutil.cpp:122 lib/tarmacutil.cpp:161 lib/tarmacutil.cpp:274
 msgid "TRACEFILE"
 msgstr "FICHIERTRACE"
 
-#: lib/tarmacutil.cpp:95
+#: lib/tarmacutil.cpp:122 lib/tarmacutil.cpp:274
 msgid "Tarmac trace file to read"
 msgstr "nom du fichier de trace Tarmac"
 
-#: lib/tarmacutil.cpp:113
+#: lib/tarmacutil.cpp:140
 msgid "Ignoring --no-index since index is in memory"
 msgstr "--no-index est ignoré car l'index est en mémoire"
 
-#: lib/tarmacutil.cpp:115
+#: lib/tarmacutil.cpp:142
 msgid "Ignoring index file name since index is in memory"
 msgstr "Le fichier d'index est ignoré puisque l'index est en mémoire"
 
-#: lib/tarmacutil.cpp:129
-msgid "Endianness mismatch between image and provided endianness"
-msgstr "Le boutisme de l'image ne correspond pas à celui spécifié"
-
-#: lib/tarmacutil.cpp:150
+#: lib/tarmacutil.cpp:161
 msgid "Tarmac trace files to read"
 msgstr "fichier de trace Tarmac à lire"
+
+#: lib/tarmacutil.cpp:250
+msgid "Endianness mismatch between image and provided endianness"
+msgstr "Le boutisme de l'image ne correspond pas à celui spécifié"
 
 #: tools/callinfo.cpp:49
 msgid "FUNCTION"
@@ -901,21 +1017,23 @@ msgstr "FONCTION"
 
 #: tools/callinfo.cpp:49
 msgid "name or hex address of function to find calls to"
-msgstr "nom ou address hexadécimale de la fonction dont les appels sont à retrouver"
+msgstr ""
+"nom ou address hexadécimale de la fonction dont les appels sont à retrouver"
 
 #: tools/callinfo.cpp:54
 msgid "expected at least one function name"
 msgstr "au moins un nom de fonction est requis"
 
-#: tools/flamegraph.cpp:52
+#: tools/flamegraph.cpp:55
 msgid "OUTFILE"
 msgstr "FICHIERSORTIE"
 
-#: tools/flamegraph.cpp:53
+#: tools/flamegraph.cpp:56
 msgid "write output to OUTFILE (default: standard output)"
 msgstr "écrit les résultats dans FICHIERSORTIE (défaut: sortie standard)"
 
 #: tools/indextool.cpp:71
+#, c++-format
 msgid "Node at file offset {}"
 msgstr "Nœud à l'offset de fichier {}"
 
@@ -936,6 +1054,7 @@ msgid "Root node"
 msgstr "Nœud racine"
 
 #: tools/indextool.cpp:110
+#, c++-format
 msgid "{:#x} at file offset {}:"
 msgstr "{:#x} à l'offset de fichier {}:"
 
@@ -948,10 +1067,12 @@ msgid "null"
 msgstr "zéro"
 
 #: tools/indextool.cpp:191
+#, c++-format
 msgid "Line range: start {}, extent {}"
 msgstr "Interval de lignes: début {}, fin {}"
 
 #: tools/indextool.cpp:195
+#, c++-format
 msgid "Byte range: start {:#x}, extent {:#x}"
 msgstr "Interval d'octets: début {:#x}, fin {:#x}"
 
@@ -976,8 +1097,10 @@ msgid "sentinel"
 msgstr "sentinelle"
 
 #: tools/indextool.cpp:230
+#, c++-format
 msgid "{} lines, {} insns, left-crosslink {}, right-crosslink {}}}"
-msgstr "{} lignes, {} instructions, {} liaisons à gauche, {} liaisons à droite}}"
+msgstr ""
+"{} lignes, {} instructions, {} liaisons à gauche, {} liaisons à droite}}"
 
 #: tools/indextool.cpp:248 tools/indextool.cpp:302
 msgid "Range: "
@@ -1000,6 +1123,7 @@ msgid "memory subtree"
 msgstr "sous-arbre mémoire"
 
 #: tools/indextool.cpp:268
+#, c++-format
 msgid "memory subtree with root pointer at {:#x}, actual root is {:#x}"
 msgstr "sous arbre mémoire avec pointeur racine à {:#x}, racine courante {:#x}"
 
@@ -1012,6 +1136,7 @@ msgid "never"
 msgstr "jamais"
 
 #: tools/indextool.cpp:278
+#, c++-format
 msgid "line {}"
 msgstr "ligne {}"
 
@@ -1020,10 +1145,12 @@ msgid "Latest modification time in whole subtree: "
 msgstr "Dernière temps de modification dans le sous-arbre complet: "
 
 #: tools/indextool.cpp:306
+#, c++-format
 msgid "Contents: {} bytes"
 msgstr "COntenu: {} octets"
 
 #: tools/indextool.cpp:308
+#, c++-format
 msgid "Contents: {} bytes at file offset {:#x}"
 msgstr "Contenu: {} octets à l'offset de fichier {:#x}"
 
@@ -1036,22 +1163,27 @@ msgid " - dependent on iflags\n"
 msgstr " - depend de iflags\n"
 
 #: tools/indextool.cpp:362 tools/indextool.cpp:366
+#, c++-format
 msgid "'{}': unable to parse numeric value"
 msgstr "'{}': impossible d'analyser la valeur numérique"
 
 #: tools/indextool.cpp:368
+#, c++-format
 msgid "'{}': numeric value out of range"
 msgstr "'{}': la valeur numérique est hors de l'interval"
 
 #: tools/indextool.cpp:431
+#, c++-format
 msgid "Unable to find a node at line {}\n"
 msgstr "Nœud non trouvé à la ligne {}\n"
 
 #: tools/indextool.cpp:446
+#, c++-format
 msgid "Memory last modified at line {}:"
 msgstr "Dernière modification de la mémoire à la ligne {}:"
 
 #: tools/indextool.cpp:475
+#, c++-format
 msgid "{}, last modified at line {}: "
 msgstr "{}, modifié pour la dernière fois à la ligne {}"
 
@@ -1068,8 +1200,8 @@ msgid ""
 "dump logical content of the sequential order tree, and memory contents at "
 "each node"
 msgstr ""
-"affiche le contenu logique de l'arbre d'ordre séquentiel ainsi que "
-"le contenu de la mémoire pour chaque nœud"
+"affiche le contenu logique de l'arbre d'ordre séquentiel ainsi que le "
+"contenu de la mémoire pour chaque nœud"
 
 #: tools/indextool.cpp:526
 msgid "dump physical structure of the sequential order tree"
@@ -1077,19 +1209,24 @@ msgstr "affiche la structure physique de l'arbre d'ordre séquentiel"
 
 #: tools/indextool.cpp:529
 msgid "dump logical content of memory tree with root at OFFSET"
-msgstr "affiche le contenu logique de l'arbre mémoire  dont la racine est OFFSET"
+msgstr ""
+"affiche le contenu logique de l'arbre mémoire  dont la racine est OFFSET"
 
 #: tools/indextool.cpp:535
 msgid "dump physical structure of a memory tree with root at OFFSET"
-msgstr "affiche la structure physique d'un arbre mémoire dont la racine est OFFSET"
+msgstr ""
+"affiche la structure physique d'un arbre mémoire dont la racine est OFFSET"
 
 #: tools/indextool.cpp:541
 msgid "dump logical content of a memory subtree with root at OFFSET"
-msgstr "affiche le contenu logique d'un sous-arbre mémoire dont la racine est  OFFSET"
+msgstr ""
+"affiche le contenu logique d'un sous-arbre mémoire dont la racine est  OFFSET"
 
 #: tools/indextool.cpp:548
 msgid "dump physical structure of a memory subtree with root at OFFSET"
-msgstr "affiche la structure physique d'un sous-arbre mémoire dont la racine est OFFSET"
+msgstr ""
+"affiche la structure physique d'un sous-arbre mémoire dont la racine est "
+"OFFSET"
 
 #: tools/indextool.cpp:553
 msgid "dump logical content of the by-PC tree"
@@ -1109,19 +1246,24 @@ msgstr "DRAPEAUX"
 
 #: tools/indextool.cpp:560
 msgid "(for --regmap) specify iflags context to retrieve registers"
-msgstr "(pour --regmap) spécifie le context iflags pour récupérer les registres"
+msgstr ""
+"(pour --regmap) spécifie le context iflags pour récupérer les registres"
 
 #: tools/indextool.cpp:566
 msgid ""
 "do not dump offsets in index file (so that output is more stable when index "
 "format changes)"
-msgstr "ne stocke pas les offset dans le fichier de trace (de façon que la sortie soit plus stable quand le format de l'index change)"
+msgstr ""
+"ne stocke pas les offset dans le fichier de trace (de façon que la sortie "
+"soit plus stable quand le format de l'index change)"
 
 #: tools/indextool.cpp:570
 msgid ""
 "dump full content of memory tree corresponding to a particular line of the "
 "trace file"
-msgstr "affiche le contenu complet de l'arbre mémoire correspondant à une ligne particulière du fichier de trace"
+msgstr ""
+"affiche le contenu complet de l'arbre mémoire correspondant à une ligne "
+"particulière du fichier de trace"
 
 #: tools/indextool.cpp:579
 msgid "expected an option describing a query"
@@ -1148,14 +1290,22 @@ msgid "Architecture: "
 msgstr "Architecture: "
 
 #: tools/indextool.cpp:611
+msgid "Thumb only: "
+msgstr "Thumb uniqument"
+
+#: tools/indextool.cpp:613
+msgid "Largest SVE vector register access: "
+msgstr "Accès registre SVE le plus large: "
+
+#: tools/indextool.cpp:615
 msgid "Root of sequential order tree: "
 msgstr "Racine de l'arbre d'ordre séquentiel"
 
-#: tools/indextool.cpp:613
+#: tools/indextool.cpp:617
 msgid "Root of by-PC tree: "
 msgstr "Racine de l'arbre by-PC"
 
-#: tools/indextool.cpp:614
+#: tools/indextool.cpp:618
 msgid "Line number adjustment for file header: "
 msgstr "Ajustement du nombre de lignes pour l'entête de fichier"
 
@@ -1175,22 +1325,62 @@ msgstr "Temps"
 msgid "Function name"
 msgstr "Nom de fonction"
 
-#: tools/vcdwriter.cpp:341
-msgid "Error when using the instruction timestamp from the tarmac trace"
-msgstr "Erreur lors de l'usage de la marque de temps dans le fichier de trace"
+#: tools/truncate.cpp:212
+#, fuzzy
+msgid "FILE"
+msgstr "FICHIERSORTIE"
 
-#: tools/vcdwriter.cpp:409
+#: tools/truncate.cpp:213
+#, fuzzy
+msgid "file to write output to (default: standard output)"
+msgstr "écrit les résultats dans FICHIERSORTIE (défaut: sortie standard)"
+
+#: tools/truncate.cpp:225
+#, c-format
+msgid "unable to open input file '%s'"
+msgstr "impossible d'ouvrir le fichier d'entrée '%s'"
+
+#: tools/truncate.cpp:239
+#, c-format
+msgid "unable to open output file '%s'"
+msgstr "impossible d'ouvrir le fichier de sortie '%s'"
+
+#: tools/vcdwriter.cpp:278
+#, c-format
+msgid ""
+"Error: too many memory accesses in instruction at timestamp %llu - more than "
+"the %llu that can be represented in the VCD output."
+msgstr ""
+"Erreur: trop d'accés mémoire par l'instruction au tem %llu - plus que les "
+"%llu qui peuvent être représentés dans la sortie VCD"
+
+#: tools/vcdwriter.cpp:375
+#, c-format
+msgid ""
+"Error: tarmac trace is not chronologically ordered (time %llu follows time "
+"%llu)."
+msgstr ""
+"Erreur: la trace tarmac n'est pas ordonnée chronologiquement (le temps %llu suit le temps %llu)."
+
+#: tools/vcdwriter.cpp:381
+#, c-format
+msgid ""
+"Warning: time is not increasing strictly monotonically between instructions "
+"at time %llu. You should consider *not* using option --use-tarmac-timestamps."
+msgstr "Attention: le temps n'augmente pas de façon strictement monotonique entre les instructions au temps %llu. Vous devriez considerer de *ne pas* utiliser l'option --use-tarmac-timestamps."
+
+#: tools/vcdwriter.cpp:458
 msgid "VCDFILE"
 msgstr "FICHIERVCD"
 
-#: tools/vcdwriter.cpp:410
+#: tools/vcdwriter.cpp:459
 msgid "VCD file name (default: tarmac_filename.vcd)"
 msgstr "nom du fichier VCD (défaut: tarmac_filename.vcd)"
 
-#: tools/vcdwriter.cpp:412
+#: tools/vcdwriter.cpp:461
 msgid "Do not emit the date field in the vcd file"
 msgstr "Ne pas émettre le champs date dans le fichier vcd"
 
-#: tools/vcdwriter.cpp:415
+#: tools/vcdwriter.cpp:464
 msgid "Use the instructions' timestamps from the tarmac trace."
 msgstr "utilise the la marque de temps de la trace tarmac"

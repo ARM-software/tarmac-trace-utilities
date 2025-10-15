@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021,2023 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2023,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
 #include "vcd.hh"
 #include "vcdwriter.hh"
 
+#include <cassert>
 #include <functional>
 
 using std::ref;
@@ -86,7 +87,7 @@ struct CPUDescription {
             case RegPrefix::d:
             case RegPrefix::s:
                 // Although this is a floating point value, we prefer to
-                // manpulate then as integers as this ensure bit accuracy in the
+                // manipulate them as integers as this ensures bit accuracy in the
                 // displayed waveforms.
                 VCDIdx = VCD.addIntSignal(Name, 8 * Size);
                 break;
@@ -217,7 +218,8 @@ class VCDVisitor : public ParseReceiver {
           PC(VCD.addIntSignal("PC", CPU.AddressBusSize)),
           MemReadWrite(VCD.addTextSignal("MemRW")),
           MemAddr(VCD.addIntSignal("MemAddr", CPU.AddressBusSize)),
-          MemData(VCD.addIntSignal("MemData", CPU.DataBusSize)), Tick(0),
+          MemData(VCD.addIntSignal("MemData", CPU.DataBusSize)),
+          Tick(UseTarmacTimestamp ? 0 : -1),
           UseTarmacTimestamp(UseTarmacTimestamp), PrevInstExecuted(),
           PrevInstPC(-1), PrevInst(-1), hadMemoryAccesses(false)
     {
@@ -233,7 +235,10 @@ class VCDVisitor : public ParseReceiver {
 
     void operator()(const SeqOrderPayload &sop, OFF_T)
     {
-        tick(sop.mod_time);
+        if (UseTarmacTimestamp)
+            tick(sop.mod_time);
+        else
+            tick();
 
         // Output current simulation cycle.
         VCD.writeValueChange<long unsigned int>(Cycle, sop.mod_time);
@@ -267,14 +272,27 @@ class VCDVisitor : public ParseReceiver {
         }
         hadMemoryAccesses = !MemoryAccesses.empty();
 
-        while (!MemoryAccesses.empty()) {
-            MemoryAccess &M = MemoryAccesses.back();
-            VCD.writeValueChange(MemReadWrite, M.Read ? "R" : "W");
-            VCD.writeValueChange<long unsigned int>(MemAddr, M.Address);
-            VCD.writeValueChange<long unsigned int>(MemData, M.Data);
-            MemoryAccesses.pop_back();
-            if (!MemoryAccesses.empty())
-                tick();
+        if (!MemoryAccesses.empty()) {
+            if (MemoryAccesses.size() > Timescale)
+                reporter->errx(1,
+                               _("Error: too many memory accesses in "
+                                 "instruction at timestamp %llu - more"
+                                 " than the %llu that can be represented in "
+                                 "the VCD output."),
+                               sop.mod_time, Timescale);
+
+            const size_t N = MemoryAccesses.size();
+
+            for (unsigned ma = 0; ma < N; ma++) {
+                if (ma > 0)
+                    subtick(ma * Timescale / N);
+                const MemoryAccess &M = MemoryAccesses[ma];
+                VCD.writeValueChange(MemReadWrite, M.Read ? "R" : "W");
+                VCD.writeValueChange<long unsigned int>(MemAddr, M.Address);
+                VCD.writeValueChange<long unsigned int>(MemData, M.Data);
+            }
+
+            MemoryAccesses.clear();
         }
 
         // Note : it would be good reorder the register updates / memory
@@ -324,7 +342,19 @@ class VCDVisitor : public ParseReceiver {
     const VCD::VCDSignalIndex MemReadWrite;
     const VCD::VCDSignalIndex MemAddr;
     const VCD::VCDSignalIndex MemData;
-    unsigned long long Tick;
+    // Tick represent the time at which an instruction executes. It is either
+    // the time of the previous instruction + 1 * Timescale, or when the
+    // --use-tarmac-timestamps option is used, the timestamp of the instruction
+    // (* Timescale). In its current form, the VCD writer can not represent
+    // instructions executing with the same timestamp from the tarmac trace.
+    // Note: it is initialized to -1 so that the first instruction gets ticked
+    // to 0 (when not using tarmac timestamps).
+    Time Tick;
+    // How many subticks in a tick to represent memory accesses. An instruction
+    // might be accessing multiple memory locations (e.g. LDM/STM). In order to
+    // display those in the VCD viewer, the instruction duration (assumed to be
+    // 1) is split in sub-ticks.
+    static const constexpr Time Timescale = 1000;
     bool UseTarmacTimestamp;
 
     bool PrevInstExecuted;
@@ -334,21 +364,33 @@ class VCDVisitor : public ParseReceiver {
 
     void tick()
     {
-        VCD.writeTime(Tick);
         Tick += 1;
+        VCD.writeTime(Tick * Timescale);
     }
 
     void tick(Time mod_time)
     {
-        if (UseTarmacTimestamp) {
-            if (Tick > mod_time)
-                reporter->errx(1, _("Error when using the instruction "
-                                    "timestamp from the tarmac trace"));
-            VCD.writeTime(mod_time);
-            Tick = mod_time;
-            return;
-        }
-        tick();
+        if (mod_time < Tick)
+            reporter->errx(1,
+                           _("Error: tarmac trace is not "
+                             "chronologically ordered (time %llu follows "
+                             "time %llu)."),
+                           mod_time, Tick);
+        if (mod_time == Tick && Tick != 0)
+            reporter->warnx(
+                _("Warning: time is not increasing strictly monotonically "
+                  "between instructions at time %llu. You should consider "
+                  "*not* using option --use-tarmac-timestamps."),
+                mod_time);
+        Tick = mod_time;
+        VCD.writeTime(Tick * Timescale);
+    }
+
+    void subtick(Time delta)
+    {
+        assert(delta < Timescale &&
+               "delta in subtick is larger than Timescale");
+        VCD.writeTime(Tick * Timescale + delta);
     }
 
     void

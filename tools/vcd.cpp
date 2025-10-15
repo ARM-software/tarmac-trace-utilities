@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Arm Limited. All rights reserved.
+ * Copyright 2016-2021,2025 Arm Limited. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -235,7 +235,7 @@ string VCDFile::chomp(string str)
 
 VCDFile::VCDFile(const string &ModuleName, const string &Filename, bool NoDate)
     : Output(Filename.c_str(), ofstream::out), Date(), Version(), Comment(),
-      Timescale(TimeScale::NS), VariableDefinition(ModuleName), Signals()
+      Timescale(TimeScale::PS), VariableDefinition(ModuleName), Signals()
 {
     time_t tt;
     time(&tt);
@@ -281,6 +281,9 @@ void VCDFile::writeHeader()
         addVCDTextSection("comment", Comment);
 
     switch (Timescale) {
+    case TimeScale::FS:
+        addVCDTextSection("timescale", "1fs", /* withCR= */ false);
+        break;
     case TimeScale::PS:
         addVCDTextSection("timescale", "1ps", /* withCR= */ false);
         break;
