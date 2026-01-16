@@ -2138,6 +2138,23 @@ void TraceWindow::redraw_canvas(unsigned line_start, unsigned line_limit)
     }
 }
 
+static void interpret_value_for_context_menu(Browser &br,
+                                             unsigned long long value,
+                                             Addr size, wxMenu *menu)
+{
+    if (size > 8)
+        return;
+    bool started = false;
+    br.interpret_number(value, size, [&](const std::string &text) {
+        if (!started) {
+            started = true;
+            menu->AppendSeparator();
+        }
+        wxMenuItem *label = menu->Append(wxID_ANY, text);
+        label->Enable(false);
+    });
+}
+
 bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
 {
     clear_menu(contextmenu);
@@ -2202,6 +2219,9 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
 
             contextmenu->Append(mi_provenance, _("Go to previous write"));
             contextmenu->Append(mi_contextmem, _("Open a memory window here"));
+
+            interpret_value_for_context_menu(br, dtl.mev->contents,
+                                             dtl.mev->size, contextmenu);
         } else if (dtl.rev) {
             contextmenu->AppendSeparator();
             wxMenuItem *label =
@@ -2215,6 +2235,15 @@ bool TraceWindow::prepare_context_menu(const LogicalPos &logpos)
             context_menu_size = reg_size(dtl.rev->reg);
 
             contextmenu->Append(mi_provenance, _("Go to previous write"));
+
+            if (dtl.rev->bytes.size() == context_menu_size &&
+                context_menu_size <= 8 && dtl.rev->offset == 0) {
+                unsigned long long intval = 0;
+                for (size_t i = 0, e = dtl.rev->bytes.size(); i < e; i++)
+                    intval |= (unsigned long long)dtl.rev->bytes[i] << (8 * i);
+                interpret_value_for_context_menu(br, intval, context_menu_size,
+                                                 contextmenu);
+            }
         }
     }
     return true;
@@ -2795,6 +2824,11 @@ bool RegisterWindow::prepare_context_menu(const LogicalPos &logpos)
     contextmenu->Append(mi_ctx_provenance,
                         _("Go to last write to this register"));
 
+    auto regval = br.get_reg_value(memroot, context_menu_reg);
+    if (regval.first)
+        interpret_value_for_context_menu(
+            br, regval.second, reg_size(context_menu_reg), contextmenu);
+
     return true;
 }
 
@@ -3157,8 +3191,14 @@ bool MemoryWindow::prepare_context_menu(const LogicalPos &logpos)
     wxMenuItem *label = contextmenu->Append(
         wxID_ANY, format(_("{0}-byte region at address 0x{1:x}"), size, start));
     label->Enable(false);
+
     contextmenu->Append(mi_ctx_provenance,
                         _("Go to last write to this region"));
+
+    unsigned long long value;
+    if (br.get_memory_word(start, size, memroot, &value))
+        interpret_value_for_context_menu(br, value, size, contextmenu);
+
     return true;
 }
 

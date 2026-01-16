@@ -1109,3 +1109,53 @@ void Browser::format_memory(string &line, string &type, Addr addr,
     type = typeaddr + typesep + typehex + typesep + typechars;
     hexpos = dispaddr.size() + dispsep.size();
 }
+
+bool Browser::get_memory_word(Addr addr, Addr size, OFF_T memroot,
+                              unsigned long long *out)
+{
+    constexpr size_t MAXLEN = 8;
+    unsigned char val[MAXLEN], def[MAXLEN];
+
+    if (size < 1 || size > MAXLEN)
+        return false;
+
+    getmem(memroot, 'm', addr, size, val, def);
+
+    int shift0 = 0, shiftinc = 8;
+    if (index.isBigEndian()) {
+        shift0 = 8 * (size - 1);
+        shiftinc = -8;
+    }
+
+    unsigned long long v = 0;
+    for (size_t i = 0; i < size; i++) {
+        if (!def[i])
+            return false;
+        v |= (unsigned long long)val[i] << (shift0 + shiftinc * i);
+    }
+
+    *out = v;
+    return true;
+}
+
+void Browser::interpret_number(unsigned long long value, unsigned size,
+                               std::function<void(const std::string &)> output)
+{
+    output(format(_("Hex: 0x{0:x}"), value));
+    if (value >> (8 * size - 1)) {
+        unsigned long long limit = (1 << (8 * size - 1)) << 1;
+        unsigned long long negvalue = limit - value;
+        output(format(_("Signed decimal: -{0}"), negvalue));
+        output(format(_("Unsigned decimal: {0}"), value));
+    } else {
+        output(format(_("Decimal: {0}"), value));
+    }
+    switch (size) {
+      case 4:
+        output(format(_("IEEE 754 single precision: {0}"), float_btod(value)));
+        break;
+      case 8:
+        output(format(_("IEEE 754 double precision: {0}"), double_btod(value)));
+        break;
+    }
+}

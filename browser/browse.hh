@@ -206,6 +206,8 @@ class Browser : public IndexNavigator {
                              OFF_T diff_memroot = 0, unsigned diff_minline = 0);
 
     bool lookup_register(const std::string &name, RegisterId &r);
+    bool get_memory_word(Addr addr, Addr size, OFF_T memroot,
+                         unsigned long long *out);
 
     // This version of evaluate_expression_addr() still lets you refer
     // to image symbols, but unlike TraceView's one, it doesn't let
@@ -216,6 +218,10 @@ class Browser : public IndexNavigator {
     // And here's a parse_expression() that will refer to image symbols.
     ExprPtr parse_expression(const std::string &line,
                              std::ostringstream &error);
+
+    // Helper function to provide various interpretations of a hex number
+    static void interpret_number(unsigned long long value, unsigned size,
+                                 std::function<void(const std::string &)> output);
 };
 
 size_t format_reg_length(const RegisterId &r);
