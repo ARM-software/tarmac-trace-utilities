@@ -247,6 +247,15 @@ Tarmac Text Rev 3t
                     R V5<127:64> 00000000
 
 # ----------------------------------------------------------------------
+
+# Trace lines seen in the output of an Cortex-R5 RTL simulation.
+
+# In this otherwise normal IT line, the CPU mode is missing: it
+# usually comes between the instruction-set state (the 'A') and the
+# colon.
+ 948756 ns IT (00000000:00000000) 00000000 ea000006 A :                      B pc+0x00000018 ; 0x00000020
+
+# ----------------------------------------------------------------------
 # Manually written tests
 
 # Test LD and ST records (showing a 16-byte region of memory with

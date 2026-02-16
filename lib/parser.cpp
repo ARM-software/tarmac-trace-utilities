@@ -632,18 +632,26 @@ class TarmacLineParserImpl {
                 // token, and its following colon, in this record.
                 //
                 // Currently, I've only encountered one Tarmac producer
-                // (Cortex-M4 RTL) that will omit it. That producer uses IT
-                // rather than ES style instruction lines, and also has two
-                // other features unique in my experience so far: it has a pair
-                // of colon-separated numbers in the bracketed section, and it
-                // uses "T16" and "T32" instead of plain "T" to show the
-                // instruction set state. So, for the moment, my heuristic is
-                // that if we see both of those features, we expect the CPU
-                // mode to be omitted.
+                // (Cortex-M4 RTL) that will omit both the CPU mode _and_ the
+                // colon. That producer uses IT rather than ES style
+                // instruction lines, and also has two other features unique in
+                // my experience so far: it has a pair of colon-separated
+                // numbers in the bracketed section, and it uses "T16" and
+                // "T32" instead of plain "T" to show the instruction set
+                // state. So, for the moment, my heuristic is that if we see
+                // both of those features, we expect the CPU mode to be
+                // omitted.
+                //
+                // Another producer (Cortex-R5 RTL) omits the CPU mode, but
+                // leaves in the colon. That's much easier: if we can see that
+                // the next token is a colon, we can just assume the CPU mode
+                // is missing.
                 if (!is_ES && seen_colon_in_brackets && t16_t32_state)
                     expect_cpu_mode = false;
 
-                if (expect_cpu_mode) {
+                if (tok == ':') {
+                    tok = lex(); // colon with no CPU mode before it
+                } else if (expect_cpu_mode) {
                     if (!tok.isword())
                         parse_error(tok, _("expected CPU mode"));
                     // We currently ignore the CPU mode. If we ever needed to
