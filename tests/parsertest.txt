@@ -255,6 +255,14 @@ Tarmac Text Rev 3t
 # colon.
  948756 ns IT (00000000:00000000) 00000000 ea000006 A :                      B pc+0x00000018 ; 0x00000020
 
+# This memory access line is normal except for the bracketed pair of
+# hex numbers, which don't normally appear in M records at all.
+# Comparing with nearby records in the same file, it looks as if the
+# first is the address of the instruction, and the second is a serial
+# number that increments per instruction. So this would provide a way
+# to tie a memory access to the instruction that caused it.
+1340833 ns MNW4____ (00000050:000000a8) 05011000 00000003
+
 # ----------------------------------------------------------------------
 # Manually written tests
 

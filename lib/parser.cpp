@@ -1051,6 +1051,27 @@ class TarmacLineParserImpl {
                 tok = lex();
             }
 
+            if (tok == '(') {
+                /*
+                 * The Tarmac producer in Cortex-R5 RTL writes a bracketed pair
+                 * of hex numbers here. It writes the same pair of numbers in
+                 * instruction lines: it looks as if the first is the address
+                 * of the instruction, and the second is a serial number that
+                 * increments per instruction. So this would provide a way to
+                 * tie a memory access to the instruction that caused it.
+                 * However, we don't track that information, so we simply skip
+                 * tokens until a closing parenthesis.
+                 */
+                Token openparen = tok;
+                do {
+                    tok = lex();
+                    if (tok.iseol())
+                        parse_error(
+                            openparen, _("unclosed '(' in memory operation"));
+                } while (tok != ')');
+                tok = lex(); // now eat the ')' too
+            }
+
             if (!tok.ishex())
                 parse_error(tok, _("expected memory address"));
             uint64_t addr = tok.hexvalue();

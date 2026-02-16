@@ -265,6 +265,8 @@ Parse warning: unsupported system operation 'AT'
 * RegisterEvent time=16465 reg=v5 offset=8 bytes=00:00:00:00:00:00:00:00
 --- Tarmac line:  948756 ns IT (00000000:00000000) 00000000 ea000006 A :                      B pc+0x00000018 ; 0x00000020
 * InstructionEvent time=948756 effect=executed pc=0 iset=ARM width=32 instruction=ea000006 disassembly="B pc+0x00000018 ; 0x00000020"
+--- Tarmac line: 1340833 ns MNW4____ (00000050:000000a8) 05011000 00000003
+* MemoryEvent time=1340833 read=false known=true addr=5011000 size=4 contents=3
 --- Tarmac line:     1234567 cs E DebugEvent_dummy to reset timestamp for next two lines
 * TextOnlyEvent time=1234567 type="E" text="DebugEvent_dummy to reset timestamp for next two lines"
 --- Tarmac line:                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH
