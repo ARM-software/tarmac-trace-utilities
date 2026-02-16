@@ -263,6 +263,13 @@ Tarmac Text Rev 3t
 # to tie a memory access to the instruction that caused it.
 1340833 ns MNW4____ (00000050:000000a8) 05011000 00000003
 
+# This MCR instruction is followed by an unusual record that looks
+# like a memory access, but isn't, because the address is replaced by
+# the word TRANSFER. From the context of the MCR, this appears to be
+# logging the data transferred to or from the coprocessor.
+1359353 ns IT (01000250:000000bb) 01000250 ee064f12 A :                      MCR p15,0x0,r4,c6,c2,0x0
+1359353 ns MCW4___R (01000250:000000bb) TRANSFER 00000000
+
 # ----------------------------------------------------------------------
 # Manually written tests
 

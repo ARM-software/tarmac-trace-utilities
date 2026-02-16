@@ -267,6 +267,9 @@ Parse warning: unsupported system operation 'AT'
 * InstructionEvent time=948756 effect=executed pc=0 iset=ARM width=32 instruction=ea000006 disassembly="B pc+0x00000018 ; 0x00000020"
 --- Tarmac line: 1340833 ns MNW4____ (00000050:000000a8) 05011000 00000003
 * MemoryEvent time=1340833 read=false known=true addr=5011000 size=4 contents=3
+--- Tarmac line: 1359353 ns IT (01000250:000000bb) 01000250 ee064f12 A :                      MCR p15,0x0,r4,c6,c2,0x0
+* InstructionEvent time=1359353 effect=executed pc=1000250 iset=ARM width=32 instruction=ee064f12 disassembly="MCR p15,0x0,r4,c6,c2,0x0"
+--- Tarmac line: 1359353 ns MCW4___R (01000250:000000bb) TRANSFER 00000000
 --- Tarmac line:     1234567 cs E DebugEvent_dummy to reset timestamp for next two lines
 * TextOnlyEvent time=1234567 type="E" text="DebugEvent_dummy to reset timestamp for next two lines"
 --- Tarmac line:                     LD 000000007ff80fe0 ........ 44444444 ........ 2222..11    S:007ff80fe0    nGnRnE OSH

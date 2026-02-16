@@ -1003,6 +1003,7 @@ class TarmacLineParserImpl {
             bool seen_rw = false, read = false;
             bool seen_size = false;
             bool expect_memory_order = false;
+            bool seen_c = false;
             size_t size = 0;
 
             for (size_t pos = 0, end = tok.s.size(); pos < end ;) {
@@ -1035,6 +1036,10 @@ class TarmacLineParserImpl {
                     // written in memory order, instead of logical order for
                     // the word being transferred.
                     expect_memory_order = true;
+                } else if (c == 'C') {
+                    // Used to detect and exclude coprocessor transfers (see
+                    // below)
+                    seen_c = true;
                 }
             }
             tok = lex();
@@ -1070,6 +1075,20 @@ class TarmacLineParserImpl {
                             openparen, _("unclosed '(' in memory operation"));
                 } while (tok != ')');
                 tok = lex(); // now eat the ')' too
+            }
+
+            if (tok == "TRANSFER" && seen_c) {
+                /*
+                 * The Tarmac producer in Cortex-R5 RTL records data sent to or
+                 * from a coprocessor by instructions such as MCR, in the form
+                 * of a record looking very like a memory load/store, except
+                 * that the letter 'C' appears in the 8-character record-type
+                 * token, and the memory address is replaced by the keyword
+                 * "TRANSFER" because the data is not destined for (or received
+                 * from) memory at all. If we see both of those features, we
+                 * reject the line as not a memory address at all.
+                 */
+                return;
             }
 
             if (!tok.ishex())
