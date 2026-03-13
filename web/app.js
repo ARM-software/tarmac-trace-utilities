@@ -45,7 +45,7 @@ function formatAddress(value) {
 }
 
 function displayPc(site) {
-  return site.pc_label || formatAddress(site.pc);
+  return site.pc_label || site.pc_hex || formatAddress(site.pc);
 }
 
 function normaliseTree(root) {

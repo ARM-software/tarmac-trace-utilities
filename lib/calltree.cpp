@@ -61,6 +61,7 @@ void write_site_json(JsonWriter &jw, const IndexNavigator &IN,
     jw.obj_field_number("time", site.time);
     jw.obj_field_number("line", site.tarmac_line + IN.index.lineno_offset);
     jw.obj_field_number("pc", site.addr);
+    jw.obj_field_string("pc_hex", raw_hex_address(site.addr));
 
     string label = symbolic_label(IN, site.addr);
     if (label.empty())

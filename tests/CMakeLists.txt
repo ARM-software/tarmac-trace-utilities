@@ -172,11 +172,11 @@ add_test(NAME calltree-json-no-symbols
   )
 add_test(NAME calltree-json-parse-symbols
   COMMAND ${python_exe} -c
-      "import json, pathlib; data = json.loads(pathlib.Path(r'${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-symbols.json.ref').read_text()); assert data['name'] == '_start'; assert data['inclusive_time'] == 2043; assert len(data['children']) == 2; assert data['function_entry']['pc'] == 0x8000; assert data['function_entry']['pc_label'] == '_start'"
+      "import json, pathlib; data = json.loads(pathlib.Path(r'${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-symbols.json.ref').read_text()); assert data['name'] == '_start'; assert data['inclusive_time'] == 2043; assert len(data['children']) == 2; assert data['function_entry']['pc'] == 0x8000; assert data['function_entry']['pc_hex'] == '0x8000'; assert data['function_entry']['pc_label'] == '_start'"
   )
 add_test(NAME calltree-json-parse-no-symbols
   COMMAND ${python_exe} -c
-      "import json, pathlib; data = json.loads(pathlib.Path(r'${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-addr.json.ref').read_text()); assert data['name'] == '0x8000'; assert data['function_entry']['pc'] == 0x8000; assert data['function_entry']['pc_label'] is None"
+      "import json, pathlib; data = json.loads(pathlib.Path(r'${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-addr.json.ref').read_text()); assert data['name'] == '0x8000'; assert data['function_entry']['pc'] == 0x8000; assert data['function_entry']['pc_hex'] == '0x8000'; assert data['function_entry']['pc_label'] is None"
   )
 
 # Tests of tarmac-flamegraph on the same quicksort.tarmac trace file.
