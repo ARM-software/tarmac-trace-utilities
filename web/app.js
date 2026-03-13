@@ -36,6 +36,18 @@ function formatNumber(value) {
   return new Intl.NumberFormat("en-GB").format(value ?? 0);
 }
 
+function formatAddress(value) {
+  if (value === null || value === undefined) {
+    return "-";
+  }
+
+  return `0x${Number(value).toString(16)}`;
+}
+
+function displayPc(site) {
+  return site.pc_label || formatAddress(site.pc);
+}
+
 function normaliseTree(root) {
   let autoId = 0;
 
@@ -126,10 +138,10 @@ function updateDetailPanel() {
   elements.detailExitLine.textContent = formatNumber(node.functionExit.line);
   elements.detailEntryTime.textContent = formatNumber(node.functionEntry.time);
   elements.detailEntryLine2.textContent = formatNumber(node.functionEntry.line);
-  elements.detailEntryPc.textContent = node.functionEntry.pc || "-";
+  elements.detailEntryPc.textContent = displayPc(node.functionEntry);
   elements.detailExitTime.textContent = formatNumber(node.functionExit.time);
   elements.detailExitLine2.textContent = formatNumber(node.functionExit.line);
-  elements.detailExitPc.textContent = node.functionExit.pc || "-";
+  elements.detailExitPc.textContent = displayPc(node.functionExit);
 
   elements.detailPath.innerHTML = "";
   node.path.forEach((segment) => {
@@ -146,8 +158,8 @@ function matchesSearch(node) {
 
   const haystack = [
     node.name,
-    node.functionEntry.pc,
-    node.functionExit.pc,
+    displayPc(node.functionEntry),
+    displayPc(node.functionExit),
     node.path.join(" "),
   ]
     .join(" ")

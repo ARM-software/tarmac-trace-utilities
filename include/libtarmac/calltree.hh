@@ -102,6 +102,7 @@ class CallTreeVisitor {
 
 // Configuration options common to tools using a CallTree object.
 class Argparse;
+class JsonWriter;
 struct CallTreeOptions {
     // When a record enters a function not at its start address, do we
     // show it as 'function + 0xNNN', or just as 'function'?
@@ -220,7 +221,7 @@ class CallTree {
     void generate_flame_graph_recurse(std::ostringstream &stackstream,
                                       std::map<std::string, Time> &output,
                                       Time *parent_time) const;
-    void generate_json_recurse(std::ostream &os, unsigned depth) const;
+    void generate_json_recurse(JsonWriter &jw) const;
 };
 
 #endif // TARMAC_CALLTREE_HH
