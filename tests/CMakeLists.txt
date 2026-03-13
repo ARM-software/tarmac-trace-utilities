@@ -158,6 +158,23 @@ add_test(NAME calltree-symbols
       ${CMAKE_BINARY_DIR}/tarmac-calltree --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 
+add_test(NAME calltree-json-symbols
+  COMMAND ${test_driver_cmd}
+      --tempfile quicksort.tarmac.index
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-symbols.json.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-calltree-json --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
+  )
+add_test(NAME calltree-json-no-symbols
+  COMMAND ${test_driver_cmd}
+      --tempfile quicksort.tarmac.index
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-addr.json.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-calltree-json --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
+  )
+add_test(NAME calltree-json-parse-symbols
+  COMMAND ${python_exe} -c
+      "import json, pathlib; data = json.loads(pathlib.Path(r'${CMAKE_CURRENT_SOURCE_DIR}/calltree-quicksort-symbols.json.ref').read_text()); assert data['name'] == '_start'; assert data['inclusive_time'] == 2043; assert len(data['children']) == 2"
+  )
+
 # Tests of tarmac-flamegraph on the same quicksort.tarmac trace file.
 # Expected output, with and without symbol annotations from the ELF
 # file, is in flamegraph-quicksort-*.ref.

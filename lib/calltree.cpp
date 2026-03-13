@@ -24,6 +24,7 @@
 
 #include <climits>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <vector>
 
@@ -31,6 +32,7 @@ using std::cout;
 using std::dec;
 using std::endl;
 using std::hex;
+using std::ios;
 using std::map;
 using std::min;
 using std::ostream;
@@ -39,6 +41,56 @@ using std::pair;
 using std::showbase;
 using std::string;
 using std::vector;
+
+namespace {
+void json_indent(ostream &os, unsigned depth)
+{
+    os << string(depth * 2, ' ');
+}
+
+void json_escape(ostream &os, const string &text)
+{
+    os << '"';
+    for (unsigned char ch : text) {
+        switch (ch) {
+        case '\\':
+            os << "\\\\";
+            break;
+        case '"':
+            os << "\\\"";
+            break;
+        case '\b':
+            os << "\\b";
+            break;
+        case '\f':
+            os << "\\f";
+            break;
+        case '\n':
+            os << "\\n";
+            break;
+        case '\r':
+            os << "\\r";
+            break;
+        case '\t':
+            os << "\\t";
+            break;
+        default:
+            if (ch < 0x20) {
+                ios::fmtflags saved_flags = os.flags();
+                char saved_fill = os.fill();
+                os << "\\u" << std::hex << std::setw(4) << std::setfill('0')
+                   << static_cast<unsigned>(ch);
+                os.flags(saved_flags);
+                os.fill(saved_fill);
+            } else {
+                os << static_cast<char>(ch);
+            }
+            break;
+        }
+    }
+    os << '"';
+}
+} // namespace
 
 string CallTree::getFunctionName(Addr addr) const
 {
@@ -149,6 +201,117 @@ void CallTree::generate_flame_graph(ostream &os) const
     generate_flame_graph_recurse(stackstream, output, nullptr);
     for (auto &kv : output)
         os << kv.first << ' ' << kv.second << endl;
+}
+
+void CallTree::generate_json(ostream &os) const
+{
+    generate_json_recurse(os, 0);
+    os << endl;
+}
+
+void CallTree::generate_json_recurse(ostream &os, unsigned depth) const
+{
+    string function_name = getFunctionName(function_entry);
+    Time inclusive_time = function_exit.time - function_entry.time;
+
+    json_indent(os, depth);
+    os << "{\n";
+
+    json_indent(os, depth + 1);
+    os << "\"name\": ";
+    json_escape(os, function_name.empty() ? IN.get_symbolic_address(function_entry.addr,
+                                                                    true)
+                                          : function_name);
+    os << ",\n";
+
+    json_indent(os, depth + 1);
+    os << "\"function_entry\": {\n";
+    json_indent(os, depth + 2);
+    os << "\"time\": " << function_entry.time << ",\n";
+    json_indent(os, depth + 2);
+    os << "\"line\": " << function_entry.tarmac_line + IN.index.lineno_offset
+       << ",\n";
+    json_indent(os, depth + 2);
+    os << "\"pc\": ";
+    json_escape(os, IN.get_symbolic_address(function_entry.addr, true));
+    os << "\n";
+    json_indent(os, depth + 1);
+    os << "},\n";
+
+    json_indent(os, depth + 1);
+    os << "\"function_exit\": {\n";
+    json_indent(os, depth + 2);
+    os << "\"time\": " << function_exit.time << ",\n";
+    json_indent(os, depth + 2);
+    os << "\"line\": " << function_exit.tarmac_line + IN.index.lineno_offset
+       << ",\n";
+    json_indent(os, depth + 2);
+    os << "\"pc\": ";
+    json_escape(os, IN.get_symbolic_address(function_exit.addr, true));
+    os << "\n";
+    json_indent(os, depth + 1);
+    os << "},\n";
+
+    json_indent(os, depth + 1);
+    os << "\"inclusive_time\": " << inclusive_time << ",\n";
+
+    json_indent(os, depth + 1);
+    os << "\"children\": [";
+    if (!call_trees.empty())
+        os << "\n";
+
+    for (unsigned i = 0; i < call_trees.size(); i++) {
+        const TarmacSite &call_site = call_sites[i];
+        const TarmacSite &resume_site = resume_sites[i];
+        json_indent(os, depth + 2);
+        os << "{\n";
+
+        json_indent(os, depth + 3);
+        os << "\"call_site\": {\n";
+        json_indent(os, depth + 4);
+        os << "\"time\": " << call_site.time << ",\n";
+        json_indent(os, depth + 4);
+        os << "\"line\": " << call_site.tarmac_line + IN.index.lineno_offset
+           << ",\n";
+        json_indent(os, depth + 4);
+        os << "\"pc\": ";
+        json_escape(os, IN.get_symbolic_address(call_site.addr, true));
+        os << "\n";
+        json_indent(os, depth + 3);
+        os << "},\n";
+
+        json_indent(os, depth + 3);
+        os << "\"resume_site\": {\n";
+        json_indent(os, depth + 4);
+        os << "\"time\": " << resume_site.time << ",\n";
+        json_indent(os, depth + 4);
+        os << "\"line\": " << resume_site.tarmac_line + IN.index.lineno_offset
+           << ",\n";
+        json_indent(os, depth + 4);
+        os << "\"pc\": ";
+        json_escape(os, IN.get_symbolic_address(resume_site.addr, true));
+        os << "\n";
+        json_indent(os, depth + 3);
+        os << "},\n";
+
+        json_indent(os, depth + 3);
+        os << "\"callee\": ";
+        call_trees[i].generate_json_recurse(os, depth + 3);
+        os << "\n";
+
+        json_indent(os, depth + 2);
+        os << "}";
+        if (i + 1 < call_trees.size())
+            os << ",";
+        os << "\n";
+    }
+
+    if (!call_trees.empty())
+        json_indent(os, depth + 1);
+    os << "]\n";
+
+    json_indent(os, depth);
+    os << "}";
 }
 
 namespace {

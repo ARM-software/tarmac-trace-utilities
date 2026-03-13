@@ -1,0 +1,787 @@
+{
+  "name": "0x8000",
+  "function_entry": {
+    "time": 1,
+    "line": 157,
+    "pc": "0x8000"
+  },
+  "function_exit": {
+    "time": 2044,
+    "line": 4321,
+    "pc": "0x80e4"
+  },
+  "inclusive_time": 2043,
+  "children": [
+    {
+      "call_site": {
+        "time": 9,
+        "line": 175,
+        "pc": "0x8020"
+      },
+      "resume_site": {
+        "time": 2028,
+        "line": 4286,
+        "pc": "0x8024"
+      },
+      "callee":       {
+        "name": "0x8038",
+        "function_entry": {
+          "time": 10,
+          "line": 177,
+          "pc": "0x8038"
+        },
+        "function_exit": {
+          "time": 2027,
+          "line": 4285,
+          "pc": "0x8050"
+        },
+        "inclusive_time": 2017,
+        "children": [
+          {
+            "call_site": {
+              "time": 366,
+              "line": 858,
+              "pc": "0x8078"
+            },
+            "resume_site": {
+              "time": 1769,
+              "line": 3736,
+              "pc": "0x807c"
+            },
+            "callee":             {
+              "name": "0x8038",
+              "function_entry": {
+                "time": 367,
+                "line": 860,
+                "pc": "0x8038"
+              },
+              "function_exit": {
+                "time": 1768,
+                "line": 3735,
+                "pc": "0x8050"
+              },
+              "inclusive_time": 1401,
+              "children": [
+                {
+                  "call_site": {
+                    "time": 580,
+                    "line": 1263,
+                    "pc": "0x8078"
+                  },
+                  "resume_site": {
+                    "time": 878,
+                    "line": 1901,
+                    "pc": "0x807c"
+                  },
+                  "callee":                   {
+                    "name": "0x8038",
+                    "function_entry": {
+                      "time": 581,
+                      "line": 1265,
+                      "pc": "0x8038"
+                    },
+                    "function_exit": {
+                      "time": 877,
+                      "line": 1900,
+                      "pc": "0x8050"
+                    },
+                    "inclusive_time": 296,
+                    "children": [
+                      {
+                        "call_site": {
+                          "time": 655,
+                          "line": 1409,
+                          "pc": "0x8078"
+                        },
+                        "resume_site": {
+                          "time": 733,
+                          "line": 1587,
+                          "pc": "0x807c"
+                        },
+                        "callee":                         {
+                          "name": "0x8038",
+                          "function_entry": {
+                            "time": 656,
+                            "line": 1411,
+                            "pc": "0x8038"
+                          },
+                          "function_exit": {
+                            "time": 732,
+                            "line": 1586,
+                            "pc": "0x8050"
+                          },
+                          "inclusive_time": 76,
+                          "children": [
+                            {
+                              "call_site": {
+                                "time": 685,
+                                "line": 1470,
+                                "pc": "0x8078"
+                              },
+                              "resume_site": {
+                                "time": 693,
+                                "line": 1494,
+                                "pc": "0x807c"
+                              },
+                              "callee":                               {
+                                "name": "0x8038",
+                                "function_entry": {
+                                  "time": 686,
+                                  "line": 1472,
+                                  "pc": "0x8038"
+                                },
+                                "function_exit": {
+                                  "time": 692,
+                                  "line": 1493,
+                                  "pc": "0x8050"
+                                },
+                                "inclusive_time": 6,
+                                "children": []
+                              }
+                            },
+                            {
+                              "call_site": {
+                                "time": 718,
+                                "line": 1544,
+                                "pc": "0x8078"
+                              },
+                              "resume_site": {
+                                "time": 726,
+                                "line": 1568,
+                                "pc": "0x807c"
+                              },
+                              "callee":                               {
+                                "name": "0x8038",
+                                "function_entry": {
+                                  "time": 719,
+                                  "line": 1546,
+                                  "pc": "0x8038"
+                                },
+                                "function_exit": {
+                                  "time": 725,
+                                  "line": 1567,
+                                  "pc": "0x8050"
+                                },
+                                "inclusive_time": 6,
+                                "children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "call_site": {
+                          "time": 780,
+                          "line": 1679,
+                          "pc": "0x8078"
+                        },
+                        "resume_site": {
+                          "time": 871,
+                          "line": 1882,
+                          "pc": "0x807c"
+                        },
+                        "callee":                         {
+                          "name": "0x8038",
+                          "function_entry": {
+                            "time": 781,
+                            "line": 1681,
+                            "pc": "0x8038"
+                          },
+                          "function_exit": {
+                            "time": 870,
+                            "line": 1881,
+                            "pc": "0x8050"
+                          },
+                          "inclusive_time": 89,
+                          "children": [
+                            {
+                              "call_site": {
+                                "time": 820,
+                                "line": 1760,
+                                "pc": "0x8078"
+                              },
+                              "resume_site": {
+                                "time": 864,
+                                "line": 1863,
+                                "pc": "0x807c"
+                              },
+                              "callee":                               {
+                                "name": "0x8038",
+                                "function_entry": {
+                                  "time": 821,
+                                  "line": 1762,
+                                  "pc": "0x8038"
+                                },
+                                "function_exit": {
+                                  "time": 863,
+                                  "line": 1862,
+                                  "pc": "0x8050"
+                                },
+                                "inclusive_time": 42,
+                                "children": [
+                                  {
+                                    "call_site": {
+                                      "time": 849,
+                                      "line": 1820,
+                                      "pc": "0x8078"
+                                    },
+                                    "resume_site": {
+                                      "time": 857,
+                                      "line": 1844,
+                                      "pc": "0x807c"
+                                    },
+                                    "callee":                                     {
+                                      "name": "0x8038",
+                                      "function_entry": {
+                                        "time": 850,
+                                        "line": 1822,
+                                        "pc": "0x8038"
+                                      },
+                                      "function_exit": {
+                                        "time": 856,
+                                        "line": 1843,
+                                        "pc": "0x8050"
+                                      },
+                                      "inclusive_time": 6,
+                                      "children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_site": {
+                    "time": 1049,
+                    "line": 2227,
+                    "pc": "0x8078"
+                  },
+                  "resume_site": {
+                    "time": 1571,
+                    "line": 3313,
+                    "pc": "0x807c"
+                  },
+                  "callee":                   {
+                    "name": "0x8038",
+                    "function_entry": {
+                      "time": 1050,
+                      "line": 2229,
+                      "pc": "0x8038"
+                    },
+                    "function_exit": {
+                      "time": 1570,
+                      "line": 3312,
+                      "pc": "0x8050"
+                    },
+                    "inclusive_time": 520,
+                    "children": [
+                      {
+                        "call_site": {
+                          "time": 1177,
+                          "line": 2476,
+                          "pc": "0x8078"
+                        },
+                        "resume_site": {
+                          "time": 1564,
+                          "line": 3294,
+                          "pc": "0x807c"
+                        },
+                        "callee":                         {
+                          "name": "0x8038",
+                          "function_entry": {
+                            "time": 1178,
+                            "line": 2478,
+                            "pc": "0x8038"
+                          },
+                          "function_exit": {
+                            "time": 1563,
+                            "line": 3293,
+                            "pc": "0x8050"
+                          },
+                          "inclusive_time": 385,
+                          "children": [
+                            {
+                              "call_site": {
+                                "time": 1274,
+                                "line": 2664,
+                                "pc": "0x8078"
+                              },
+                              "resume_site": {
+                                "time": 1432,
+                                "line": 3005,
+                                "pc": "0x807c"
+                              },
+                              "callee":                               {
+                                "name": "0x8038",
+                                "function_entry": {
+                                  "time": 1275,
+                                  "line": 2666,
+                                  "pc": "0x8038"
+                                },
+                                "function_exit": {
+                                  "time": 1431,
+                                  "line": 3004,
+                                  "pc": "0x8050"
+                                },
+                                "inclusive_time": 156,
+                                "children": [
+                                  {
+                                    "call_site": {
+                                      "time": 1336,
+                                      "line": 2787,
+                                      "pc": "0x8078"
+                                    },
+                                    "resume_site": {
+                                      "time": 1425,
+                                      "line": 2986,
+                                      "pc": "0x807c"
+                                    },
+                                    "callee":                                     {
+                                      "name": "0x8038",
+                                      "function_entry": {
+                                        "time": 1337,
+                                        "line": 2789,
+                                        "pc": "0x8038"
+                                      },
+                                      "function_exit": {
+                                        "time": 1424,
+                                        "line": 2985,
+                                        "pc": "0x8050"
+                                      },
+                                      "inclusive_time": 87,
+                                      "children": [
+                                        {
+                                          "call_site": {
+                                            "time": 1377,
+                                            "line": 2869,
+                                            "pc": "0x8078"
+                                          },
+                                          "resume_site": {
+                                            "time": 1385,
+                                            "line": 2893,
+                                            "pc": "0x807c"
+                                          },
+                                          "callee":                                           {
+                                            "name": "0x8038",
+                                            "function_entry": {
+                                              "time": 1378,
+                                              "line": 2871,
+                                              "pc": "0x8038"
+                                            },
+                                            "function_exit": {
+                                              "time": 1384,
+                                              "line": 2892,
+                                              "pc": "0x8050"
+                                            },
+                                            "inclusive_time": 6,
+                                            "children": []
+                                          }
+                                        },
+                                        {
+                                          "call_site": {
+                                            "time": 1410,
+                                            "line": 2943,
+                                            "pc": "0x8078"
+                                          },
+                                          "resume_site": {
+                                            "time": 1418,
+                                            "line": 2967,
+                                            "pc": "0x807c"
+                                          },
+                                          "callee":                                           {
+                                            "name": "0x8038",
+                                            "function_entry": {
+                                              "time": 1411,
+                                              "line": 2945,
+                                              "pc": "0x8038"
+                                            },
+                                            "function_exit": {
+                                              "time": 1417,
+                                              "line": 2966,
+                                              "pc": "0x8050"
+                                            },
+                                            "inclusive_time": 6,
+                                            "children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "call_site": {
+                                "time": 1479,
+                                "line": 3097,
+                                "pc": "0x8078"
+                              },
+                              "resume_site": {
+                                "time": 1557,
+                                "line": 3275,
+                                "pc": "0x807c"
+                              },
+                              "callee":                               {
+                                "name": "0x8038",
+                                "function_entry": {
+                                  "time": 1480,
+                                  "line": 3099,
+                                  "pc": "0x8038"
+                                },
+                                "function_exit": {
+                                  "time": 1556,
+                                  "line": 3274,
+                                  "pc": "0x8050"
+                                },
+                                "inclusive_time": 76,
+                                "children": [
+                                  {
+                                    "call_site": {
+                                      "time": 1509,
+                                      "line": 3158,
+                                      "pc": "0x8078"
+                                    },
+                                    "resume_site": {
+                                      "time": 1517,
+                                      "line": 3182,
+                                      "pc": "0x807c"
+                                    },
+                                    "callee":                                     {
+                                      "name": "0x8038",
+                                      "function_entry": {
+                                        "time": 1510,
+                                        "line": 3160,
+                                        "pc": "0x8038"
+                                      },
+                                      "function_exit": {
+                                        "time": 1516,
+                                        "line": 3181,
+                                        "pc": "0x8050"
+                                      },
+                                      "inclusive_time": 6,
+                                      "children": []
+                                    }
+                                  },
+                                  {
+                                    "call_site": {
+                                      "time": 1542,
+                                      "line": 3232,
+                                      "pc": "0x8078"
+                                    },
+                                    "resume_site": {
+                                      "time": 1550,
+                                      "line": 3256,
+                                      "pc": "0x807c"
+                                    },
+                                    "callee":                                     {
+                                      "name": "0x8038",
+                                      "function_entry": {
+                                        "time": 1543,
+                                        "line": 3234,
+                                        "pc": "0x8038"
+                                      },
+                                      "function_exit": {
+                                        "time": 1549,
+                                        "line": 3255,
+                                        "pc": "0x8050"
+                                      },
+                                      "inclusive_time": 6,
+                                      "children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_site": {
+                    "time": 1615,
+                    "line": 3397,
+                    "pc": "0x8078"
+                  },
+                  "resume_site": {
+                    "time": 1623,
+                    "line": 3421,
+                    "pc": "0x807c"
+                  },
+                  "callee":                   {
+                    "name": "0x8038",
+                    "function_entry": {
+                      "time": 1616,
+                      "line": 3399,
+                      "pc": "0x8038"
+                    },
+                    "function_exit": {
+                      "time": 1622,
+                      "line": 3420,
+                      "pc": "0x8050"
+                    },
+                    "inclusive_time": 6,
+                    "children": []
+                  }
+                },
+                {
+                  "call_site": {
+                    "time": 1676,
+                    "line": 3524,
+                    "pc": "0x8078"
+                  },
+                  "resume_site": {
+                    "time": 1762,
+                    "line": 3717,
+                    "pc": "0x807c"
+                  },
+                  "callee":                   {
+                    "name": "0x8038",
+                    "function_entry": {
+                      "time": 1677,
+                      "line": 3526,
+                      "pc": "0x8038"
+                    },
+                    "function_exit": {
+                      "time": 1761,
+                      "line": 3716,
+                      "pc": "0x8050"
+                    },
+                    "inclusive_time": 84,
+                    "children": [
+                      {
+                        "call_site": {
+                          "time": 1716,
+                          "line": 3605,
+                          "pc": "0x8078"
+                        },
+                        "resume_site": {
+                          "time": 1755,
+                          "line": 3698,
+                          "pc": "0x807c"
+                        },
+                        "callee":                         {
+                          "name": "0x8038",
+                          "function_entry": {
+                            "time": 1717,
+                            "line": 3607,
+                            "pc": "0x8038"
+                          },
+                          "function_exit": {
+                            "time": 1754,
+                            "line": 3697,
+                            "pc": "0x8050"
+                          },
+                          "inclusive_time": 37,
+                          "children": [
+                            {
+                              "call_site": {
+                                "time": 1740,
+                                "line": 3655,
+                                "pc": "0x8078"
+                              },
+                              "resume_site": {
+                                "time": 1748,
+                                "line": 3679,
+                                "pc": "0x807c"
+                              },
+                              "callee":                               {
+                                "name": "0x8038",
+                                "function_entry": {
+                                  "time": 1741,
+                                  "line": 3657,
+                                  "pc": "0x8038"
+                                },
+                                "function_exit": {
+                                  "time": 1747,
+                                  "line": 3678,
+                                  "pc": "0x8050"
+                                },
+                                "inclusive_time": 6,
+                                "children": []
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "call_site": {
+              "time": 1824,
+              "line": 3841,
+              "pc": "0x8078"
+            },
+            "resume_site": {
+              "time": 1832,
+              "line": 3865,
+              "pc": "0x807c"
+            },
+            "callee":             {
+              "name": "0x8038",
+              "function_entry": {
+                "time": 1825,
+                "line": 3843,
+                "pc": "0x8038"
+              },
+              "function_exit": {
+                "time": 1831,
+                "line": 3864,
+                "pc": "0x8050"
+              },
+              "inclusive_time": 6,
+              "children": []
+            }
+          },
+          {
+            "call_site": {
+              "time": 1890,
+              "line": 3978,
+              "pc": "0x8078"
+            },
+            "resume_site": {
+              "time": 2021,
+              "line": 4267,
+              "pc": "0x807c"
+            },
+            "callee":             {
+              "name": "0x8038",
+              "function_entry": {
+                "time": 1891,
+                "line": 3980,
+                "pc": "0x8038"
+              },
+              "function_exit": {
+                "time": 2020,
+                "line": 4266,
+                "pc": "0x8050"
+              },
+              "inclusive_time": 129,
+              "children": [
+                {
+                  "call_site": {
+                    "time": 1926,
+                    "line": 4050,
+                    "pc": "0x8078"
+                  },
+                  "resume_site": {
+                    "time": 1934,
+                    "line": 4074,
+                    "pc": "0x807c"
+                  },
+                  "callee":                   {
+                    "name": "0x8038",
+                    "function_entry": {
+                      "time": 1927,
+                      "line": 4052,
+                      "pc": "0x8038"
+                    },
+                    "function_exit": {
+                      "time": 1933,
+                      "line": 4073,
+                      "pc": "0x8050"
+                    },
+                    "inclusive_time": 6,
+                    "children": []
+                  }
+                },
+                {
+                  "call_site": {
+                    "time": 1970,
+                    "line": 4145,
+                    "pc": "0x8078"
+                  },
+                  "resume_site": {
+                    "time": 2014,
+                    "line": 4248,
+                    "pc": "0x807c"
+                  },
+                  "callee":                   {
+                    "name": "0x8038",
+                    "function_entry": {
+                      "time": 1971,
+                      "line": 4147,
+                      "pc": "0x8038"
+                    },
+                    "function_exit": {
+                      "time": 2013,
+                      "line": 4247,
+                      "pc": "0x8050"
+                    },
+                    "inclusive_time": 42,
+                    "children": [
+                      {
+                        "call_site": {
+                          "time": 1999,
+                          "line": 4205,
+                          "pc": "0x8078"
+                        },
+                        "resume_site": {
+                          "time": 2007,
+                          "line": 4229,
+                          "pc": "0x807c"
+                        },
+                        "callee":                         {
+                          "name": "0x8038",
+                          "function_entry": {
+                            "time": 2000,
+                            "line": 4207,
+                            "pc": "0x8038"
+                          },
+                          "function_exit": {
+                            "time": 2006,
+                            "line": 4228,
+                            "pc": "0x8050"
+                          },
+                          "inclusive_time": 6,
+                          "children": []
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "call_site": {
+        "time": 2029,
+        "line": 4288,
+        "pc": "0x8028"
+      },
+      "resume_site": {
+        "time": 2034,
+        "line": 4296,
+        "pc": "0x802c"
+      },
+      "callee":       {
+        "name": "0x80ec",
+        "function_entry": {
+          "time": 2030,
+          "line": 4290,
+          "pc": "0x80ec"
+        },
+        "function_exit": {
+          "time": 2033,
+          "line": 4295,
+          "pc": "0x80f8"
+        },
+        "inclusive_time": 3,
+        "children": []
+      }
+    }
+  ]
+}
