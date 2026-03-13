@@ -16,13 +16,13 @@ slice of Tarmac Trace Utilities.
 From the repo root:
 
 ```sh
-python3 -m http.server 8000
+python3 -m http.server 8123
 ```
 
 Then open:
 
 ```text
-http://localhost:8000/web/calltree-viewer.html
+http://localhost:8123/web/calltree-viewer.html
 ```
 
 Use one of these flows:
