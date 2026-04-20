@@ -2127,7 +2127,7 @@ void TraceBuffer::set_srdisp(bool wanted)
 
 void TraceBuffer::set_neondisp(bool wanted)
 {
-    if (wanted && !srdisp) {
+    if (wanted && !neondisp) {
         neondisp = new NeonRegisterDisplay(br, this, br.index.isAArch64());
         if (screen)
             screen->add_subwin(neondisp);
@@ -2142,7 +2142,7 @@ void TraceBuffer::set_neondisp(bool wanted)
 
 void TraceBuffer::set_mvedisp(bool wanted)
 {
-    if (wanted && !srdisp) {
+    if (wanted && !mvedisp) {
         mvedisp = new MVERegisterDisplay(br, this);
         if (screen)
             screen->add_subwin(mvedisp);
