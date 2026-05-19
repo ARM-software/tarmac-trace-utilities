@@ -113,11 +113,10 @@ struct Token {
     inline bool isregvalue() const { return isword(regvalue_chars); }
     inline bool ishexwithoptionalnamespace() const
     {
-        // Match a hex value, optionally followed by a namespace specifier,
-        // which must be one of "_S" or "_NS".
+        // Match a hex value, optionally followed by a namespace specifier.
         if (!isword())
             return false;
-        for (const char *suffix : {"_S", "_NS", ""}) {
+        for (const char *suffix : {"_S", "_NS", "_RT", "_RL", ""}) {
             if (ends_with(s, suffix))
                 return contains_only(s.substr(0, s.size() - strlen(suffix)),
                                      hex_digits);

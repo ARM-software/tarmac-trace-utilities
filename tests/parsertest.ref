@@ -60,6 +60,10 @@
 * InstructionEvent time=23 effect=executed pc=815c iset=Thumb width=32 instruction=f7ffef76 disassembly="BLX      {pc}-0x110 ; 0x804c"
 --- Tarmac line: 23 clk IT (23) 0000815c:00000000815c_S,00000000815e_S f7ffef76 T hyp_n : BLX      {pc}-0x110 ; 0x804c
 * InstructionEvent time=23 effect=executed pc=815c iset=Thumb width=32 instruction=f7ffef76 disassembly="BLX      {pc}-0x110 ; 0x804c"
+--- Tarmac line: 43964 clk MR8 60004200:0000a0004200_RL Device-nGnRnE (StronglyOrdered) 3b3b3b3b_19191919
+* MemoryEvent time=43964 read=true known=false addr=60004200 size=8 contents=0
+--- Tarmac line: 44082 clk MR8 a0004200:0000a0004200_RT Device-nGnRnE (StronglyOrdered) 52525252_70707070
+* MemoryEvent time=44082 read=true known=false addr=a0004200 size=8 contents=0
 --- Tarmac line: 40 clk R DC CISW 00000000:00000000
 Parse warning: unsupported system operation 'DC'
 --- Tarmac line: 1678 clk R IC IALLU 00000000:0000000
