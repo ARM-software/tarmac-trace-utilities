@@ -174,7 +174,8 @@ const Symbol *Image::find_symbol(Addr address) const
         return nullptr;
 
     // find the first symbol that contains or starts before 'address'
-    for (--it; it != addrtab.begin(); --it) {
+    while (it != addrtab.begin()) {
+        --it;
         const vector<const Symbol *> &syms = it->second;
 
         for (const Symbol *sym : syms) {
