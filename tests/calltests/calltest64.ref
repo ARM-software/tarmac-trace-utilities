@@ -46,7 +46,7 @@ transfer of control @ 321, sp=ffff0, pc=2101a4
 transfer of control @ 328, sp=100000, pc=21015c
   looks like return for call @ 299
 transfer of control @ 331, sp=100000, pc=210168
-o t:1000000 l:164 pc:0x210120 - t:86000000 l:336 pc:0x210170 : 
+o t:1000000 l:164 pc:0x210120 - t:86000000 l:336 pc:0x210170 : _start
   - t:4000000 l:170 pc:0x21012c - t:9000000 l:179 pc:0x210130
     o t:5000000 l:172 pc:0x210174 - t:8000000 l:178 pc:0x210180 : leaf_ret
   - t:10000000 l:182 pc:0x210134 - t:24000000 l:213 pc:0x210138

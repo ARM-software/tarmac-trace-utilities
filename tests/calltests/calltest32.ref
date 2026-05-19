@@ -66,7 +66,7 @@ transfer of control @ 264, sp=ffff8, pc=201c8
 transfer of control @ 271, sp=100000, pc=20100
   looks like return for call @ 242
 transfer of control @ 274, sp=100000, pc=2010c
-o t:1000000 l:52 pc:0x200b4 - t:107000000 l:279 pc:0x20114 : 
+o t:1000000 l:52 pc:0x200b4 - t:107000000 l:279 pc:0x20114 : _start
   - t:4000000 l:58 pc:0x200c0 - t:9000000 l:67 pc:0x200c4
     o t:5000000 l:60 pc:0x20118 - t:8000000 l:66 pc:0x20124 : leaf_bx_lr
   - t:10000000 l:70 pc:0x200c8 - t:23000000 l:99 pc:0x200cc
