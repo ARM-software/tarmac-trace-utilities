@@ -68,7 +68,7 @@ struct Segment {
     Segment(unsigned index, Addr addr, size_t memsize, size_t filesize,
             bool readable, bool writable, bool executable)
         : index(index), addr(addr), memsize(memsize), filesize(filesize),
-          writable(writable), executable(executable), readable(readable)
+          executable(executable), writable(writable), readable(readable)
     {
     }
 };
