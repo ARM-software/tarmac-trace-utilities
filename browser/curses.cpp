@@ -34,6 +34,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -50,10 +51,12 @@
 #endif
 
 using std::invalid_argument;
+using std::make_unique;
 using std::max;
 using std::min;
 using std::ostringstream;
 using std::string;
+using std::unique_ptr;
 using std::vector;
 
 // Arguments for each attribute type:
@@ -665,6 +668,9 @@ class TraceBuffer : public Window {
 
     bool syntax_highlighting, substitute_branch_targets;
 
+    unique_ptr<string> find_re_source; // in C++17, would be optional<string>
+    std::regex find_re;
+
   public:
     TraceBuffer(Browser &br)
         : Window(), br(br), vu(br), syntax_highlighting(true),
@@ -878,6 +884,7 @@ class TraceBuffer : public Window {
             {"p, P", _("Jump to the next / previous visit to a PC location")},
             {"n, N", _("Jump to the next / previous visit to the current PC location")},
             {"e, E", _("Jump to the next / previous CPU exception, if any")},
+            {"/, ?", _("Search the file forwards / backwards for a regular expression")},
             {"", ""},
             {"r", _("Toggle display of the core registers")},
             {"S, D", _("Toggle display of the single / double FP registers")},
@@ -1127,6 +1134,13 @@ class TraceBuffer : public Window {
                 ctrl_l_state = (ctrl_l_state + 2) % 3;
             update_scrtop(true, ctrl_l_state, 2);
             return true;
+        } else if (c == '/' || c == '?') {
+            screen->minibuf_ask(
+                (c == '?' ?
+                 _("Search backwards (regex): ") :
+                 _("Search forwards (regex): ")), this);
+            minibuf_reqtype = c;
+            return true;
         } else if (c == KEY_F(6)) {
             syntax_highlighting = !syntax_highlighting;
             screen->minibuf_info(syntax_highlighting
@@ -1167,6 +1181,12 @@ class TraceBuffer : public Window {
             case 'P':
                 goto_pc(vu.evaluate_expression_addr(text), -1);
                 break;
+            case '?':
+                re_search(text, -1);
+                break;
+            case '/':
+                re_search(text, +1);
+                break;
             case 'm': {
                 MemoryDisplayStartAddr addr;
                 ostringstream error;
@@ -1187,6 +1207,36 @@ class TraceBuffer : public Window {
     Addr evaluate_expression_addr(ExprPtr expr)
     {
         return vu.evaluate_expression_addr(expr);
+    }
+
+    void re_search(const string &re_text, int direction)
+    {
+        if (re_text.empty()) {
+            // Entering the empty string at the search prompt means
+            // search for the same thing again. If there isn't
+            // currently a 'same thing' then give up.
+            if (!find_re_source)
+                return;
+        } else if (!find_re_source || *find_re_source != re_text) {
+            try {
+                find_re = std::regex(re_text);
+            } catch (std::regex_error e) {
+                screen->minibuf_error(
+                    format(_("Error parsing expression: {}"), e.what()));
+                find_re_source = nullptr;
+                return;
+            }
+            find_re_source = make_unique<string>(re_text);
+        }
+
+        unsigned line;
+        if (vu.text_search(
+                [this](const string &s) {
+                    return std::regex_search(s, find_re);
+                },
+                direction, line)) {
+            goto_physline(line);
+        }
     }
 };
 

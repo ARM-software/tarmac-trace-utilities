@@ -1159,3 +1159,40 @@ void Browser::interpret_number(unsigned long long value, unsigned size,
         break;
     }
 }
+
+bool Browser::TraceView::text_search(
+    std::function<bool(const string &)> predicate, int direction,
+    unsigned &found_line)
+{
+    if (direction > 0) {
+        unsigned line = (curr_logical_node.trace_file_firstline +
+                         curr_logical_node.trace_file_lines);
+        SeqOrderPayload search_node;
+        while (br.node_at_line(line, &search_node)) {
+            vector<string> lines = br.index.get_trace_lines(search_node);
+            for (size_t i = 0, e = lines.size(); i < e; ++i) {
+                if (predicate(lines[i])) {
+                    found_line = line + i;
+                    return true;
+                }
+            }
+            line = (search_node.trace_file_firstline +
+                    search_node.trace_file_lines);
+        }
+    } else if (direction < 0) {
+        unsigned line = curr_logical_node.trace_file_firstline;
+        SeqOrderPayload search_node;
+        while (line > 1 && br.node_at_line(line - 1, &search_node)) {
+            vector<string> lines = br.index.get_trace_lines(search_node);
+            line = search_node.trace_file_firstline;
+            for (size_t i = lines.size(); i-- > 0;) {
+                if (predicate(lines[i])) {
+                    found_line = line + i;
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}

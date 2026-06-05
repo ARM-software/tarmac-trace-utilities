@@ -26,6 +26,7 @@
 #include "libtarmac/parser.hh"
 #include "libtarmac/registers.hh"
 
+#include <functional>
 #include <memory>
 #include <utility>
 
@@ -154,6 +155,17 @@ class Browser : public IndexNavigator {
         // the TraceView's current time.
         Addr evaluate_expression_addr(const std::string &line);
         Addr evaluate_expression_addr(ExprPtr expr);
+
+        // Search in the trace file for a line containing a line
+        // matching a given predicate. 'direction' should be positive
+        // to search forwards or negative to search backwards. The
+        // search goes forward or backward from curr_logical_node,
+        // _exclusive_ (it does not find matches within that node
+        // itself). If a node is found, 'found_line' is set to the
+        // precise line number in the trace file, and the return value
+        // is true.
+        bool text_search(std::function<bool(const std::string &)> predicate,
+                         int direction, unsigned &found_line);
     };
 
     Browser(const Browser &) = delete;

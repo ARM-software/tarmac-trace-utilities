@@ -56,6 +56,7 @@
 #include <math.h>
 #include <memory>
 #include <ostream>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <string.h>
@@ -1329,6 +1330,7 @@ void TextViewWindow::set_lineedit(unsigned line)
 
 class TraceWindow;
 class MemPromptDialog;
+class FindPromptDialog;
 
 class SubsidiaryView;
 class SubsidiaryViewListNode : public ListNode<SubsidiaryView> {
@@ -1656,6 +1658,7 @@ class TraceWindow : public TextViewWindow {
     void newdpreg_menuaction(wxCommandEvent &event);
     void newneonreg_menuaction(wxCommandEvent &event);
     void newmvereg_menuaction(wxCommandEvent &event);
+    void find_menuaction(wxCommandEvent &event);
     void recentre_menuaction(wxCommandEvent &event);
     void calldepth_menuaction(wxCommandEvent &event);
     void highlight_menuaction(wxCommandEvent &event);
@@ -1665,6 +1668,13 @@ class TraceWindow : public TextViewWindow {
     void mem_prompt_dialog_ended(bool ok);
     void mem_prompt_dialog_button(wxCommandEvent &event);
     void mem_prompt_dialog_closed(wxCloseEvent &event);
+
+    FindPromptDialog *find_prompt_dialog = nullptr;
+    void find_prompt_dialog_button(wxCommandEvent &event);
+    void find_prompt_dialog_closed(wxCloseEvent &event);
+    void text_search(int direction);
+    unique_ptr<string> find_re_source; // in C++17, would be optional<string>
+    std::regex find_re;
 
     virtual void reset_lineedit() override;
     virtual void activate_lineedit(unsigned line) override;
@@ -1850,6 +1860,7 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
     wxWindowID mi_newneonreg = NewControlId();
     wxWindowID mi_newmvereg = NewControlId();
     wxWindowID mi_recentre = NewControlId();
+    wxWindowID mi_find = NewControlId();
     wxWindowID mi_nextexc = NewControlId();
     wxWindowID mi_prevexc = NewControlId();
     mi_calldepth = NewControlId();
@@ -1877,6 +1888,10 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
     filemenu->InsertSeparator(pos++);
 
     newmenu = new wxMenu;
+    {
+        wxAcceleratorEntry accel(wxACCEL_CTRL, (int)'F', wxID_CLOSE);
+        editmenu->Append(mi_find, _("Find..."))->SetAccel(&accel);
+    }
     editmenu->AppendSeparator();
     editmenu->Append(wxID_ANY, _("Find CPU exception..."), newmenu);
     newmenu->Append(mi_nextexc, _("Next"));
@@ -1910,6 +1925,7 @@ TraceWindow::TraceWindow(GuiTarmacBrowserApp *app, Browser &br)
     if (mi_branchtarget != wxID_NONE)
         Bind(wxEVT_MENU, &TraceWindow::branchtarget_menuaction, this,
              mi_branchtarget);
+    Bind(wxEVT_MENU, &TraceWindow::find_menuaction, this, mi_find);
     Bind(wxEVT_MENU, &TraceWindow::exc_nextprev<+1>, this, mi_nextexc);
     Bind(wxEVT_MENU, &TraceWindow::exc_nextprev<-1>, this, mi_prevexc);
 
@@ -2552,6 +2568,106 @@ void TraceWindow::branchtarget_menuaction(wxCommandEvent &event)
 {
     substitute_branch_targets = menubar->IsChecked(mi_branchtarget);
     drawing_area->Refresh();
+}
+
+class FindPromptDialog : public wxDialog {
+    wxTextCtrl *regex;
+    wxWindowID bi_next, bi_prev;
+    friend class TraceWindow;
+
+  public:
+
+    FindPromptDialog(wxWindow *parent)
+        : wxDialog(parent, wxID_ANY, _("Find in trace file"))
+    {
+        auto *sizer = new wxBoxSizer(wxVERTICAL);
+
+        sizer->Add(new wxStaticText(this, wxID_ANY,
+                                    _("Regular expression to search for")),
+                   wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP));
+        regex =
+            new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
+                           edit_size("123456789012345678901234567890"));
+        sizer->Add(regex, wxSizerFlags().Expand().Border(
+                       wxLEFT | wxRIGHT | wxBOTTOM));
+
+        auto button_sizer = new wxBoxSizer(wxHORIZONTAL);
+        bi_prev = NewControlId();
+        bi_next = NewControlId();
+        auto *prev_button = new wxButton(this, bi_prev, _("Prev ↑"));
+        auto *next_button = new wxButton(this, bi_next, _("Next ↓"));
+        auto *cancel_button = new wxButton(this, wxID_CANCEL);
+        button_sizer->Add(prev_button);
+        button_sizer->Add(next_button);
+        button_sizer->Add(cancel_button);
+        sizer->Add(button_sizer,
+                   wxSizerFlags().Expand().Border(wxALL));
+
+        SetSizerAndFit(sizer);
+
+        regex->SetFocus();
+    }
+
+    string regex_value() { return regex->GetValue().ToStdString(); }
+};
+
+void TraceWindow::find_menuaction(wxCommandEvent &event)
+{
+    if (!find_prompt_dialog) {
+        find_prompt_dialog = new FindPromptDialog(this);
+        find_prompt_dialog->Show();
+        find_prompt_dialog->Bind(wxEVT_BUTTON,
+                                &TraceWindow::find_prompt_dialog_button, this);
+        find_prompt_dialog->Bind(wxEVT_CLOSE_WINDOW,
+                                &TraceWindow::find_prompt_dialog_closed, this);
+    }
+}
+
+void TraceWindow::find_prompt_dialog_button(wxCommandEvent &event)
+{
+    auto id = event.GetId();
+    int find_direction;
+    if (id == wxID_CANCEL) {
+        delete find_prompt_dialog;
+        find_prompt_dialog = nullptr;
+        return;
+    } else if (id == find_prompt_dialog->bi_next) {
+        find_direction = +1;
+    } else if (id == find_prompt_dialog->bi_prev) {
+        find_direction = -1;
+    } else {
+        return;
+    }
+
+    string value = find_prompt_dialog->regex_value();
+    if (!find_re_source || *find_re_source != value) {
+        try {
+            find_re = std::regex(value);
+        } catch (std::regex_error e) {
+            wxMessageBox(format(_("Error parsing expression: {}"), e.what()));
+            find_re_source = nullptr;
+            return;
+        }
+        find_re_source = make_unique<string>(value);
+    }
+
+    text_search(find_direction);
+}
+
+void TraceWindow::find_prompt_dialog_closed(wxCloseEvent &event)
+{
+    delete find_prompt_dialog;
+    find_prompt_dialog = nullptr;
+}
+
+void TraceWindow::text_search(int find_direction)
+{
+    unsigned line;
+    if (vu.text_search(
+            [this](const string &s) { return std::regex_search(s, find_re); },
+            find_direction, line)) {
+        goto_physline(line);
+    }
 }
 
 void TraceWindow::reset_lineedit()

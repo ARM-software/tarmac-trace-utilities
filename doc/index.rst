@@ -924,6 +924,14 @@ Ctrl-L
   for the address to search for. ``n`` searches forwards, and ``N``
   searches backwards.
 
+``/`` and ``?``
+  Search the trace file textually, by typing in a regular expression
+  for something you want to find in the file. (For example, you might
+  search for a string found in a CPU exception event.) ``/`` searches
+  forwards in the file from the current position, and ``?`` searches
+  backwards. If you enter the empty string, the browser will repeat
+  the previous search.
+
 ``m``
   Prompt on the bottom line of the screen for an address, and open an
   additional memory view pane showing the known memory contents at
@@ -1131,6 +1139,9 @@ gestures:
 
 * Opening additional register view windows or memory views can be done
   from the drop-down menus in the trace window.
+
+* Text search within the trace file is available from the drop-down
+  menus in the trace window.
 
 * To jump to a trace location where a register or memory location was
   last written, right-click on that register or location, and select a
