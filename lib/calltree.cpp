@@ -20,6 +20,7 @@
 #include "libtarmac/calltree.hh"
 #include "libtarmac/image.hh"
 #include "libtarmac/intl.hh"
+#include "libtarmac/json.hh"
 #include "libtarmac/misc.hh"
 
 #include <climits>
@@ -39,6 +40,37 @@ using std::pair;
 using std::showbase;
 using std::string;
 using std::vector;
+
+namespace {
+string raw_hex_address(Addr addr)
+{
+    ostringstream oss;
+    oss << "0x" << hex << addr;
+    return oss.str();
+}
+
+string symbolic_label(const IndexNavigator &IN, Addr addr)
+{
+    string label = IN.get_symbolic_address(addr, true);
+    return (label == raw_hex_address(addr) ? string() : label);
+}
+
+void write_site_json(JsonWriter &jw, const IndexNavigator &IN,
+                     const TarmacSite &site)
+{
+    jw.obj_field_number("time", site.time);
+    jw.obj_field_number("line", site.tarmac_line + IN.index.lineno_offset);
+    jw.obj_field_number("pc", site.addr);
+    jw.obj_field_string("pc_hex", raw_hex_address(site.addr));
+
+    string label = symbolic_label(IN, site.addr);
+    if (label.empty())
+        jw.obj_field_null("pc_label");
+    else
+        jw.obj_field_string("pc_label", label);
+
+}
+} // namespace
 
 string CallTree::getFunctionName(Addr addr) const
 {
@@ -149,6 +181,52 @@ void CallTree::generate_flame_graph(ostream &os) const
     generate_flame_graph_recurse(stackstream, output, nullptr);
     for (auto &kv : output)
         os << kv.first << ' ' << kv.second << endl;
+}
+
+void CallTree::generate_json(ostream &os) const
+{
+    JsonWriter jw(os);
+    jw.obj_open();
+    generate_json_recurse(jw);
+    jw.obj_close();
+    os << endl;
+}
+
+void CallTree::generate_json_recurse(JsonWriter &jw) const
+{
+    string function_name = getFunctionName(function_entry);
+    Time inclusive_time = function_exit.time - function_entry.time;
+
+    jw.obj_field_string(
+        "name",
+        function_name.empty() ? raw_hex_address(function_entry.addr)
+                              : function_name);
+    jw.obj_field_obj_open("function_entry");
+    write_site_json(jw, IN, function_entry);
+    jw.obj_close();
+    jw.obj_field_obj_open("function_exit");
+    write_site_json(jw, IN, function_exit);
+    jw.obj_close();
+    jw.obj_field_number("inclusive_time", inclusive_time);
+    jw.obj_field_array_open("children");
+
+    for (unsigned i = 0; i < call_trees.size(); i++) {
+        const TarmacSite &call_site = call_sites[i];
+        const TarmacSite &resume_site = resume_sites[i];
+        jw.array_entry_obj_open();
+        jw.obj_field_obj_open("call_site");
+        write_site_json(jw, IN, call_site);
+        jw.obj_close();
+        jw.obj_field_obj_open("resume_site");
+        write_site_json(jw, IN, resume_site);
+        jw.obj_close();
+        jw.obj_field_obj_open("callee");
+        call_trees[i].generate_json_recurse(jw);
+        jw.obj_close();
+        jw.obj_close();
+    }
+
+    jw.array_close();
 }
 
 namespace {

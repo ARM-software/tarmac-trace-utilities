@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarmac Trace Workbench</title>
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Arm Tarmac Trace Utilities</p>
+          <h1>Tarmac Trace Workbench</h1>
+          <p class="hero-text">
+            A polished browser surface for exploring TTU call data with search,
+            drill-down, and a demo-ready analysis layout.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="load-sample-button" class="button button-primary">
+            Load bundled sample
+          </button>
+          <label class="button button-secondary file-button">
+            Load JSON file
+            <input id="file-input" type="file" accept=".json,.ref" />
+          </label>
+        </div>
+      </header>
+
+      <section id="dropzone" class="dropzone">
+        <div>
+          <p class="dropzone-title">Drop a `tarmac-calltree-json` export here</p>
+          <p class="dropzone-text">
+            The prototype keeps the contract intentionally thin so it can swap
+            file loading for a future HTTP API with minimal frontend changes.
+          </p>
+        </div>
+      </section>
+
+      <section class="metrics-grid">
+        <article class="metric-card">
+          <span class="metric-label">Root function</span>
+          <strong id="metric-root" class="metric-value">No trace loaded</strong>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Functions in tree</span>
+          <strong id="metric-count" class="metric-value">0</strong>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Max depth</span>
+          <strong id="metric-depth" class="metric-value">0</strong>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Inclusive time</span>
+          <strong id="metric-time" class="metric-value">0</strong>
+        </article>
+      </section>
+
+      <main class="dashboard">
+        <section class="panel tree-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Call Analysis</p>
+              <h2>Interactive call tree</h2>
+            </div>
+            <input
+              id="search-input"
+              class="search-input"
+              type="search"
+              placeholder="Search by function or address"
+            />
+          </div>
+          <div id="tree-root" class="tree-root"></div>
+        </section>
+
+        <section class="panel detail-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Selection</p>
+              <h2>Trace detail</h2>
+            </div>
+          </div>
+
+          <div id="empty-state" class="empty-state">
+            Select a node to inspect entry and exit metadata.
+          </div>
+
+          <div id="detail-content" class="detail-content hidden">
+            <div class="detail-title-row">
+              <div>
+                <p class="detail-label">Function</p>
+                <h3 id="detail-name">-</h3>
+              </div>
+              <span id="detail-depth" class="depth-badge">Depth 0</span>
+            </div>
+
+            <div class="detail-stat-grid">
+              <article class="detail-stat">
+                <span>Inclusive time</span>
+                <strong id="detail-inclusive-time">0</strong>
+              </article>
+              <article class="detail-stat">
+                <span>Children</span>
+                <strong id="detail-child-count">0</strong>
+              </article>
+              <article class="detail-stat">
+                <span>Entry line</span>
+                <strong id="detail-entry-line">-</strong>
+              </article>
+              <article class="detail-stat">
+                <span>Exit line</span>
+                <strong id="detail-exit-line">-</strong>
+              </article>
+            </div>
+
+            <div class="detail-block">
+              <p class="detail-label">Entry</p>
+              <div class="detail-grid">
+                <div><span>Time</span><strong id="detail-entry-time">-</strong></div>
+                <div><span>Line</span><strong id="detail-entry-line-2">-</strong></div>
+                <div><span>PC</span><strong id="detail-entry-pc">-</strong></div>
+              </div>
+            </div>
+
+            <div class="detail-block">
+              <p class="detail-label">Exit</p>
+              <div class="detail-grid">
+                <div><span>Time</span><strong id="detail-exit-time">-</strong></div>
+                <div><span>Line</span><strong id="detail-exit-line-2">-</strong></div>
+                <div><span>PC</span><strong id="detail-exit-pc">-</strong></div>
+              </div>
+            </div>
+
+            <div class="detail-block">
+              <p class="detail-label">Call path</p>
+              <ol id="detail-path" class="call-path"></ol>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
