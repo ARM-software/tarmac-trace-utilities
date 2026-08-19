@@ -31,10 +31,12 @@
 #include <string>
 
 using std::cout;
+using std::make_shared;
 using std::make_unique;
 using std::ofstream;
 using std::ostream;
 using std::ostringstream;
+using std::shared_ptr;
 using std::string;
 using std::unique_ptr;
 
@@ -170,6 +172,37 @@ class ChromeTraceWriter : public CallTreeVisitor {
     }
 };
 
+string basename(const string &path)
+{
+    size_t pos = path.find_last_of("/\\");
+    return pos == string::npos ? path : path.substr(pos + 1);
+}
+
+struct ChromeTarmacUtility : public TarmacUtilityMT {
+    virtual void postProcessOptions() override
+    {
+        if (!index_on_disk) {
+            if (indexing == Troolean::No)
+                reporter->warnx(_("Ignoring --no-index since index is in "
+                                  "memory"));
+            indexing = Troolean::Yes;
+        }
+
+        for (TracePair &trace : traces) {
+            trace.index_on_disk = index_on_disk;
+            if (trace.index_on_disk) {
+                if (trace.index_filename.empty())
+                    trace.index_filename = trace.tarmac_filename + ".index";
+            } else {
+                if (!trace.index_filename.empty())
+                    reporter->warnx(_("Ignoring index file name since index is "
+                                      "in memory"));
+                trace.memory_index = make_shared<MemArena>();
+            }
+        }
+    }
+};
+
 } // namespace
 
 int main(int argc, char **argv)
@@ -177,6 +210,7 @@ int main(int argc, char **argv)
     gettext_setup(true);
 
     unique_ptr<string> outfile = nullptr;
+    unique_ptr<string> index_filename = nullptr;
 
     // Default PID and TID to 1
     int pid = 1;
@@ -188,10 +222,14 @@ int main(int argc, char **argv)
     CallTreeOptions ctopts;
 
     Argparse ap("tarmac-chromejson", argc, argv);
-    TarmacUtility tu;
+    ChromeTarmacUtility tu;
     tu.set_indexer_params(iparams);
     tu.add_options(ap);
     ctopts.add_options(ap);
+    ap.optval(
+        {"--index"}, _("INDEXFILE"),
+        _("index file name, only valid with one trace file"),
+        [&](const string &s) { index_filename = make_unique<string>(s); });
     ap.optval({"-o", "--output"}, _("OUTFILE"),
               _("write output to OUTFILE (default: standard output)"),
               [&](const string &s) { outfile = make_unique<string>(s); });
@@ -200,11 +238,19 @@ int main(int argc, char **argv)
     ap.optval({"--tid"}, _("TID"), _("thread id to write into trace events"),
               [&](const string &s) { tid = stoi(s); });
     ap.parse();
+
+    if (index_filename) {
+        if (tu.traces.size() != 1)
+            reporter->errx(EXIT_FAILURE,
+                           _("--index is only valid with one trace file"));
+        tu.traces[0].index_filename = *index_filename;
+    }
+
     tu.setup();
 
-    IndexNavigator IN(tu.trace, tu.image_filename, tu.load_offset);
-    CallTree CT(IN);
-    CT.setOptions(ctopts);
+    shared_ptr<Image> image;
+    if (!tu.image_filename.empty())
+        image = make_shared<Image>(tu.image_filename);
 
     unique_ptr<ofstream> ofs;
     ostream *osp;
@@ -218,10 +264,26 @@ int main(int argc, char **argv)
     ChromeTraceJson output_json(*osp);
     output_json.start();
     output_json.metadata_event("process_name", "Tarmac trace", pid, tid);
-    output_json.metadata_event("thread_name", "CPU 0", pid, tid);
 
-    ChromeTraceWriter writer(CT, output_json, pid, tid);
-    CT.visit(writer);
+    for (size_t i = 0; i < tu.traces.size(); i++) {
+        const TracePair &trace = tu.traces[i];
+        int trace_tid = tid + static_cast<int>(i);
+        string thread_name =
+            tu.traces.size() == 1 ? "CPU 0" : basename(trace.tarmac_filename);
+        output_json.metadata_event("thread_name", thread_name, pid, trace_tid);
+    }
+
+    for (size_t i = 0; i < tu.traces.size(); i++) {
+        const TracePair &trace = tu.traces[i];
+        int trace_tid = tid + static_cast<int>(i);
+
+        IndexNavigator IN(trace, image, tu.load_offset);
+        CallTree CT(IN);
+        CT.setOptions(ctopts);
+
+        ChromeTraceWriter writer(CT, output_json, pid, trace_tid);
+        CT.visit(writer);
+    }
 
     output_json.finish();
 }
