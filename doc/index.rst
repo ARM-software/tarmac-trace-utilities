@@ -515,14 +515,14 @@ then it will contain hex addresses.
 tarmac-chromejson
 -----------------
 
-``tarmac-chromejson`` writes out profiling data derived from the trace file
-as `Chromium's Trace Event Format`_, suitable for timeline viewers that understand
-this format.
+``tarmac-chromejson`` writes out profiling data derived from one or more
+trace files as `Chromium's Trace Event Format`_, suitable for timeline viewers that
+understand this format.
 
 .. _Chromium's Trace Event Format: https://chromium.googlesource.com/catapult/+/HEAD/docs/trace-event-format.md
 
 The command-line syntax of ``tarmac-chromejson`` looks like this:
-  ``tarmac-chromejson`` [ *options* ] *trace-file-name*
+  ``tarmac-chromejson`` [ *options* ] *trace-file-name*...
 
 All the options in `Common functionality`_ are supported. This tool
 also recognizes the following additional options:
@@ -537,12 +537,13 @@ also recognizes the following additional options:
 
 ``--tid`` *tid*
   Tells the tool which Chrome trace thread id to assign to generated
-  events. The default is 1.
+  events. The default is 1. If multiple trace files are provided, they
+  are assigned consecutive thread ids starting from this value.
 
-When run over a trace file, ``tarmac-chromejson`` produces a JSON object
+When run over trace files, ``tarmac-chromejson`` produces a JSON object
 whose ``traceEvents`` array contains one complete event for each
-function activation identified in the trace. Each event's timestamp and
-duration come from the Tarmac timestamps used by the index.
+function activation identified in the traces. Each event's timestamp
+and duration come from the Tarmac timestamps used by the index.
 
 An example of the event structure used for complete events is the following:
 
@@ -588,8 +589,9 @@ where
 * ``args`` is arbitrary event-specific metadata
 
 If you provide an ELF image via the `--image`_ option, then the output
-will contain the symbolic names of functions in the program. If not,
-then it will contain hex addresses.
+will contain the symbolic names of functions in the program. If more
+than one trace file is provided, the same image is used for all of
+them. If no image is provided, the output will contain hex addresses.
 
 tarmac-vcd
 ----------

@@ -192,6 +192,11 @@ add_test(NAME chrome-symbols
       --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/chrome-quicksort-symbols.ref stdout
       ${CMAKE_BINARY_DIR}/tarmac-chromejson --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
+add_test(NAME chrome-multi-trace-symbols
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/chrome-quicksort-multi-symbols.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-chromejson --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
+  )
 
 # Tests of tarmac-profile, with and without ELF symbol annotations.
 # Same input trace file as the above tests; expected output is in
