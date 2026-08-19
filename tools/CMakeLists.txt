@@ -25,6 +25,9 @@ standard_target_configuration(tarmac-callinfo)
 add_executable(tarmac-calltree calltree.cpp ${EXTRA_FILES})
 standard_target_configuration(tarmac-calltree)
 
+add_executable(tarmac-chromejson chrome.cpp ${EXTRA_FILES})
+standard_target_configuration(tarmac-chromejson)
+
 add_executable(tarmac-flamegraph flamegraph.cpp ${EXTRA_FILES})
 standard_target_configuration(tarmac-flamegraph)
 
@@ -38,7 +41,7 @@ add_executable(tarmac-vcd vcdwriter.cpp vcd.cpp ${EXTRA_FILES})
 standard_target_configuration(tarmac-vcd)
 
 install(TARGETS
-  tarmac-callinfo tarmac-calltree tarmac-flamegraph tarmac-profile
+  tarmac-callinfo tarmac-calltree tarmac-chromejson tarmac-flamegraph tarmac-profile
   tarmac-vcd
   EXPORT ${TTU_targets_export_name}
   RUNTIME)
