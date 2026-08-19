@@ -177,6 +177,22 @@ add_test(NAME flamegraph-symbols
       ${CMAKE_BINARY_DIR}/tarmac-flamegraph --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 
+# Tests of Chrome trace JSON output on the same quicksort trace.
+# Expected output, with and without symbol annotations from the ELF
+# file, is in chrome-quicksort-*.ref.
+add_test(NAME chrome-no-symbols
+  COMMAND ${test_driver_cmd}
+      --tempfile quicksort.tarmac.index
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/chrome-quicksort-addr.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-chromejson --index quicksort.tarmac.index ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
+  )
+add_test(NAME chrome-symbols
+  COMMAND ${test_driver_cmd}
+      --tempfile quicksort.tarmac.index
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/chrome-quicksort-symbols.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-chromejson --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
+  )
+
 # Tests of tarmac-profile, with and without ELF symbol annotations.
 # Same input trace file as the above tests; expected output is in
 # profile-quicksort-*.ref.

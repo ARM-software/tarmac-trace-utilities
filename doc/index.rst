@@ -512,6 +512,85 @@ If you provide an ELF image via the `--image`_ option, then the output
 will contain the symbolic names of functions in the program. If not,
 then it will contain hex addresses.
 
+tarmac-chromejson
+-----------------
+
+``tarmac-chromejson`` writes out profiling data derived from the trace file
+as `Chromium's Trace Event Format`_, suitable for timeline viewers that understand
+this format.
+
+.. _Chromium's Trace Event Format: https://chromium.googlesource.com/catapult/+/HEAD/docs/trace-event-format.md
+
+The command-line syntax of ``tarmac-chromejson`` looks like this:
+  ``tarmac-chromejson`` [ *options* ] *trace-file-name*
+
+All the options in `Common functionality`_ are supported. This tool
+also recognizes the following additional options:
+
+``-o`` *filename* or ``--output=``\ *filename*
+  Tells the tool to write its output to the specified file, instead of
+  to standard output.
+
+``--pid`` *pid*
+  Tells the tool which Chrome trace process id to assign to generated
+  events. The default is 1.
+
+``--tid`` *tid*
+  Tells the tool which Chrome trace thread id to assign to generated
+  events. The default is 1.
+
+When run over a trace file, ``tarmac-chromejson`` produces a JSON object
+whose ``traceEvents`` array contains one complete event for each
+function activation identified in the trace. Each event's timestamp and
+duration come from the Tarmac timestamps used by the index.
+
+An example of the event structure used for complete events is the following:
+
+.. code-block:: none
+
+    {
+      "name": "quicksort",
+      "cat": "function",
+      "ph": "X",
+      "pid": 1,
+      "tid": 2,
+      "ts": 1234,
+      "dur": 56,
+      "args": {
+        "pc": "0x8038",
+        "line": 177
+      }
+    }
+
+while metadata events look like:
+
+.. code-block:: none
+
+    {
+      "ph": "M",
+      "name": "thread_name",
+      "pid": 1,
+      "tid": 2,
+      "args": {
+        "name": "CPU 1"
+      }
+    }
+
+where
+
+* ``name`` is the event name
+* ``cat``  is the Category (e.g. ``"function"``)
+* ``ph`` is the event type (e.g. ``"M"`` or ``"X"``)
+* ``pid`` is the process ID
+* ``tid`` is the Thread ID
+* ``ts`` is the timestamp
+* ``dur`` is the duration of the event
+* ``args`` is arbitrary event-specific metadata
+
+If you provide an ELF image via the `--image`_ option, then the output
+will contain the symbolic names of functions in the program. If not,
+then it will contain hex addresses.
+
 tarmac-vcd
 ----------
 
