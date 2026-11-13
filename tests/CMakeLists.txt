@@ -158,6 +158,16 @@ add_test(NAME calltree-symbols
       ${CMAKE_BINARY_DIR}/tarmac-calltree --index quicksort.tarmac.index --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.tarmac
   )
 
+# Test of tarmac-calltree on a small hand-written trace that calls into
+# the middle of a function in quicksort.elf, checking that the offset
+# from the symbol is shown rather than the absolute address (PR #39).
+# Expected output is in calltree-offset.ref.
+add_test(NAME calltree-offset
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltree-offset.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-calltree --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/calltree-offset.tarmac
+  )
+
 # Tests of tarmac-flamegraph on the same quicksort.tarmac trace file.
 # Expected output, with and without symbol annotations from the ELF
 # file, is in flamegraph-quicksort-*.ref.
