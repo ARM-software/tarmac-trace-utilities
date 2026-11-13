@@ -22,6 +22,7 @@
 #include <exception>
 #include <memory>
 #include <ostream>
+#include <stdint.h>
 #include <string>
 
 struct RegisterId;
