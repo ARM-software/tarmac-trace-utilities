@@ -49,7 +49,7 @@ string CallTree::getFunctionName(Addr addr) const
             if (options.show_offsets) {
                 Addr offset = addr - Symb->addr;
                 if (offset)
-                    oss << " + " << hex << showbase << addr;
+                    oss << " + " << hex << showbase << offset;
             }
             return oss.str();
         }
