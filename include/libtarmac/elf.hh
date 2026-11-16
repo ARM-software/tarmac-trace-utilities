@@ -20,6 +20,7 @@
 #define LIBTARMAC_ELF_HH
 
 #include <memory>
+#include <stdint.h>
 #include <string>
 #include <vector>
 
