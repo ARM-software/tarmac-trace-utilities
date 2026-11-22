@@ -1,0 +1,3 @@
+o t:1 l:1 pc:0x40008000 - t:5 l:8 pc:0x4000800c : _start
+  - t:3 l:5 pc:0x40008008 - t:5 l:8 pc:0x4000800c
+    o t:4 l:7 pc:0x40008050 - t:4 l:7 pc:0x40008050 : quicksort + 0x18

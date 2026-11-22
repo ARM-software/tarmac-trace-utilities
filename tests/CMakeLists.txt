@@ -168,6 +168,16 @@ add_test(NAME calltree-offset
       ${CMAKE_BINARY_DIR}/tarmac-calltree --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf ${CMAKE_CURRENT_SOURCE_DIR}/calltree-offset.tarmac
   )
 
+# The same trace with every code address moved up by 0x40000000, as if
+# quicksort.elf had been loaded at a different address. With the
+# matching --load-offset, the function names and offsets should be the
+# same as in calltree-offset.ref.
+add_test(NAME calltree-load-offset
+  COMMAND ${test_driver_cmd}
+      --compare reffile:${CMAKE_CURRENT_SOURCE_DIR}/calltree-load-offset.ref stdout
+      ${CMAKE_BINARY_DIR}/tarmac-calltree --image ${CMAKE_CURRENT_SOURCE_DIR}/quicksort.elf --load-offset 0x40000000 ${CMAKE_CURRENT_SOURCE_DIR}/calltree-load-offset.tarmac
+  )
+
 # Tests of tarmac-flamegraph on the same quicksort.tarmac trace file.
 # Expected output, with and without symbol annotations from the ELF
 # file, is in flamegraph-quicksort-*.ref.

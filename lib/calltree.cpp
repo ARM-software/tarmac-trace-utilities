@@ -42,17 +42,23 @@ using std::vector;
 
 string CallTree::getFunctionName(Addr addr) const
 {
-    if (IN.has_image())
-        if (const Symbol *Symb = IN.get_image()->find_symbol(addr)) {
+    if (IN.has_image()) {
+        // Symbol addresses in the image are relative to where it would
+        // be loaded without --load-offset, so translate the trace
+        // address back before looking it up.
+        Addr load_offset = IN.get_load_offset();
+        if (const Symbol *Symb =
+                IN.get_image()->find_symbol(addr - load_offset)) {
             ostringstream oss;
             oss << Symb->getName();
             if (options.show_offsets) {
-                Addr offset = addr - Symb->addr;
+                Addr offset = addr - (Symb->addr + load_offset);
                 if (offset)
                     oss << " + " << hex << showbase << offset;
             }
             return oss.str();
         }
+    }
     return string();
 }
 
