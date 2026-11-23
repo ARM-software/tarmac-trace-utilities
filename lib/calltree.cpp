@@ -42,18 +42,7 @@ using std::vector;
 
 string CallTree::getFunctionName(Addr addr) const
 {
-    if (IN.has_image())
-        if (const Symbol *Symb = IN.get_image()->find_symbol(addr)) {
-            ostringstream oss;
-            oss << Symb->getName();
-            if (options.show_offsets) {
-                Addr offset = addr - Symb->addr;
-                if (offset)
-                    oss << " + " << hex << showbase << offset;
-            }
-            return oss.str();
-        }
-    return string();
+    return IN.get_symbolic_address(addr, false);
 }
 
 string CallTree::getFunctionName(const TarmacSite &site) const

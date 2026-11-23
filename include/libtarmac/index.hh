@@ -153,7 +153,6 @@ class IndexNavigator {
     }
 
     bool has_image() const { return bool(image); }
-    std::shared_ptr<Image> get_image() const { return image; }
 
     bool lookup_symbol(const std::string &name, uint64_t &addr) const;
     bool lookup_symbol(const std::string &name, uint64_t &addr,
